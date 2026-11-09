@@ -1,15 +1,164 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // <-- Importamos el componente de Next.js
+import TarjetaNoticia from '../components/TarjetaNoticia';
+import estilos from '../styles/Login.module.css';
 
-// URL del backend. En local apunta a localhost:3001, en producción
-// se configura en Vercel como variable de entorno apuntando a Render.
+export default function Login() {
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const noticias = [
+        {
+            titulo: "+2000 MiPyMEs registradas",
+            descripcion: "Consulta su información"
+        },
+        {
+            titulo: "Verificamos la ubicación geográfica",
+            descripcion: "Google APIs"
+        },
+        {
+            titulo: "Reportes empresariales",
+            descripcion: "Contribuye a mantener información relevante mediante reportes fundamentados"
+        },
+        {
+            titulo: "Verificamos documentación empresarial",
+            descripcion: "Solicitamos documentación verídica a las MiPyMEs"
+        }
+    ];
 
-export default function Home() {
+    useEffect(() => {
+        const bolita = document.querySelector(`.${estilos['particula-principal']}`);
+        const contenedor = document.querySelector(`.${estilos['contenedor-particulas']}`);
+
+        if (!bolita || !contenedor) return;
+
+        function crearParticula() {
+            const particula = document.createElement('span');
+            particula.classList.add(estilos['rastro-particula']);
+
+            const rectangulo = bolita.getBoundingClientRect();
+            const area = contenedor.getBoundingClientRect();
+
+            particula.style.left = `${rectangulo.left - area.left + 5}px`;
+            particula.style.top = `${rectangulo.top - area.top + 5}px`;
+
+            contenedor.appendChild(particula);
+
+            setTimeout(() => {
+                particula.remove();
+            }, 700);
+        }
+
+        const intervalo = setInterval(crearParticula, 80);
+        return () => clearInterval(intervalo);
+    }, []);
+
+    const noticiasExtendidas = [...noticias, ...noticias];
+
     return (
-        <main>
-            <h1>Bienvenido a WorkGuard</h1>
-        </main>
+        <>
+            <header className={estilos['menu-usuario']}>
+                {/* Usando Image de Next.js para el logo */}
+                <Image 
+                    src="/img/Logoworkguard.png" 
+                    alt="Logo de workguard" 
+                    width={45} 
+                    height={45} 
+                    style={{ width: 'auto', height: 'auto' }} 
+                />
+                <nav>
+                    <Link href=""><span className={estilos['letrasworkguard']}>Work<span>Guard</span></span></Link>
+                    <Link href="">Funcionamiento</Link>
+                    <Link href="">Enfoque Técnico</Link>
+                </nav>
+            </header>
+
+            <main className={estilos['contenedor-login']}>
+                {/* Panel izquierdo */}
+                <section className={estilos['panel-bienvenida']}>
+                    <h1>¡BIENVENIDO A WORKGUARD!</h1>
+                    <p>Accede a WorkGuard y mantén el control de la seguridad laboral</p>
+
+                    <div className={estilos['fondo-ilustracion']}>
+                        <svg className={`${estilos['onda']} ${estilos['onda-azul']}`} viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="wgGradLeft1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0" />
+                                    <stop offset="60%" stopColor="#1D4ED8" stopOpacity="0.3" />
+                                    <stop offset="100%" stopColor="#0B162C" stopOpacity="0.8" />
+                                </linearGradient>
+                            </defs>
+                            <path fill="url(#wgGradLeft1)" d="M420,320Q360,390,290,410Q220,430,150,380Q80,330,90,240Q100,150,180,110Q260,70,350,110Q440,150,440,235Q440,320,420,320Z" />
+                        </svg>
+
+                        <svg className={`${estilos['onda']} ${estilos['onda-dorada']}`} viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="wgGradLeft2" x1="100%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stopColor="#F59E0B" stopOpacity="1" />
+                                    <stop offset="50%" stopColor="#93C5FD" stopOpacity="0.5" />
+                                    <stop offset="100%" stopColor="#DBEAFE" stopOpacity="0.7" />
+                                </linearGradient>
+                            </defs>
+                            <path fill="url(#wgGradLeft2)" d="M450,360Q380,420,300,430Q220,440,160,380Q100,320,110,230Q120,140,200,100Q280,60,370,100Q460,140,490,230Q520,320,450,360Z" />
+                        </svg>
+                    </div>
+
+                    <div className={estilos['contenido']}>
+                        <div className={estilos['ilustracion']}>
+                            {/* Usando Image para la ilustración principal */}
+                            <Image 
+                                src="/img/login.png" 
+                                alt="Ilustración Login" 
+                                width={450} 
+                                height={450} 
+                                style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                                priority 
+                            />
+                        </div>
+                    </div>
+                </section>
+
+                {/* Panel derecho */}
+                <section className={estilos['panel-formulario']}>
+                    <div className={estilos['contenedor-particulas']}>
+                        <div className={estilos['particula-principal']}></div>
+                    </div>
+
+                    <div className={estilos['fondo-formulario']}></div>
+
+                    <form id="formularioLogin" className={estilos['formulario-login']}>
+                        <div className={estilos['encabezado-formulario']}>
+                            <h2>Iniciar Sesión</h2>
+                        </div>
+
+                        <div className={estilos['campo']}>
+                            <label htmlFor="usuario">Usuario</label>
+                            <div className={estilos['campo-input']}>
+                                <Image src="/img/user.png" alt="Usuario" width={16} height={16} className={estilos['icono-input']} />
+                                <input type="text" name="usuario" id="usuario" placeholder="Ingresa tu usuario" required />
+                            </div>
+                        </div>
+
+                        <div className={estilos['campo']}>
+                            <label htmlFor="contrasena">Contraseña</label>
+                            <div className={estilos['campo-input']}>
+                                <Image src="/img/password.png" alt="Contrasena" width={16} height={16} className={estilos['icono-input']} />
+                                <input type="password" name="contrasena" id="contrasena" placeholder="Ingresa tu contraseña" required />
+                            </div>
+                        </div>
+
+                        <button type="submit" className={estilos['btnlogin']}>Iniciar Sesión</button>
+                        <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/registro">Registrarse</Link></p>
+                    </form>
+                </section>
+            </main>
+
+            <section className={estilos['seccion-noticias']}>
+                <div className={estilos['contenedor-noticias']} id="contenedorNoticias">
+                    {noticiasExtendidas.map((noticia, index) => (
+                        <TarjetaNoticia key={index} noticia={noticia} />
+                    ))}
+                </div>
+            </section>
+        </>
     );
 }
