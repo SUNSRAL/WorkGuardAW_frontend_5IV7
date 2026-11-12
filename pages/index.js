@@ -126,12 +126,16 @@ export default function Login() {
                     <div className={estilos['fondo-formulario']}></div>
 
                     <form id="formularioLogin" className={estilos['formulario-login']}>
-                        <div className={estilos['encabezado-formulario']}>
-                            <h2>La información que necesitas a tu alcance</h2>
+                        <div className={estilos['formulario-login']}>
+                            <div className={estilos['encabezado-formulario']}>
+                                <h2>La información que necesitas a tu alcance</h2>
+                            </div>
+                        
+                            <Link href="/login" className={estilos['btnlogin']} style={{ textAlign: 'center', display: 'block', textDecoration: 'none' }}>
+                                Iniciar Sesión
+                            </Link>
+                            <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/registro">Registrarse</Link></p>
                         </div>
-
-                        <button type="submit" className={estilos['btnlogin']}>Iniciar Sesión</button>
-                        <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/registro">Registrarse</Link></p>
                     </form>
 
                     <Image 
@@ -156,40 +160,59 @@ export default function Login() {
         {/* Sección de Fuentes Oficiales */}
             <div className={estilos['contenedorOrg']}>
 
-                {/* Título más grande */}
                 <h2 className={estilos['tituloOrg']}>Fuentes Oficiales de Consulta</h2>
 
                 <div className={estilos['contenedorImagenes']}>
                     
-                    {/* Imagen 1 + Texto (Lado Izquierdo) */}
+                    {/* Tarjeta 1 (SAT) */}
                     <div className={estilos['tarjetaOrgItem']}>
-                        <Image 
-                            src="/img/SAT.webp" 
-                            alt="Imagen del SAT" 
-                            width={120} 
-                            height={120} 
-                            className={estilos['imagenOrg']}
-                        />
-                        <p className={estilos['textoOrg']}>
-                            Servicio de Administración Tributaria. Validación oficial de datos fiscales y situación de MiPyMEs.
-                        </p>
+                        <div className={estilos['tarjetaInner']}>
+                            {/* Frente */}
+                            <div className={estilos['tarjetaFrente']}>
+                                <Image 
+                                    src="/img/SAT.webp" 
+                                    alt="Imagen del SAT" 
+                                    width={160} 
+                                    height={160} 
+                                    className={estilos['imagenOrg']}
+                                />
+                                <p style={{ marginTop: '15px', fontWeight: '600' }}>Servicios de Administración Tributaria</p>
+                            </div>
+                            {/* Reverso (Texto que aparece al girar) */}
+                            <div className={estilos['tarjetaReverso']}>
+                                <p className={estilos['textoOrg']}>
+                                    Validación oficial de datos fiscales y situación de MiPyMEs.
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Imagen 2 + Texto (Lado Derecho) */}
+                    {/* Tarjeta 2 (Secretaría de Economía) */}
                     <div className={estilos['tarjetaOrgItem']}>
-                        <Image 
-                            src="/img/secreteconomia.jpg" 
-                            alt="Imagen del SAT" 
-                            width={200} 
-                            height={200} 
-                            className={estilos['imagenOrg']}
-                        />
-                        <p className={estilos['textoOrg']}>
-                            Secretaria de Economía. Consulta de normativas,registros y fomento a la actividad.
-                        </p>
+                        <div className={estilos['tarjetaInner']}>
+                            {/* Frente */}
+                            <div className={estilos['tarjetaFrente']}>
+                                <Image 
+                                    src="/img/secretariaeconomia.png" 
+                                    alt="Secretaria de Economia" 
+                                    width={160} 
+                                    height={160} 
+                                    className={estilos['imagenOrg']}
+                                />
+                                <p style={{ marginTop: '15px', fontWeight: '600' }}>Secretaría de Economía</p>
+                            </div>
+                            {/* Reverso (Texto que aparece al girar) */}
+                            <div className={estilos['tarjetaReverso']}>
+                                <p className={estilos['textoOrg']}>
+                                    Consultamos normativas, registros y el fomento a la actividad económica.
+                                </p>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </>
     );
 }
+
