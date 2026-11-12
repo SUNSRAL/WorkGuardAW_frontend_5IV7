@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image'; // <-- Importamos el componente de Next.js
+import Image from 'next/image'; 
 import TarjetaNoticia from '../components/TarjetaNoticia';
-import estilos from '../styles/Login.module.css';
+import estilos from '../styles/Landing.module.css';
 
 export default function Login() {
 

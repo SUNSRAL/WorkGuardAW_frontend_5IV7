@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
-import estilos from '../styles/Login.module.css'; // Asegúrate de que el nombre coincida con tu archivo CSS
+import estilos from '../styles/Login.module.css'; 
 
 export default function Login() {
     const router = useRouter();
