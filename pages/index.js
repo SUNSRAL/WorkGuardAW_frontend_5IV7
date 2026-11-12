@@ -57,7 +57,7 @@ export default function Login() {
     return (
         <>
             <header className={estilos['menu-usuario']}>
-                {/* Usando Image de Next.js para el logo */}
+                {/* Uso Image de Next.js para el logo */}
                 <Image 
                     src="/img/Logoworkguard.png" 
                     alt="Logo de workguard" 
@@ -127,28 +127,21 @@ export default function Login() {
 
                     <form id="formularioLogin" className={estilos['formulario-login']}>
                         <div className={estilos['encabezado-formulario']}>
-                            <h2>Iniciar Sesión</h2>
-                        </div>
-
-                        <div className={estilos['campo']}>
-                            <label htmlFor="usuario">Usuario</label>
-                            <div className={estilos['campo-input']}>
-                                <Image src="/img/user.png" alt="Usuario" width={16} height={16} className={estilos['icono-input']} />
-                                <input type="text" name="usuario" id="usuario" placeholder="Ingresa tu usuario" required />
-                            </div>
-                        </div>
-
-                        <div className={estilos['campo']}>
-                            <label htmlFor="contrasena">Contraseña</label>
-                            <div className={estilos['campo-input']}>
-                                <Image src="/img/password.png" alt="Contrasena" width={16} height={16} className={estilos['icono-input']} />
-                                <input type="password" name="contrasena" id="contrasena" placeholder="Ingresa tu contraseña" required />
-                            </div>
+                            <h2>La información que necesitas a tu alcance</h2>
                         </div>
 
                         <button type="submit" className={estilos['btnlogin']}>Iniciar Sesión</button>
                         <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/registro">Registrarse</Link></p>
                     </form>
+
+                    <Image 
+                    src="/img/documento.png" 
+                    alt="Logo de workguard" 
+                    width={500} 
+                    height={500} 
+                    className={estilos['imagen-documento']}
+                />
+
                 </section>
             </main>
 
@@ -159,6 +152,44 @@ export default function Login() {
                     ))}
                 </div>
             </section>
+
+        {/* Sección de Fuentes Oficiales */}
+            <div className={estilos['contenedorOrg']}>
+
+                {/* Título más grande */}
+                <h2 className={estilos['tituloOrg']}>Fuentes Oficiales de Consulta</h2>
+
+                <div className={estilos['contenedorImagenes']}>
+                    
+                    {/* Imagen 1 + Texto (Lado Izquierdo) */}
+                    <div className={estilos['tarjetaOrgItem']}>
+                        <Image 
+                            src="/img/SAT.webp" 
+                            alt="Imagen del SAT" 
+                            width={120} 
+                            height={120} 
+                            className={estilos['imagenOrg']}
+                        />
+                        <p className={estilos['textoOrg']}>
+                            Servicio de Administración Tributaria. Validación oficial de datos fiscales y situación de MiPyMEs.
+                        </p>
+                    </div>
+
+                    {/* Imagen 2 + Texto (Lado Derecho) */}
+                    <div className={estilos['tarjetaOrgItem']}>
+                        <Image 
+                            src="/img/secreteconomia.jpg" 
+                            alt="Imagen del SAT" 
+                            width={200} 
+                            height={200} 
+                            className={estilos['imagenOrg']}
+                        />
+                        <p className={estilos['textoOrg']}>
+                            Secretaria de Economía. Consulta de normativas,registros y fomento a la actividad.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </>
     );
 }
