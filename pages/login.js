@@ -8,6 +8,7 @@ export default function Login() {
     const router = useRouter();
     const [usuario, setUsuario] = useState('');
     const [contrasena, setContrasena] = useState('');
+    const [mostrarPass, setMostrarPass] = useState(false); 
     const [estado, setEstado] = useState({ tipo: '', mensaje: '' });
     const [cargando, setCargando] = useState(false);
 
@@ -62,100 +63,221 @@ export default function Login() {
     };
 
     return (
-        <div className={estilos.pantalla}>
-            {/* Barra superior sencilla */}
-            <header className={estilos.header}>
-                <div className={estilos.marca}>
+       <div className={estilos['paginaCompleta']}>
+
+            {/* COMPONENTE DE CARGA */}
+            {cargando && (
+                <Cargando texto="Autenticando en WorkGuard..." />
+            )}
+
+            {/* LOGO */}
+            <div className={estilos['logoEsquina']}>
+                <Link href="/">
                     <Image
-                        src="/img/Logoworkguard.png"
+                        src="/img/logo.png"
                         alt="Logo WorkGuard"
-                        width={38}
-                        height={38}
+                        width={64}
+                        height={64}
                     />
-                    <span className={estilos['titulo-marca']}>
-                        Work<span style={{ color: '#F59E0B' }}>Guard</span>
-                    </span>
-                </div>
-                <Link href="/" className={estilos['enlace-volver']}>
-                    ← Volver al inicio
                 </Link>
-            </header>
+            </div>
 
-            {/* Contenedor centrado de la tarjeta de Login */}
-            <main className={estilos['contenedor-central']}>
-                <div className={estilos.tarjeta}>
-                    <div className={estilos['borde-superior']}></div>
+            {/* ILUSTRACIÓN IZQUIERDA */}
+            <div className={estilos['ilustracionLateral']}>
+                <Image
+                    src="/img/persona1.png"
+                    alt="Ilustración izquierda"
+                    width={300}
+                    height={300}
+                    priority
+                />
+            </div>
 
-                    <h1 className={estilos.titulo}>Iniciar Sesión</h1>
-                    <p className={estilos.subtitulo}>
-                        Ingresa tu usuario y contraseña para validar tu rol
-                    </p>
 
-                    {/* Formulario de login */}
-                    {estado.mensaje && (
-                        <div
-                            className={estilos.alerta}
-                            style={{
-                                backgroundColor: estado.tipo === 'error' ? '#FEE2E2' : '#DCFCE7',
-                                color: estado.tipo === 'error' ? '#B91C1C' : '#15803D',
-                                borderColor: estado.tipo === 'error' ? '#F87171' : '#4ADE80',
-                            }}
-                        >
-                            {estado.mensaje}
+            {/* FORMULARIO CENTRAL */}
+            <div className={estilos['contenedorCentral']}>
+                <main className={estilos['contenedorCentrado']}>
+                    <form
+                        onSubmit={manejarLogin}
+                        className={estilos['formulario-login']}
+                    >
+
+                        {/* ENCABEZADO */}
+                        <div className={estilos['encabezado-formulario']}>
+                            <h2>Iniciar Sesión</h2>
                         </div>
-                    )}
 
-                    <form onSubmit={manejarLogin} className={estilos.formulario}>
-                        <div className={estilos['grupo-input']}>
-                            <label htmlFor="usuario" className={estilos.etiqueta}>
+                        {/* MENSAJE DE ESTADO */}
+                        {estado.mensaje && (
+                            <p
+                                className={estilos['mensaje-estado']}
+                                style={{
+                                    color: estado.tipo === 'error'
+                                        ? '#F87171'
+                                        : '#34D399'
+                                }}>
+                                {estado.mensaje}
+                            </p>
+                        )}
+
+
+                        {/* CAMPO USUARIO */}
+                        <div className={estilos['campo']}>
+                            <label htmlFor="usuario">
                                 Usuario
                             </label>
-                            <input
-                                id="usuario"
-                                type="text"
-                                placeholder="Ej. admin_wg"
-                                value={usuario}
-                                onChange={(e) => setUsuario(e.target.value)}
-                                required
-                                className={estilos.input}
-                            />
+
+                            <div className={estilos['campo-input']}>
+                                <Image
+                                    src="/img/user.png"
+                                    alt="Usuario"
+                                    width={16}
+                                    height={16}
+                                    className={estilos['icono-input']}
+                                />
+                                <input
+                                    type="text"
+                                    id="usuario"
+                                    placeholder="Ingresa tu usuario"
+                                    value={usuario}
+                                    onChange={(e) => setUsuario(e.target.value)}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div className={estilos['grupo-input']}>
-                            <label htmlFor="contrasena" className={estilos.etiqueta}>
+                        {/* CAMPO CONTRASEÑA */}
+                        <div className={estilos['campo']}>
+                            <label htmlFor="contrasena">
                                 Contraseña
                             </label>
-                            <input
-                                id="contrasena"
-                                type="password"
-                                placeholder="••••••••"
-                                value={contrasena}
-                                onChange={(e) => setContrasena(e.target.value)}
-                                required
-                                className={estilos.input}
-                            />
+                            <div className={estilos['campo-input']}>
+                                <Image
+                                    src="/img/password.png"
+                                    alt="Contraseña"
+                                    width={16}
+                                    height={16}
+                                    className={estilos['icono-input']}
+                                />
+                                <input
+                                    type={mostrarPass ? "text" : "password"}
+                                    id="contrasena"
+                                    placeholder="Ingresa tu contraseña"
+                                    value={contrasena}
+                                    onChange={(e) => setContrasena(e.target.value)}
+                                    required
+                                />
+
+                                {/* BOTÓN DEL OJO */}
+                                <button
+                                    type="button"
+                                    className={estilos['boton-ojo']}
+                                    onClick={() => setMostrarPass(!mostrarPass)}
+                                    aria-label={
+                                        mostrarPass
+                                            ? "Ocultar contraseña"
+                                            : "Mostrar contraseña"
+                                    }
+                                >
+                                    {mostrarPass ? (
+
+                                        /* OJO CERRADO */
+                                        <svg viewBox="0 0 24 24" fill="none">
+
+                                            <path
+                                                d="M3 3L21 21"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                            />
+                                            <path
+                                                d="M10.6 10.6A2 2 0 0013.4 13.4"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                            />
+
+                                            <path
+                                                d="M9.9 5.2A10.9 10.9 0 0112 5c5 0 9 4 10 7-0.4 1.2-1.3 2.4-2.5 3.4"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                            />
+
+                                            <path
+                                                d="M6.2 6.2C4.1 7.4 2.6 9.4 2 12c1 3 5 7 10 7 1.2 0 2.3-.2 3.3-.6"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                            />
+                                        </svg>
+
+                                    ) : (
+
+                                        /* OJO ABIERTO */
+                                        <svg viewBox="0 0 24 24" fill="none">
+
+                                            <path
+                                                d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                            />
+
+                                            <circle
+                                                cx="12"
+                                                cy="12"
+                                                r="3"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                            />
+
+                                        </svg>
+                                    )}
+
+                                </button>
+                            </div>
                         </div>
 
+
+                        {/* BOTÓN INICIAR SESIÓN */}
                         <button
                             type="submit"
+                            className={estilos['btnlogin']}
                             disabled={cargando}
-                            className={estilos.boton}
-                            style={{
-                                opacity: cargando ? 0.7 : 1,
-                                cursor: cargando ? 'not-allowed' : 'pointer',
-                            }}
                         >
-                            {cargando ? 'Validando credenciales...' : 'Entrar'}
-                        </button>
-                    </form>
 
-                    {/* Indicador */}
-                    <div className={estilos['pie-prueba']}>
-                        Conectando a:{' '}
-                        <code>{process.env.NEXT_PUBLIC_API_URL}</code>
-                    </div>
-                </div>
-            </main>
+                            {cargando
+                                ? 'Verificando...'
+                                : 'Iniciar Sesión'
+                            }
+
+                        </button>
+
+
+                        {/* REGISTRO */}
+                        <p className={estilos['registro']}>
+
+                            ¿No tienes una cuenta?
+
+                            <Link href="/registro">
+                                Registrarse
+                            </Link>
+                        </p>
+                    </form>
+                </main>
+            </div>
+
+
+            {/* ILUSTRACIÓN DERECHA */}
+            <div className={estilos['ilustracionLateral']}>
+                <Image
+                    src="/img/persona2.png"
+                    alt="Ilustración derecha"
+                    width={300}
+                    height={300}
+                    priority
+                />
+            </div>
         </div>
     );
 }

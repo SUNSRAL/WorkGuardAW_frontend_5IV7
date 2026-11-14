@@ -1,29 +1,9 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image'; 
-import TarjetaNoticia from '../components/TarjetaNoticia';
 import estilos from '../styles/Landing.module.css';
 
 export default function Login() {
-
-    const noticias = [
-        {
-            titulo: "+2000 MiPyMEs registradas",
-            descripcion: "Consulta su información"
-        },
-        {
-            titulo: "Verificamos la ubicación geográfica",
-            descripcion: "Google APIs"
-        },
-        {
-            titulo: "Reportes empresariales",
-            descripcion: "Contribuye a mantener información relevante mediante reportes fundamentados"
-        },
-        {
-            titulo: "Verificamos documentación empresarial",
-            descripcion: "Solicitamos documentación verídica a las MiPyMEs"
-        }
-    ];
 
     useEffect(() => {
         const bolita = document.querySelector(`.${estilos['particula-principal']}`);
@@ -51,8 +31,6 @@ export default function Login() {
         const intervalo = setInterval(crearParticula, 80);
         return () => clearInterval(intervalo);
     }, []);
-
-    const noticiasExtendidas = [...noticias, ...noticias];
 
     return (
         <>
@@ -148,14 +126,6 @@ export default function Login() {
 
                 </section>
             </main>
-
-            <section className={estilos['seccion-noticias']}>
-                <div className={estilos['contenedor-noticias']} id="contenedorNoticias">
-                    {noticiasExtendidas.map((noticia, index) => (
-                        <TarjetaNoticia key={index} noticia={noticia} />
-                    ))}
-                </div>
-            </section>
 
         {/* Sección de Fuentes Oficiales */}
             <div className={estilos['contenedorOrg']}>
