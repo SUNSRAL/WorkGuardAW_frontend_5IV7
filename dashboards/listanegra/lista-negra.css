@@ -1,0 +1,31 @@
+/* Estilos de la página Lista Negra (se usa junto con admindash.css) */
+.ln-volver { background: none; border: none; cursor: pointer; color: #6c5423; font-weight: 600; font-size: 0.95rem; margin-bottom: 10px; align-self: flex-start; }
+.ln-volver:hover { color: #c29b38; }
+.ln-titulo { text-align: center; font-size: 1.6rem; color: #1a202c; margin-bottom: 30px; }
+.ln-mensaje { text-align: center; color: #718096; }
+
+.ln-lista { display: flex; flex-direction: column; align-items: center; gap: 22px; width: 100%; }
+
+.ln-tarjeta {
+    display: flex; align-items: center; gap: 22px;
+    width: 100%; max-width: 520px;
+    background: #f3ece0; border: 1px solid #1a202c; border-radius: 12px;
+    padding: 20px 24px;
+}
+
+/* Logo de la empresa. Mientras no exista logo se muestra la inicial del nombre. */
+.ln-logo {
+    flex: 0 0 auto; width: 76px; height: 76px; border-radius: 14px;
+    background: #ffffff; border: 2px solid #c29b38;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    font-size: 2rem; font-weight: 700; color: #6c5423;
+}
+.ln-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.ln-info { min-width: 0; }
+.ln-nombre { font-size: 1.05rem; font-weight: 700; color: #1a202c; margin-bottom: 8px; overflow-wrap: anywhere; }
+.ln-motivo { font-size: 0.95rem; font-weight: 600; color: #1a202c; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+@media (max-width: 480px) {
+    .ln-tarjeta { flex-direction: column; text-align: center; }
+}

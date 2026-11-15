@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkGuard - Lista Negra de MiPyMEs</title>
+    <link rel="stylesheet" href="/reportes/admin/admindash.css">
+    <link rel="stylesheet" href="/reportes/listanegra/lista-negra.css">
+</head>
+<body>
+
+    <header class="admin-header">
+        <div class="logo-container">
+            <img src="/reportes/img/workguard.png" alt="WorkGuard Logo">
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <button class="ln-volver" onclick="history.back();" title="Regresar">&larr; Volver</button>
+        <h1 class="ln-titulo">Lista Negra de MiPyMEs</h1>
+
+        <p id="mensajeLista" class="ln-mensaje">Cargando lista...</p>
+        <div id="listaNegra" class="ln-lista"></div>
+    </main>
+
+    <footer class="admin-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <img src="/reportes/img/workguard.png" alt="WorkGuard">
+                    <span>WorkGuard</span>
+                </div>
+                <p class="footer-desc">Infraestructura digital para la mitigación del riesgo legal, laboral y fiscal. Empoderando a consultores y MiPyMEs con diagnósticos verídicos y auditoría preventiva.</p>
+                <div class="footer-badge">🔒 Protocolo Anti-Fraude Activo</div>
+            </div>
+            <div class="footer-col">
+                <h4>PLATAFORMA & SOLUCIONES</h4>
+                <ul>
+                    <li><a href="#">Directorio de Empresas Confiables</a></li>
+                    <li><a href="#">Validación Masiva de Constancias</a></li>
+                    <li><a href="#">Dictamen Laboral y REPSE</a></li>
+                    <li><a href="#">Sello de Empresa Responsable</a></li>
+                    <li><a href="#">Calculadora de Riesgo de Contratación</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>GARANTÍAS & COMPLIANCE</h4>
+                <ul>
+                    <li><a href="#">Normativa ISO 27001 Seguridad</a></li>
+                    <li><a href="#">Términos de Consulta Fiscal</a></li>
+                    <li><a href="#">Protección de Datos Personales</a></li>
+                    <li><a href="#">SLA & Disponibilidad Registral</a></li>
+                    <li><a href="#">Canal Ético y Denuncias Anónimas</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>CERTIFICACIONES DE SEGURIDAD</h4>
+                <div class="security-card">
+                    <div class="security-title"><span>🔒</span> Encriptación Bancaria 256-Bit</div>
+                    <p>Todas las constancias de situación fiscal y actas constitutivas se resguardan bajo tokenización irreversible.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/reportes/listanegra/lista-negra.js"></script>
+</body>
+</html>
