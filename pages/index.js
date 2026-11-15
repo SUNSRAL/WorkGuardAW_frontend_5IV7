@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image'; 
+import Footer from '../components/footerlinks'; 
 import estilos from '../styles/Landing.module.css';
+import estilos from '../styles/footerlinks.css'
 
 export default function Login() {
 
@@ -182,6 +184,8 @@ export default function Login() {
 
                 </div>
             </div>
+
+            <Footer/>
         </>
     );
 }

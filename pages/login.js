@@ -100,6 +100,7 @@ export default function Login() {
                     <form
                         onSubmit={manejarLogin}
                         className={estilos['formulario-login']}
+                        autoComplete="off"
                     >
 
                         {/* ENCABEZADO */}
@@ -141,6 +142,7 @@ export default function Login() {
                                     placeholder="Ingresa tu usuario"
                                     value={usuario}
                                     onChange={(e) => setUsuario(e.target.value)}
+                                    autoComplete="off"
                                     required
                                 />
                             </div>
@@ -166,75 +168,76 @@ export default function Login() {
                                     value={contrasena}
                                     onChange={(e) => setContrasena(e.target.value)}
                                     required
+                                    autoComplete="new-password"
                                 />
 
                                 {/* BOTÓN DEL OJO */}
-                                <button
-                                    type="button"
-                                    className={estilos['boton-ojo']}
-                                    onClick={() => setMostrarPass(!mostrarPass)}
-                                    aria-label={
-                                        mostrarPass
-                                            ? "Ocultar contraseña"
-                                            : "Mostrar contraseña"
-                                    }
-                                >
-                                    {mostrarPass ? (
+                                {/* BOTÓN DEL OJO */}
+<button
+    type="button"
+    className={estilos['boton-ojo']}
+    onClick={() => setMostrarPass((anterior) => !anterior)}
+    aria-label={mostrarPass ? "Ocultar contraseña" : "Mostrar contraseña"}
+    aria-pressed={mostrarPass}
+>
+    {mostrarPass ? (
 
-                                        /* OJO CERRADO */
-                                        <svg viewBox="0 0 24 24" fill="none">
+        /* OJO ABIERTO: contraseña visible */
+        <svg viewBox="0 0 24 24" fill="none">
 
-                                            <path
-                                                d="M3 3L21 21"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                            />
-                                            <path
-                                                d="M10.6 10.6A2 2 0 0013.4 13.4"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                            />
+            <path
+                d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
+                stroke="currentColor"
+                strokeWidth="2"
+            />
 
-                                            <path
-                                                d="M9.9 5.2A10.9 10.9 0 0112 5c5 0 9 4 10 7-0.4 1.2-1.3 2.4-2.5 3.4"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                            />
+            <circle
+                cx="12"
+                cy="12"
+                r="3"
+                stroke="currentColor"
+                strokeWidth="2"
+            />
 
-                                            <path
-                                                d="M6.2 6.2C4.1 7.4 2.6 9.4 2 12c1 3 5 7 10 7 1.2 0 2.3-.2 3.3-.6"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                            />
-                                        </svg>
+        </svg>
 
-                                    ) : (
+    ) : (
 
-                                        /* OJO ABIERTO */
-                                        <svg viewBox="0 0 24 24" fill="none">
+        /* OJO CERRADO: contraseña oculta */
+        <svg viewBox="0 0 24 24" fill="none">
 
-                                            <path
-                                                d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                            />
+            <path
+                d="M3 3L21 21"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+            />
 
-                                            <circle
-                                                cx="12"
-                                                cy="12"
-                                                r="3"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                            />
+            <path
+                d="M10.6 10.6A2 2 0 0013.4 13.4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+            />
 
-                                        </svg>
-                                    )}
+            <path
+                d="M9.9 5.2A10.9 10.9 0 0112 5c5 0 9 4 10 7-0.4 1.2-1.3 2.4-2.5 3.4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+            />
 
-                                </button>
+            <path
+                d="M6.2 6.2C4.1 7.4 2.6 9.4 2 12c1 3 5 7 10 7 1.2 0 2.3-.2 3.3-.6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+            />
+
+        </svg>
+
+    )}
+</button>
                             </div>
                         </div>
 

@@ -12,6 +12,10 @@
     position: relative;
     overflow: hidden;
     background-color: #FFFFFF;
+    background-image: url('../public/img/fondo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     padding: 40px;
 }
 
@@ -131,7 +135,47 @@
 }
 
 .campo-input:focus-within input {
-    color: #0B162C;
+    color: #0F172A;
+}
+
+.campo-input input::placeholder{
+    color: #64748B;
+}
+
+
+/* AUTOCOMPLETADO DEL NAVEGADOR */
+.campo-input input:-webkit-autofill,
+.campo-input input:-webkit-autofill:hover,
+.campo-input input:-webkit-autofill:focus,
+.campo-input input:-webkit-autofill:active {
+
+    -webkit-text-fill-color: #DEE2EA !important;
+
+    caret-color: #DEE2EA;
+
+    -webkit-box-shadow: 0 0 0 1000px #1E293B inset !important;
+
+    box-shadow: 0 0 0 1000px #1E293B inset !important;
+
+    background-color: transparent !important;
+
+    transition: background-color 99999s ease-in-out 0s;
+}
+
+/* AUTOCOMPLETADO EN NAVEGADORES COMPATIBLES */
+.campo-input input:autofill {
+
+    color: #DEE2EA !important;
+
+    caret-color: #DEE2EA;
+
+    box-shadow: 0 0 0 1000px #1E293B inset !important;
+}
+
+/*Ocultar ojo del navegador*/
+.campo-input input::-ms-reveal,
+.campo-input input::-ms-clear{
+    display: none;
 }
 
 /* ICONOS */
