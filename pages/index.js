@@ -1,9 +1,11 @@
+
+//PAGINA PRINCIPAL PARA TODOS LOS USUARIOS
+
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image'; 
-import Footer from '../components/footerlinks'; 
+import Footer from '../components/footerlinks.js'; 
 import estilos from '../styles/Landing.module.css';
-import estilos from '../styles/footerlinks.css'
 
 export default function Login() {
 
@@ -182,10 +184,33 @@ export default function Login() {
                         </div>
                     </div>
 
+                    {/* Tarjeta 3 (Secretaria de trabajo y prevencion social) */}
+                    <div className={estilos['tarjetaOrgItem']}>
+                        <div className={estilos['tarjetaInner']}>
+                            {/* Frente */}
+                            <div className={estilos['tarjetaFrente']}>
+                                <Image 
+                                    src="/img/STPS.png" 
+                                    alt="Secretaria de Trabajo y Prevención Social" 
+                                    width={160} 
+                                    height={160} 
+                                    className={estilos['imagenOrg']}
+                                />
+                                <p style={{ marginTop: '15px', fontWeight: '600' }}>Secretaría de Trabajo y Prevención Social</p>
+                            </div>
+                            {/* Reverso (Texto que aparece al girar) */}
+                            <div className={estilos['tarjetaReverso']}>
+                                <p className={estilos['textoOrg']}>
+                                    Apoyándonos en el cumplimiento de los derechos laborales, fomentando el empleo digno y mantener el equilibrio entre trabajadores y empleadores.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <Footer/>
+            <Footer />
         </>
     );
 }

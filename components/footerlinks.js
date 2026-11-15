@@ -1,126 +1,115 @@
-import Link from 'next/link'; 
-import Image from 'next/image'; 
-import estilos from '/footerlinks.module.css'; 
+import Link from 'next/link';
+import Image from 'next/image';
+import estilos from './footerlinks.module.css';
 
-export default function Footer(){
-    return(
-        <footer className={estilos[footer]}>
-            <div className={estilos[contenidoFooter]}>
-                {/*info*/}
-                <div className={estilos[informacion]}>
+export default function Footer() {
+    return (
+        <footer className={estilos.principalfooter}>
+            <div className={estilos.contenidoFooter}>
+                {/* Info */}
+                <div className={estilos.informacion}>
                     <Image
-                       src="/img/Logoworkguard.png"
-                       alt='Logo'
-                       width={30}
-                       height={30}
-                    ></Image>
-
-                    <p>WorkGuard centraliza y valida información crítica sobre empresas, ofreciendo a los consultores una fuente de datos rigurosa, transparente y en tiempo real. Minimiza el riesgo en tus análisis y acelera la investigación corporativa con total confianza.</p>
+                        src="/img/Logoworkguard.png"
+                        alt="Logo WorkGuard"
+                        width={30}
+                        height={30}
+                    />
+                    <p>
+                        WorkGuard centraliza y valida información crítica sobre empresas, ofreciendo a los consultores una fuente de datos rigurosa, transparente y en tiempo real. Minimiza el riesgo en tus análisis y acelera la investigación corporativa con total confianza.
+                    </p>
                 </div>
 
-                {/*enlaces*/}
-                  {/*Redes*/}
-
-                <div className={estilos[redesSociales]}>
-                    {/*INSTAGRAM*/}
-                    <a
-                    href=""
-                    target="_blank">rel
-                    rel="noopener noreferrer"
-                        <Image>
+                {/* Redes Sociales */}
+                <div className={estilos.redesSociales}>
+                    {/* Instagram */}
+                    <a href="#" target="_blank" rel="noopener noreferrer">
+                        <Image
                             src="/img/instagram.png"
                             alt="Instagram"
-                            width={30}
-                            height={30}
-                        </Image>
+                            width={20}
+                            height={20}
+                        />
                     </a>
 
-                    {/* FACE*/}
-                    <a
-                    href=""
-                    target="_blank">rel
-                    rel="noopener noreferrer"
-                        <Image>
+                    {/* Facebook */}
+                    <a href="#" target="_blank" rel="noopener noreferrer">
+                        <Image
                             src="/img/facebook.png"
                             alt="Facebook"
-                            width={30}
-                            height={30}
-                        </Image>
+                            width={20}
+                            height={20}
+                        />
                     </a>
 
-                    {/*x */}
-                    <a
-                    href=""
-                    target="_blank">rel
-                    rel="noopener noreferrer"
-                        <Image>
+                    {/* X */}
+                    <a href="#" target="_blank" rel="noopener noreferrer">
+                        <Image
                             src="/img/x.png"
                             alt="X"
-                            width={30}
-                            height={30}
-                        </Image>
+                            width={20}
+                            height={20}
+                        />
                     </a>
 
-                    {/*Youtube */}
-                    <a
-                    href=""
-                    target="_blank">rel
-                    rel="noopener noreferrer"
-                        <Image>
+                    {/* YouTube */}
+                    <a href="#" target="_blank" rel="noopener noreferrer">
+                        <Image
                             src="/img/youtube.png"
-                            alt="Youtube"
-                            width={30}
-                            height={30}
-                        </Image>
+                            alt="YouTube"
+                            width={20}
+                            height={20}
+                        />
                     </a>
+                </div>
+
+                {/* Logo de la empresa/desarrollador dentro de la primera columna */}
+                <div className={estilos.empresa}>
+                    <Image
+                        src="/img/kairosDev.png"
+                        alt="KairósDev"
+                        width={100}
+                        height={30}
+                    />
                 </div>
             </div>
 
-            <div className={estilos[empresa]}>
-                <Image>
-                    src="/img/kairosDev.png"
-                    alt="KairósDev"
-                    width={30}
-                    height={30}
-                </Image>
-            </div>
-
-            {/*Columna */}
-            <div className={estilos[columna]}>
-                <h3 className={estilos[columnaTit]}>Servicios</h3>
-                <ul className={estilos[columnalinks]}>
-                    <li><a href="">Consulta de empresas</a></li>
-                    <li><a href="">Registro de empresas</a></li>
-                    <li><a href="">Reportar una empresa</a></li>
-                    <li><a href="">Preguntas frecuentes</a></li>
+            {/* Columna 2: Servicios */}
+            <div className={estilos.columna}>
+                <h3 className={estilos.columnaTit}>Servicios</h3>
+                <ul className={estilos.columnalinks}>
+                    <li><Link href="/consulta">Consulta de empresas</Link></li>
+                    <li><Link href="/registro">Registro de empresas</Link></li>
+                    <li><Link href="/reportar">Reportar una empresa</Link></li>
+                    <li><Link href="/faq">Preguntas frecuentes</Link></li>
                 </ul>
             </div>
 
-            <div className={estilos[columna]}>
-                <h3 className={estilos[columnaTit]}>Información Legal</h3>
-                <ul className={estilos[columnaLink]}>
-                    <li><a href="">Aviso de Privacidad</a></li>
-                    <li><a href="">Términos y condiciones</a></li>
-                    <li><a href="">Política de uso</a></li>
-                    <li><a href="">Contacto y soporte</a></li>
+            {/* Columna 3: Información Legal */}
+            <div className={estilos.columna}>
+                <h3 className={estilos.columnaTit}>Información Legal</h3>
+                <ul className={estilos.columnaLink}>
+                    <li><Link href="/privacidad">Aviso de Privacidad</Link></li>
+                    <li><Link href="/terminos">Términos y condiciones</Link></li>
+                    <li><Link href="/politica-uso">Política de uso</Link></li>
+                    <li><Link href="/soporte">Contacto y soporte</Link></li>
                 </ul>
             </div>
 
-            <div className={estilos[columna]}>
-                <h3 className={estilos[columnaTit]}>Compañía</h3>
-                <ul className={estilos[columnaLink]}>
-                    <li><a href="">¿Quiénes somos?</a></li>
-                    <li><a href="">Misión</a></li>
-                    <li><a href="">Visión</a></li>
-                    <li><a href="">Organizaciones que nos respaldan</a></li>
+            {/* Columna 4: Compañía */}
+            <div className={estilos.columna}>
+                <h3 className={estilos.columnaTit}>Compañía</h3>
+                <ul className={estilos.columnaLink}>
+                    <li><Link href="/nosotros">¿Quiénes somos?</Link></li>
+                    <li><Link href="/mision">Misión</Link></li>
+                    <li><Link href="/vision">Visión</Link></li>
+                    <li><Link href="/respaldo">Organizaciones que nos respaldan</Link></li>
                 </ul>
             </div>
 
-             {/* DERECHOS RESERVADOS */}
-            <div className={estilos[derechos]}>
+            {/* Derechos Reservados */}
+            <div className={estilos.derechos}>
                 © 2026 WorkGuard. Todos los derechos reservados.
             </div>
-            
         </footer>
-    )
+    );
 }

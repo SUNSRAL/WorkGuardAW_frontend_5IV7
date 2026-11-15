@@ -1,4 +1,4 @@
-import estilos from '../styles/Cargando.module.css'; 
+import estilos from '/cargando.module.css'; 
 
 export default function Cargando({ texto = "Cargando información..." }) {
     return (

@@ -1,17 +1,17 @@
 
-.footer {
-  background-color: #0b192c; /* Azul oscuro corporativo */
+.principalfooter {
+  background-color: #0b192c; 
   color: #ffffff;
   padding: 60px 40px;
   font-family: sans-serif;
   display: grid;
-  grid-template-columns: 1.6fr repeat(3, 1fr); /* 4 columnas principales (La primera es más ancha) */
+  grid-template-columns: 1.6fr repeat(3, 1fr); 
   gap: 40px;
   align-items: start;
 }
 
 .contenidoFooter {
-  grid-column: 1 / 2; /* Ocupa la primera columna del grid */
+  grid-column: 1 / 2; 
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -25,7 +25,7 @@
 
 .informacion p {
   font-size: 14px;
-  color: #cbd5e0;
+  color: #FFFFFF;
   line-height: 1.6;
   margin: 0;
 }
@@ -54,7 +54,6 @@
   background-color: #f0f0f0;
 }
 
-/* Logo de la empresa/desarrollador al fondo de la primera columna */
 .empresa {
   margin-top: 15px;
 }
@@ -78,12 +77,12 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Espaciado uniforme entre los enlaces */
+  gap: 12px; 
 }
 
 .columnalinks li a,
 .columnaLink li a {
-  color: #a0aec0; /* Tono grisáceo elegante para los enlaces */
+  color: #ffffff; /* Tono grisáceo elegante para los enlaces */
   text-decoration: none;
   font-size: 14px;
   transition: color 0.2s ease;
@@ -91,7 +90,7 @@
 
 .columnalinks li a:hover,
 .columnaLink li a:hover {
-  color: #ffffff; /* Se aclaran al pasar el cursor */
+  color: #afbde7; /* Se aclaran al pasar el cursor */
 }
 
 .derechos {
@@ -101,12 +100,14 @@
   font-size: 13px;
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Una línea divisoria sutil arriba */
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Una línea divisoria*/
 }
 
+
+/*Adpatacion a celulares*/
 @media (max-width: 900px) {
   .footer {
-    grid-template-columns: repeat(2, 1fr); /* Pasa a 2 columnas en pantallas medianas */
+    grid-template-columns: repeat(2, 1fr); /* Pasa a COLUMNAS en pantallas medianas */
   }
 }
 

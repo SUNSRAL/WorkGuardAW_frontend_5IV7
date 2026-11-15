@@ -386,27 +386,6 @@
     opacity: 0.98;
     animation: floatReverse 3s ease-in-out infinite;
 }
-
-/*Seccion noticias*/ 
-.seccion-noticias{
-    width: 100%;
-    overflow: hidden;
-    background-color: white;
-    position: relative;
-    padding: 10px 0;
-}
-
-.contenedor-noticias{
-    display: flex;
-    gap:10px;
-    width: max-content;
-    animation: moverNoticias 18s linear infinite;
-}  
-
- @keyframes moverNoticias {
-    from{ transform: translateX(0); }
-    to{ transform: translateX(-50%); }
-}
     
 .imagen-documento{
     position: absolute;
@@ -441,12 +420,13 @@
 
 .contenedorImagenes {
     display: flex;
-    justify-content: center; 
-    align-items: center; /* Mantiene ambas tarjetas niveladas arriba */
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch; /*tarjetas niveladas arriba */
     width: 100%;
-    max-width: 900px;
-    gap: 60px;
-    flex-wrap: wrap;
+    max-width: 1100px;
+    gap: 40px;
+    flex-wrap: nowrap;
 }
 
 /*Tarjeta volteada*/
@@ -497,8 +477,8 @@
 }
 
 .tarjetaReverso{
-    background-color: #94A3B8;
-    color: #dee2ea;
+    background-color: #334155;
+    color: #ffffff;
     transform: rotateY(180deg);
     text-align: center;
 }
