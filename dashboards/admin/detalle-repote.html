@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkGuard - Detalle del Reporte</title>
+    <link rel="stylesheet" href="/reportes/admin/admindash.css">
+    <link rel="stylesheet" href="/reportes/admin/detalle-reporte.css">
+</head>
+<body>
+
+    <header class="admin-header">
+        <div class="logo-container">
+            <img src="/reportes/img/workguard.png" alt="WorkGuard Logo">
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="reports-container">
+            <a href="/admin/reportes" class="detalle-volver">&larr; Volver al Centro de Reportes</a>
+
+            <p id="mensajeDetalle" class="report-text">Cargando reporte...</p>
+
+            <div class="detalle-card" id="detalleCard" hidden>
+                <div class="detalle-titulo">
+                    <h1 id="detalleTitulo">Reporte</h1>
+                    <span class="detalle-estado" id="detalleEstado"></span>
+                </div>
+
+                <div class="detalle-grid">
+                    <div class="detalle-campo"><span>Empresa reportada</span><p id="dEmpresa"></p></div>
+                    <div class="detalle-campo"><span>Tipo de persona</span><p id="dTipoPersona"></p></div>
+                    <div class="detalle-campo"><span>Número de trabajadores</span><p id="dTrabajadores"></p></div>
+                    <div class="detalle-campo"><span>Motivo</span><p id="dMotivo"></p></div>
+                    <div class="detalle-campo"><span>Enviado por</span><p id="dConsultor"></p></div>
+                    <div class="detalle-campo"><span>Correo del consultor</span><p id="dCorreo"></p></div>
+                    <div class="detalle-campo"><span>Fecha del reporte</span><p id="dFecha"></p></div>
+                    <div class="detalle-campo"><span>Fecha de revisión</span><p id="dRevision"></p></div>
+                </div>
+
+                <div class="detalle-descripcion">
+                    <span>Descripción</span>
+                    <p id="dDescripcion"></p>
+                </div>
+            </div>
+        </div>
+
+          <!-- LISTA NEGRA -->
+                <div class="ln-bloque" id="bloqueListaNegra" hidden>
+                    <!-- Reporte pendiente: el administrador puede enviar la MiPyME a la lista negra -->
+                    <div id="accionListaNegra" hidden>
+                        <h2>Enviar a lista negra</h2>
+                        <button type="button" class="ln-btn ln-btn-peligro" id="btnAbrirListaNegra">Enviar MiPyME a lista negra</button>
+                        <div id="formListaNegra" hidden>
+                            <p class="report-text">Escribe el motivo por el cual se determinó que esta MiPyME no es confiable. Se mostrará en la lista negra.</p>
+                            <textarea id="motivoListaNegra" maxlength="1000" placeholder="Motivo de la decisión..."></textarea>
+                            <div class="ln-botones">
+                                <button type="button" class="ln-btn ln-btn-peligro" id="btnConfirmarListaNegra">Confirmar y enviar</button>
+                                <button type="button" class="ln-btn ln-btn-claro" id="btnCancelarListaNegra">Cancelar</button>
+                            </div>
+                        </div>
+                        <p class="ln-aviso" id="avisoListaNegra"></p>
+                    </div>
+                    <!-- Reporte ya revisado y enviado a lista negra -->
+                    <div id="motivoGuardado" hidden>
+                        <h2>Motivo de lista negra</h2>
+                        <p class="ln-motivo-guardado" id="dMotivoListaNegra"></p>
+                    </div>
+                </div>
+    </main>
+
+    <script src="/reportes/admin/detalle-reporte.js"></script>
+</body>
+</html>
