@@ -666,3 +666,29 @@ appContainer.innerHTML = `
                   Abrir ubicación en mapa <i data-lucide="external-link" size="13"></i>
                 </a>
               </div>
+
+                            <div class="details-grid">
+              <div class="detail-card">
+                <div>
+                  <div class="block-label">
+                    <i data-lucide="map-pin" size="14"></i> Domicilio Operativo
+                  </div>
+                  <p class="detail-value" id="tvUbicacionEmpresa"></p>
+                </div>
+                <a id="mapLink" href="#" target="_blank" class="btn-map-action">
+                  Abrir ubicación en mapa <i data-lucide="external-link" size="13"></i>
+                </a>
+                <div class="detail-card">
+                <div>
+                  <div class="block-label">
+                    <i data-lucide="building-2" size="14"></i> Datos Operativos
+                  </div>
+                  <p class="detail-value" id="tvDatosExtra"></p>
+                </div>
+                <span style="font-size: 11px; color: var(--green); font-weight: 600;">
+                  ● Sin reportes negativos activos
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>`;
