@@ -96,33 +96,7 @@ style.textContent=`
       }
         .brand span { color: var(--gold); }
 
-      .demo-switcher {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        padding: 5px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        color: var(--text-muted);
-      }
-
-      .demo-switcher select {
-        background: transparent;
-        border: none;
-        color: var(--gold);
-        font-weight: 700;
-        font-size: 12px;
-        outline: none;
-        cursor: pointer;
-      }
-
-      .demo-switcher select option {
-        background: var(--bg-panel);
-        color: var(--text-main);
-      }
-
+    
       .nav-right {
         display: flex;
         align-items: center;
@@ -531,6 +505,115 @@ style.textContent=`
 
       .usuario-name {
         font-size: 13px;
+        font-weight: 700;
+      }
+
+
+      .comentariostiempo {
+        font-size: 11px;
+        color: var(--text-dim);
+      }
+
+      .comentario-body {
+        font-size: 13.5px;
+        color: #E2E8F0;
+        line-height: 1.45;
+        margin-bottom: 8px;
+      }
+
+      .comentario-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .like-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-dim);
+        font-size: 11.5px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .like-btn:hover, .like-btn.active {
+        color: var(--gold);
+      }
+
+      .comentario-composer {
+        display: flex;
+        gap: 10px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+      }
+        .comentario-composer input {
+        flex: 1;
+        background: var(--bg-card);
+        border: 1px solid var(--border-active);
+        color: var(--text-main);
+        padding: 11px 16px;
+        border-radius: 24px;
+        font-size: 13.5px;
+        outline: none;
+        transition: 0.2s;
+      }
+
+      .comentario-composer input:focus {
+        border-color: var(--gold);
+      }
+
+      .btn-publicar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--gold);
+        color: #060911;
+        border: none;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: 0.2s;
+      }
+
+      .btn-publicar:hover {
+        background: var(--gold-light);
+        transform: scale(1.05);
+      }
+
+      /* MODAL Y TOAST */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(4px);
+        display: none;
+        place-items: center;
+        z-index: 100;
+        padding: 16px;
+      }
+
+      .modal-overlay.active { display: grid; }
+
+      .modal-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border-active);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 440px;
+        padding: 24px;
+      }
+        .modal-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        color: var(--red);
+        font-size: 17px;
         font-weight: 700;
       }
       `;
