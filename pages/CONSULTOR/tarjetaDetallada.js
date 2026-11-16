@@ -17,8 +17,7 @@ function iniciardetalleWorkguard(){
 const style = document.createElement("style");
 style.textContent=`
       :root {
-        background-color: rgba(11, 22, 44, 0.9); /* Azul oscuro de WorkGuard */
-        --bg-base: #060911;
+        --bg-base: rgba(11, 22, 44, 0.9);
         --bg-panel: #0D121E;
         --bg-card: #141B2D;
         --bg-hover: #1C253D;
@@ -68,8 +67,96 @@ style.textContent=`
         display: flex;
         align-items: center;
         gap: 20px;
+      }
+        //diseño botones 
+      .btn-regresar{
+      display: inline-flex;
+      gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+        color: var(--text-main);
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+        .btn-regresar:hover{
+        border-color: var(--gold);
+        color: var(--gold)
+        }
+        .brand {
+        font-size: 20px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.4px;
+      }
+        .brand span { color: var(--gold); }
 
-      }`;
+      .demo-switcher {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .demo-switcher select {
+        background: transparent;
+        border: none;
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 12px;
+        outline: none;
+        cursor: pointer;
+      }
+
+      .demo-switcher select option {
+        background: var(--bg-panel);
+        color: var(--text-main);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+        .nav-item {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 6px 10px;
+        border-radius: 6px;
+        transition: 0.2s;
+      }
+
+      .nav-item:hover {
+        color: var(--text-main);
+        background: var(--bg-card);
+      }
+
+      /* WORKSPACE */
+      .workspace {
+        flex: 1;
+        max-width: 1440px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px 28px;
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        gap: 22px;
+        align-items: stretch;
+      }
+
+      `;
     document.head.appendChild(style);
 }
       
