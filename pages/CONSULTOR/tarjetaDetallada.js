@@ -585,38 +585,84 @@ style.textContent=`
         transform: scale(1.05);
       }
 
-      /* MODAL Y TOAST */
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.78);
-        backdrop-filter: blur(4px);
-        display: none;
-        place-items: center;
-        z-index: 100;
-        padding: 16px;
-      }
-
-      .modal-overlay.active { display: grid; }
-
-      .modal-card {
-        background: var(--bg-panel);
-        border: 1px solid var(--border-active);
-        border-radius: 16px;
-        width: 100%;
-        max-width: 440px;
-        padding: 24px;
-      }
-        .modal-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-        color: var(--red);
-        font-size: 17px;
-        font-weight: 700;
-      }
       `;
     document.head.appendChild(style);
+
 }
-      
+    
+const appContainer = document.getElementById("app")|| document.body;
+
+appContainer.innerHTML = `
+      <header class="navbar">
+        <div class="nav-left">
+          <button class="btn-back" id="btnBack">
+            <i data-lucide="arrow-left" size="16"></i> Volver
+          </button>
+          <div class="brand">
+            <i data-lucide="shield-check" style="color: var(--gold);"></i>
+            Work<span>Guard</span>
+          </div>
+        </div>
+
+        <nav class="nav-right">
+          <a href="#" class="nav-item">Explorar</a>
+          <a href="#" class="nav-item">Mis Favoritos</a>
+          <a href="#" class="nav-item">Perfil</a>
+        </nav>
+      </header>
+      <main class="workspace">
+        <section class="company-sheet">
+          <div class="gallery-box">
+            <img id="mainImg" src="" alt="Foto empresa">
+            <div class="gallery-gradient"></div>
+            <div class="gallery-controls">
+              <button class="icon-circle-btn" id="prevPhoto" title="Foto anterior">
+                <i data-lucide="chevron-left" size="18"></i>
+              </button>
+              <button class="icon-circle-btn" id="nextPhoto" title="Siguiente foto">
+                <i data-lucide="chevron-right" size="18"></i>
+              </button>
+            </div>
+            <div class="floating-thumbs" id="thumbsRow"></div>
+          </div>
+
+          <div class="sheet-header">
+            <div class="title-group">
+              <h1 id="tvNombreEmpresa"></h1>
+              <div class="badges-row">
+                <span class="badge badge-verified">
+                  <i data-lucide="check-circle-2" size="13"></i> Empresa Verificada
+                </span>
+                <span class="badge badge-category" id="tvCategoriaEmpresa"></span>
+              </div>
+            </div>
+            <div class="sheet-header">
+            <div class="title-group">
+              <h1 id="tvNombreEmpresa"></h1>
+              <div class="badges-row">
+                <span class="badge badge-verified">
+                  <i data-lucide="check-circle-2" size="13"></i> Empresa Verificada
+                </span>
+                <span class="badge badge-category" id="tvCategoriaEmpresa"></span>
+              </div>
+            </div>
+            <div class="sheet-body">
+            <div class="description-box">
+              <div class="block-label">
+                <i data-lucide="file-text" size="14"></i> Descripción de la empresa
+              </div>
+              <p class="description-text" id="tvDescripcionEmpresa"></p>
+            </div>
+
+            <div class="details-grid">
+              <div class="detail-card">
+                <div>
+                  <div class="block-label">
+                    <i data-lucide="map-pin" size="14"></i> Domicilio Operativo
+                  </div>
+                  <p class="detail-value" id="tvUbicacionEmpresa"></p>
+                </div>
+                <a id="mapLink" href="#" target="_blank" class="btn-map-action">
+                  Abrir ubicación en mapa <i data-lucide="external-link" size="13"></i>
+                </a>
+              </div>
