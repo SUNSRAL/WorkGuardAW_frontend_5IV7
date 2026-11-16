@@ -411,6 +411,128 @@ style.textContent=`
         background: var(--gold-tint);
       }
 
+      // EL OTRRO LADO DON ESTAN LOS COMENTARIOS
+
+      .columna-comentarios{
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 102px);
+        min-height: 540px;
+      }
+
+      .ecabezado-comentarios {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+        .titulo-comentarios {
+        font-size: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+        .badge-count {
+        background: var(--gold-tint);
+        color: var(--gold);
+        padding: 2px 9px;
+        border-radius: 99px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .filtros-comentarios {
+        display: flex;
+        gap: 6px;
+      }
+
+      .boton-filtroComentarios {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .boton-filtroComentarios.active, .boton-filtroComentarios:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+        .disclaimer-note {
+        font-size: 11.5px;
+        color: var(--text-dim);
+        background: rgba(20, 27, 45, 0.6);
+        border-left: 2px solid var(--gold);
+        padding: 8px 12px;
+        border-radius: 0 6px 6px 0;
+        margin-bottom: 14px;
+      }
+        .scrollcomentarios {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-right: 6px;
+        margin-bottom: 14px;
+      }
+        .scrollcomentarios::-webkit-scrollbar { width: 5px; }
+        .scrollcomentarios::-webkit-scrollbar-thumb {
+        background: var(--border-active);
+        border-radius: 4px;
+      }
+
+      .comentarios-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 13px 15px;
+        transition: border-color 0.2s;
+      }
+
+      .comentarios-item:hover {
+        border-color: var(--border-active);
+      }
+
+      .comentarios-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+
+      .usuarioinfo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .mini-avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--bg-hover);
+        border: 1px solid var(--border-active);
+        color: var(--gold);
+        font-size: 11px;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+      }
+
+      .usuario-name {
+        font-size: 13px;
+        font-weight: 700;
+      }
       `;
     document.head.appendChild(style);
 }
