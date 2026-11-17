@@ -6,13 +6,6 @@ import Footer from "../components/footerlinks";
 export default function Roles() {
   return (
     <>
-      <div className={estilos['fondoOndas']}>
-  <div className={`${estilos['onda']} ${estilos['onda1']}`}></div>
-  <div className={`${estilos['onda']} ${estilos['onda2']}`}></div>
-  <div className={`${estilos['onda']} ${estilos['onda3']}`}></div>
-</div>
-
-      {/* LOGO */}
       <div className={estilos["logoEsquina"]}>
         <Link href="/">
           <Image
