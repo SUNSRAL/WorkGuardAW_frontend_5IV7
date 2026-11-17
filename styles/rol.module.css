@@ -1,5 +1,5 @@
 .contenedorbtnrol {
-    margin-bottom: 100px;
+    margin-bottom: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,7 +7,7 @@
     min-height: 70vh;
 }
 
-/* LOGO */
+
 .logoEsquina {
     position: absolute;
     top: 30px;
@@ -38,18 +38,18 @@ color: #1B263B;
     transition: transform 0.3s ease, color 0.3s ease;
 }
 
-/* Imagen */
+
 .btnOpcion img {
     object-fit: contain;
 }
 
-/* Efectos al pasar el cursor */
+
 .btnOpcion:hover {
     transform: translateY(-10px);
     color: #E18821;
 }
 
-/* Título */
+
 .btnOpcion span {
     font-size: 20px;
     font-weight: 650;

@@ -71,10 +71,10 @@ export default function Login() {
 
     <>
     <div className={estilos["paginaCompleta"]}>
-      {/* COMPONENTE DE CARGA */}
+      {/* carga */}
       {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
 
-      {/* LOGO */}
+      {/* logo */}
       <div className={estilos["logoEsquina"]}>
         <Link href="/">
           <Image
@@ -86,7 +86,7 @@ export default function Login() {
         </Link>
       </div>
 
-      {/* ILUSTRACIÓN IZQUIERDA */}
+
       <div className={estilos["ilustracionLateral"]}>
         <Image
           src="/img/persona1.png"
@@ -97,7 +97,6 @@ export default function Login() {
         />
       </div>
 
-      {/* FORMULARIO CENTRAL */}
       <div className={estilos["contenedorCentral"]}>
         <main className={estilos["contenedorCentrado"]}>
           <form
@@ -105,12 +104,11 @@ export default function Login() {
             className={estilos["formulario-login"]}
             autoComplete="off"
           >
-            {/* ENCABEZADO */}
+
             <div className={estilos["encabezado-formulario"]}>
               <h2>Iniciar Sesión</h2>
             </div>
 
-            {/* MENSAJE DE ESTADO */}
             {estado.mensaje && (
               <p
                 className={estilos["mensaje-estado"]}
@@ -122,7 +120,6 @@ export default function Login() {
               </p>
             )}
 
-            {/* CAMPO USUARIO */}
             <div className={estilos["campo"]}>
               <label htmlFor="usuario">Usuario</label>
 
@@ -146,7 +143,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* CAMPO CONTRASEÑA */}
             <div className={estilos["campo"]}>
               <label htmlFor="contrasena">Contraseña</label>
               <div className={estilos["campo-input"]}>
@@ -167,8 +163,7 @@ export default function Login() {
                   autoComplete="new-password"
                 />
 
-                {/* BOTÓN DEL OJO */}
-                {/* BOTÓN DEL OJO */}
+                {/* ojito */}
                 <button
                   type="button"
                   className={estilos["boton-ojo"]}
@@ -179,7 +174,7 @@ export default function Login() {
                   aria-pressed={mostrarPass}
                 >
                   {mostrarPass ? (
-                    /* OJO ABIERTO: contraseña visible */
+                    /* contraseña visible */
                     <svg viewBox="0 0 24 24" fill="none">
                       <path
                         d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
@@ -196,7 +191,7 @@ export default function Login() {
                       />
                     </svg>
                   ) : (
-                    /* OJO CERRADO: contraseña oculta */
+                    /* contraseña oculta */
                     <svg viewBox="0 0 24 24" fill="none">
                       <path
                         d="M3 3L21 21"
@@ -231,7 +226,7 @@ export default function Login() {
               </div>
             </div>
 
-            {/* BOTÓN INICIAR SESIÓN */}
+            {/* Iniciar sesión */}
             <button
               type="submit"
               className={estilos["btnlogin"]}
@@ -240,7 +235,7 @@ export default function Login() {
               {cargando ? "Verificando..." : "Iniciar Sesión"}
             </button>
 
-            {/* REGISTRO */}
+            {/* Registro */}
             <p className={estilos["registro"]}>
               ¿No tienes una cuenta?
               <Link href="/rol">Registrarse</Link>
@@ -249,7 +244,6 @@ export default function Login() {
         </main>
       </div>
 
-      {/* ILUSTRACIÓN DERECHA */}
       <div className={estilos["ilustracionLateral"]}>
         <Image
           src="/img/persona2.png"
