@@ -833,3 +833,12 @@ appContainer.innerHTML = `
         renderComments();
       });
     });
+
+     // Botón volver
+    document.getElementById("btnBack").addEventListener("click", () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        showToast("Regresando al listado principal...");
+      }
+    });
