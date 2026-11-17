@@ -691,4 +691,145 @@ appContainer.innerHTML = `
               </div>
             </div>
           </div>
+
+          
         </section>`;
+
+         let currentIdx = 0;
+    let currentPhotoIdx = 0;
+    let currentSort = "recent";
+
+    function loadCompany(index) {
+      currentIdx = index;
+      currentPhotoIdx = 0;
+      const emp = empresasDB[index];
+
+      document.getElementById("tvNombreEmpresa").textContent = emp.nombre;
+      document.getElementById("tvCategoriaEmpresa").innerHTML = `<i data-lucide="briefcase" size="13"></i> ${emp.categoria}`;
+      document.getElementById("tvDescripcionEmpresa").textContent = emp.descripcion;
+      document.getElementById("tvUbicacionEmpresa").textContent = emp.ubicacion;
+      document.getElementById("tvDatosExtra").innerHTML = emp.extra;
+      document.getElementById("mapLink").href = `https://maps.google.com/?q=${encodeURIComponent(emp.ubicacion)}`;
+
+      updateFavoriteUI(emp.favorito);
+      renderGallery();
+      renderComments();
+      lucide.createIcons();
+    }
+
+    function renderGallery() {
+      const emp = empresasDB[currentIdx];
+      document.getElementById("mainImg").src = emp.fotos[currentPhotoIdx];
+      const thumbsRow = document.getElementById("thumbsRow");
+      thumbsRow.innerHTML = "";
+
+      emp.fotos.forEach((url, idx) => {
+        const thumb = document.createElement("div");
+        thumb.className = `mini-thumb ${idx === currentPhotoIdx ? "active" : ""}`;
+        thumb.innerHTML = `<img src="${url}" alt="Vista ${idx + 1}">`;
+        thumb.addEventListener("click", () => {
+          currentPhotoIdx = idx;
+          renderGallery();
+        });
+        thumbsRow.appendChild(thumb);
+      });
+    }
+
+    document.getElementById("prevPhoto").addEventListener("click", () => {
+      const total = empresasDB[currentIdx].fotos.length;
+      currentPhotoIdx = (currentPhotoIdx - 1 + total) % total;
+      renderGallery();
+    });
+
+    document.getElementById("nextPhoto").addEventListener("click", () => {
+      const total = empresasDB[currentIdx].fotos.length;
+      currentPhotoIdx = (currentPhotoIdx + 1) % total;
+      renderGallery();
+    });
+
+    function updateFavoriteUI(isFav) {
+      const btn = document.getElementById("btnFavorite");
+      const txt = document.getElementById("favText");
+      btn.classList.toggle("active", isFav);
+      txt.textContent = isFav ? "Guardado" : "Guardar";
+    }
+
+    document.getElementById("btnFavorite").addEventListener("click", () => {
+      const emp = empresasDB[currentIdx];
+      emp.favorito = !emp.favorito;
+      updateFavoriteUI(emp.favorito);
+      showToast(emp.favorito ? "Añadido a tus favoritos" : "Eliminado de favoritos");
+    });
+
+    function renderComments() {
+      const emp = empresasDB[currentIdx];
+      const list = [...emp.comentarios];
+
+      if (currentSort === "likes") {
+        list.sort((a, b) => b.likes - a.likes);
+      }
+
+      document.getElementById("commentsCount").textContent = list.length;
+      const container = document.getElementById("commentsList");
+      container.innerHTML = "";
+
+      list.forEach((c) => {
+        const item = document.createElement("div");
+        item.className = "comment-item";
+        item.innerHTML = `
+          <div class="comment-head">
+            <div class="author-info">
+              <div class="mini-avatar">${c.iniciales}</div>
+              <span class="author-name">${c.autor}</span>
+            </div>
+            <span class="comment-time">${c.tiempo}</span>
+          </div>
+          <p class="comment-body">${c.texto}</p>
+          <div class="comment-actions">
+            <button class="like-btn ${c.liked ? "active" : ""}">
+              <i data-lucide="thumbs-up" size="12"></i> Útil (${c.likes})
+            </button>
+          </div>
+        `;
+
+        item.querySelector(".like-btn").addEventListener("click", () => {
+          c.liked = !c.liked;
+          c.likes += c.liked ? 1 : -1;
+          renderComments();
+        });
+
+        container.appendChild(item);
+      });
+
+      lucide.createIcons();
+    }
+
+    document.getElementById("formComentario").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("inputComentario");
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      empresasDB[currentIdx].comentarios.unshift({
+        id: Date.now(),
+        autor: "Tú",
+        iniciales: "TU",
+        tiempo: "Ahora mismo",
+        texto: texto,
+        likes: 0,
+        liked: false
+      });
+
+      input.value = "";
+      renderComments();
+      showToast("Comentario publicado");
+    });
+
+    document.querySelectorAll(".pill-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentSort = btn.dataset.sort;
+        renderComments();
+      });
+    });
