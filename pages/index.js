@@ -116,7 +116,7 @@ export default function Login() {
                             <Link href="/login" className={estilos['btnlogin']} style={{ textAlign: 'center', display: 'block', textDecoration: 'none' }}>
                                 Iniciar Sesión
                             </Link>
-                            <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/registro">Registrarse</Link></p>
+                            <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/rol">Registrarse</Link></p>
                         </div>
                     </form>
 

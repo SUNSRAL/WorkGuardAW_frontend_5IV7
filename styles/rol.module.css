@@ -1,0 +1,103 @@
+.contenedorbtnrol {
+    margin-bottom: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+    min-height: 70vh;
+}
+
+/* LOGO */
+.logoEsquina {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    z-index: 20;
+}
+
+
+.texto{
+text-align: center;
+margin-top: 100px;
+font-weight: 1000;
+font-size: 30px;
+color: #1B263B;
+}
+
+.btnOpcion {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    text-decoration: none;
+    color: #1B263B;
+    cursor: pointer;
+
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* Imagen */
+.btnOpcion img {
+    object-fit: contain;
+}
+
+/* Efectos al pasar el cursor */
+.btnOpcion:hover {
+    transform: translateY(-10px);
+    color: #E18821;
+}
+
+/* Título */
+.btnOpcion span {
+    font-size: 20px;
+    font-weight: 650;
+    color: inherit;
+}
+
+.btninformacion{
+    position: absolute;
+    right: 110%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #1B263B;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    width: 220px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.btnOpcion:hover .btninformacion,
+.btnOpcion:focus-visible .btninformacion {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btninformacionEm{
+    position: absolute;
+    left: 110%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #1B263B;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    width: 220px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.btnOpcion:hover .btninformacionEm,
+.btnOpcion:focus-visible .btninformacionEm {
+    opacity: 1;
+    visibility: visible;
+}

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import estilos from "../styles/Login.module.css";
-import Footer from "../components/footerlinks.js";
+import Footer from '../components/footerlinks.js'; 
 
 export default function Login() {
   const router = useRouter();
@@ -68,6 +68,8 @@ export default function Login() {
   };
 
   return (
+
+    <>
     <div className={estilos["paginaCompleta"]}>
       {/* COMPONENTE DE CARGA */}
       {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
@@ -241,7 +243,7 @@ export default function Login() {
             {/* REGISTRO */}
             <p className={estilos["registro"]}>
               ¿No tienes una cuenta?
-              <Link href="/registro">Registrarse</Link>
+              <Link href="/rol">Registrarse</Link>
             </p>
           </form>
         </main>
@@ -258,5 +260,8 @@ export default function Login() {
         />
       </div>
     </div>
+
+    <Footer />
+    </>
   );
 }
