@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import RutaProtegida from '../components/RutaProtegida';
+import RutaProtegida from '../../components/RutaProtegida';
 
 export default function PanelAdmin() {
     const router = useRouter();
