@@ -7,7 +7,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import estilos from "../styles/Login.module.css";
-import Footer from '../components/footerlinks.js'; 
+import Footer from '../components/footerlinks.js';
+
 
 export default function Login() {
   const router = useRouter();
@@ -76,7 +77,7 @@ export default function Login() {
 
       {/* logo */}
       <div className={estilos["logoEsquina"]}>
-        <Link href="/">
+        <Link href="/index"> {/**Regreso al index pagina principal*/}
           <Image
             src="/img/logo.png"
             alt="Logo WorkGuard"
@@ -97,7 +98,6 @@ export default function Login() {
         />
       </div>
 
-      <div className={estilos["contenedorCentral"]}>
         <main className={estilos["contenedorCentrado"]}>
           <form
             onSubmit={manejarLogin}
@@ -242,7 +242,7 @@ export default function Login() {
             </p>
           </form>
         </main>
-      </div>
+      
 
       <div className={estilos["ilustracionLateral"]}>
         <Image

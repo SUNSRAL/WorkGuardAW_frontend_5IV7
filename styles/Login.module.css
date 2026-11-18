@@ -48,23 +48,19 @@
 }
 
 
-.contenedorCentral {
-    flex: 0 1 450px;
+
+.contenedorCentrado {
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+     flex: 0 1 450px;
     min-width: 0;
     width: 100%;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
-    position: relative;
-}
-
-
-.contenedorCentrado {
-    width: 100%;
-    max-width: 450px;
-    position: relative;
+    
 }
 
 /* formulario*/
@@ -247,7 +243,7 @@
 
 .btnlogin {
     width: 100%;
-    max-width: 250px;
+    max-width: 150px;
 
     display: block;
     margin: 30px auto 0 auto;
