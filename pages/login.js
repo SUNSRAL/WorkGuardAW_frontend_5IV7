@@ -53,7 +53,7 @@ export default function Login() {
 
       setTimeout(() => {
         const rol = datos.usuario.rol;
-        if (rol === "administrador") router.push("/ADMIN/indexAdmin");
+        if (rol === "administrador") router.push("/admin");
         else if (rol === "consultor") router.push("/consultor");
         else if (rol === "mipyme") router.push("/mipyme");
       }, 1200);
