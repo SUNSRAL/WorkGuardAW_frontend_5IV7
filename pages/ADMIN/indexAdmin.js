@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import RutaProtegida from '../../components/RutaProtegida';
 import styles from '../../styles/CentroReportes.module.css';
+import Image from 'next/image';
+
 
 export default function CentroReportes() {
   const router = useRouter();
-  const [reportes, setReportes]       = useState([]);
+  const [reportes, setReportes] = useState([]);
   const [totalNuevos, setTotalNuevos] = useState(0);
-  const [cargando, setCargando]       = useState(true);
-  const [error, setError]             = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -16,13 +18,15 @@ export default function CentroReportes() {
   useEffect(() => {
     async function cargarReportes() {
       try {
-        const res = await fetch(`${API_URL}/api/admin/reportes`, {
+        // 1. Ruta unificada del backend
+        const res = await fetch(`${API_URL}/api/reportes`, {
           credentials: 'include',
         });
         if (!res.ok) throw new Error('Error al cargar los reportes');
         const datos = await res.json();
-        setReportes(datos.reportes);
-        setTotalNuevos(datos.total_nuevos);
+        setReportes(datos.reportes || []);
+        // 2. El backend devuelve "nuevos"
+        setTotalNuevos(datos.nuevos || 0);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,23 +46,24 @@ export default function CentroReportes() {
   };
 
   /* ── URL de foto de perfil ── */
-const getFotoUrl = (foto_perfil) => {
-  if (!foto_perfil) return '/img/perfil.png';
-  // Si ya es una URL completa de Supabase Storage, la devuelve directa
-  if (foto_perfil.startsWith('http')) return foto_perfil;
-  // Respaldo por si tienes algún registro antiguo con ruta relativa local
-  return foto_perfil.startsWith('/') ? foto_perfil : `/${foto_perfil}`;
-};
+  const getFotoUrl = (foto_perfil) => {
+    if (!foto_perfil) return '/img/perfil.png';
+    if (foto_perfil.startsWith('http')) return foto_perfil;
+    return foto_perfil.startsWith('/') ? foto_perfil : `/${foto_perfil}`;
+  };
 
   /* ── Etiqueta legible del motivo ── */
   const getMotivo = (motivo, otro_motivo) => {
     const etiquetas = {
       COBRO_POR_CONTRATACION: 'Cobro por contratación',
-      EMPRESA_INEXISTENTE:    'Empresa inexistente',
-      DOCUMENTOS_FALSOS:      'Documentos falsos',
+      OFERTA_FALSA: 'Oferta falsa',
+      SUPLANTACION_DE_IDENTIDAD: 'Suplantación de identidad',
+      CONDICIONES_ABUSIVAS: 'Condiciones abusivas',
+      EMPRESA_INEXISTENTE: 'Empresa inexistente',
+      DOCUMENTOS_FALSOS: 'Documentos falsos',
       INCUMPLIMIENTO_LABORAL: 'Incumplimiento laboral',
-      SAT_NEGATIVO:           'Estado SAT negativo',
-      OTRO:                   otro_motivo || 'Otro motivo',
+      SAT_NEGATIVO: 'Estado SAT negativo',
+      OTRO: otro_motivo || 'Otro motivo',
     };
     return etiquetas[motivo] || motivo;
   };
@@ -66,20 +71,24 @@ const getFotoUrl = (foto_perfil) => {
   /* ── Clase del dot según estado ── */
   const getDotClass = (estado) => {
     if (estado === 'PENDIENTE') return styles.dotPendiente;
-    if (estado === 'ACEPTADO')  return styles.dotRevisado;
+    if (estado === 'ACEPTADO') return styles.dotRevisado;
     return styles.dotDefault;
   };
 
   /* ── Render ── */
   return (
-    <RutaProtegida rolPermitido="admin">
+    // 3. Rol exacto que devuelve el backend ("administrador")
+    <RutaProtegida rolPermitido="administrador">
       <div className={styles.pageWrapper}>
 
         {/* ════════ HEADER ════════ */}
         <header className={styles.header}>
-          <div className={styles.headerLeft}>
-            <span className={styles.adminLabel}>ADMIN GLOBAL</span>
-            <h2 className={styles.panelTitle}>Panel de Control</h2>
+          <div className={styles.headerBrand}>
+            <Image src="/img/logo.png" alt="Logo WorkGuard" width={42} height={42} />
+            <div className={styles.headerLeft}>
+              <span className={styles.adminLabel}>ADMIN GLOBAL</span>
+              <h2 className={styles.panelTitle}>Panel de Control</h2>
+            </div>
           </div>
           <button className={styles.btnCerrarSesion} onClick={cerrarSesion}>
             Cerrar Sesión
@@ -123,13 +132,14 @@ const getFotoUrl = (foto_perfil) => {
                   {/* Cabecera: avatar + nombre + dot */}
                   <div className={styles.cardTop}>
                     <div className={styles.userInfo}>
+                      {/* 4. Nombres de propiedades exactos de reporte_module.js */}
                       <img
-                        src={getFotoUrl(reporte.foto_perfil)}
-                        alt={reporte.usuario}
+                        src={getFotoUrl(reporte.consultor_foto)}
+                        alt={reporte.consultor_usuario}
                         className={styles.avatar}
                         onError={(e) => { e.target.src = '/img/perfil.png'; }}
                       />
-                      <span className={styles.username}>{reporte.usuario}</span>
+                      <span className={styles.username}>{reporte.consultor_usuario}</span>
                     </div>
                     <span
                       className={`${styles.statusDot} ${getDotClass(reporte.estado)}`}
@@ -141,8 +151,8 @@ const getFotoUrl = (foto_perfil) => {
                   <div className={styles.cardBody}>
                     <span className={styles.companyTag}>
                       🏢{' '}
-                      {reporte.nombre_empresa
-                        ? `Empresa: ${reporte.nombre_empresa}`
+                      {reporte.nombre_comercial
+                        ? `Empresa: ${reporte.nombre_comercial}`
                         : `Empresa ID: ${reporte.id_mipyme}`}
                     </span>
                     <p className={styles.reportText}>
@@ -154,9 +164,8 @@ const getFotoUrl = (foto_perfil) => {
                     </p>
                     <button
                       className={styles.btnDetalle}
-                      onClick={() =>
-                        router.push(`/ADMIN/reporteDetalle?id=${reporte.id_reporte}`)
-                      }
+                      onClick={() => router.push(`/ADMIN/reportes/${reporte.id_reporte}`)}
+
                     >
                       Revisar Detalle &gt;
                     </button>
@@ -172,7 +181,3 @@ const getFotoUrl = (foto_perfil) => {
     </RutaProtegida>
   );
 }
-
-//ADEMÁS QUE PRESENTA UN NAV(NAVEGACION) PARA VER LA LISTA NEGRA DE LAS EMPRESAS YA CLASIFICADAS EN 
-// TAL APARTADO
-//La opcion de cerrar de la cuenta se le presenta en la parte superior derecha
