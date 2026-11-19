@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 
 // Mapa exacto entre el rol que devuelve tu backend y las carpetas/archivos de tu Next.js
 const RUTAS_INICIO_POR_ROL = {
-    administrador: '/ADMIN/indexAdmin',
-    consultor: '/CONSULTOR/consultor',
-    mipyme: '/MYPIME/mipime'
+    administrador: '/admin',
+    consultor: '/consultor',
+    mipyme: '/mipyme'
 };
 
 export default function RutaProtegida({ children, rolPermitido }) {
@@ -13,7 +13,7 @@ export default function RutaProtegida({ children, rolPermitido }) {
     const [autorizado, setAutorizado] = useState(false);
 
     useEffect(() => {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const API_URL = process.env.NEXT_PUBLIC_API_URL ;
 
         async function verificarAcceso() {
             try {
