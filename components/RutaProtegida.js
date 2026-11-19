@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
+// Mapa exacto entre el rol que devuelve tu backend y las carpetas/archivos de tu Next.js
+const RUTAS_INICIO_POR_ROL = {
+    administrador: '/ADMIN/indexAdmin',
+    consultor: '/CONSULTOR/consultor',
+    mipyme: '/MYPIME/mipime'
+};
+
 export default function RutaProtegida({ children, rolPermitido }) {
     const router = useRouter();
     const [autorizado, setAutorizado] = useState(false);
@@ -10,21 +17,23 @@ export default function RutaProtegida({ children, rolPermitido }) {
 
         async function verificarAcceso() {
             try {
-
-                //Verifica su sesion y lo manda a login si no tiene//
+                // Consulta al backend enviando la cookie de sesión
                 const res = await fetch(`${API_URL}/api/auth/verificar`, {
-                    credentials: 'include' 
+                    credentials: 'include'
                 });
+
+                // Si no hay sesión válida, manda al login
                 if (!res.ok) {
                     router.replace('/login');
                     return;
                 }
 
-                //Verifica su rol y lo redirje a su rol//
                 const datos = await res.json();
 
+                // Si tiene sesión pero su rol no corresponde a esta pantalla, lo redirige a su inicio
                 if (rolPermitido && datos.usuario.rol !== rolPermitido) {
-                    router.replace(`/${datos.usuario.rol}`); 
+                    const rutaDestino = RUTAS_INICIO_POR_ROL[datos.usuario.rol] || '/login';
+                    router.replace(rutaDestino);
                     return;
                 }
 
@@ -38,7 +47,7 @@ export default function RutaProtegida({ children, rolPermitido }) {
     }, [router, rolPermitido]);
 
     if (!autorizado) {
-        return <p style={{ textAlign: 'center', marginTop: '50px' }}>Verificando sesión...</p>;
+        return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Cargando...</p>;
     }
 
     return children;
