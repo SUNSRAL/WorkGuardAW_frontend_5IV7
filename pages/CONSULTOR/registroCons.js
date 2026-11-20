@@ -84,12 +84,12 @@ export default function RegistroConsultor() {
 
   return (
     <>
-      <div className={estilos["paginaCompleta"]}>
+      <div className={estilos['paginaCompleta']}>
         {/* Carga */}
         {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
 
         {/* Logo */}
-        <div className={estilos["logoEsquina"]}>
+        <div className={estilos['logoEsquina']}>
           <Link href="/">
             {/* Regreso al rol.js */}
             <Image
@@ -102,12 +102,12 @@ export default function RegistroConsultor() {
         </div>
 
         {/* Contenedor principal del formulario de registro */}
-        <main className={estilos["contenedorCentrado"]}>
+        <main className={estilos['contenedorCentrado']}>
           <form
             onSubmit={manejarRegistro}
-            className={estilos["formulario-login"]}
+            className={estilos['formulario-login']}
           >
-            <div className={estilos["encabezado-registro"]}>
+            <div className={estilos['encabezado-registro']}>
               <h2>Registro</h2>
             </div>
 
@@ -133,15 +133,15 @@ export default function RegistroConsultor() {
             )}
 
             {/* Usuario */}
-            <div className={estilos["campo"]}>
+            <div className={estilos['campo']}>
               <label htmlFor="usuario">Usuario</label>
-              <div className={estilos["campo-input"]}>
+              <div className={estilos['campo-input']}>
                 <Image
                   src="/img/user.png"
                   alt="Usuario"
                   width={16}
                   height={16}
-                  className={estilos["icono-input"]}
+                  className={estilos['icono-input']}
                 />
                 <input
                   type="text"
@@ -155,9 +155,9 @@ export default function RegistroConsultor() {
             </div>
 
             {/* Nombre */}
-            <div className={estilos["campo"]}>
+            <div className={estilos['campo']}>
               <label htmlFor="nombre">Nombre completo</label>
-              <div className={estilos["campo-input"]}>
+              <div className={estilos['campo-input']}>
                 <input
                   type="text"
                   id="nombre"
@@ -170,9 +170,9 @@ export default function RegistroConsultor() {
             </div>
 
             {/* Correo */}
-            <div className={estilos["campo"]}>
+            <div className={estilos['campo']}>
               <label htmlFor="correo">Correo electrónico</label>
-              <div className={estilos["campo-input"]}>
+              <div className={estilos['campo-input']}>
                 <input
                   type="email"
                   id="correo"
@@ -185,9 +185,9 @@ export default function RegistroConsultor() {
             </div>
 
             {/* Contraseña */}
-            <div className={estilos["campo"]}>
+            <div className={estilos['campo']}>
               <label htmlFor="contrasena">Contraseña</label>
-              <div className={estilos["campo-input"]}>
+              <div className={estilos['campo-input']}>
                 <input
                   type="password"
                   id="contrasena"
@@ -200,9 +200,9 @@ export default function RegistroConsultor() {
             </div>
 
             {/* Confirmar contraseña */}
-            <div className={estilos["campo"]}>
+            <div className={estilos['campo']}>
               <label htmlFor="confirContrasena">Confirmar contraseña</label>
-              <div className={estilos["campo-input"]}>
+              <div className={estilos['campo-input']}>
                 <input
                   type="password"
                   id="confirContrasena"
@@ -217,7 +217,7 @@ export default function RegistroConsultor() {
             <button
               type="submit"
               disabled={cargando}
-              className={estilos["boton-enviar"]}
+              className={estilos['boton-enviar']}
             >
               {cargando ? "Registrando..." : "Crear cuenta"}
             </button>
