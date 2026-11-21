@@ -7,9 +7,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import estilos from "../styles/Login.module.css";
-import Footer from '../components/footerlinks.js';
 import Cargando from "../components/cargando.js";
-
+import Footer from '../components/footerlinks.js'; 
 
 export default function Login() {
   const router = useRouter();
@@ -54,7 +53,7 @@ export default function Login() {
 
       setTimeout(() => {
         const rol = datos.usuario.rol;
-        if (rol === "admin") router.push("/admin");
+        if (rol === "administrador") router.push("/admin");
         else if (rol === "consultor") router.push("/consultor");
         else if (rol === "mipyme") router.push("/mipyme");
       }, 1200);
