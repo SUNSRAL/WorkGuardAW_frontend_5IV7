@@ -92,7 +92,7 @@ export default function DetalleReporte() {
                     </div>
                     <button
                         className={styles.btnVolver}
-                        onClick={() => router.push('/ADMIN/indexAdmin')}
+                        onClick={() => router.push('/admin')}
                     >
                         ← Volver a Reportes
                     </button>

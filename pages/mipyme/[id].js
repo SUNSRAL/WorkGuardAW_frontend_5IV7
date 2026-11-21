@@ -122,10 +122,10 @@ export default function TarjetaDetallada() {
                     </div>
 
                     <nav className={styles.navRight}>
-                        <button onClick={() => router.push('/CONSULTOR/indexConsultor')} className={styles.navItem}>
+                        <button onClick={() => router.push('/consultor')} className={styles.navItem}>
                             Explorar
                         </button>
-                        <button onClick={() => router.push('/CONSULTOR/cuenta')} className={styles.navItem}>
+                        <button onClick={() => router.push('/consultor/cuenta')} className={styles.navItem}>
                             Mi Cuenta
                         </button>
                     </nav>
@@ -195,7 +195,7 @@ export default function TarjetaDetallada() {
 
                                         <button
                                             className={styles.btnReportar}
-                                            onClick={() => router.push(`/CONSULTOR/reportar?id_mipyme=${empresa.id_mipyme}`)}
+                                            onClick={() => router.push(`/consultor/reportar?id_mipyme=${empresa.id_mipyme}`)}
                                         >
                                             <AlertTriangle size={14} /> Reportar
                                         </button>

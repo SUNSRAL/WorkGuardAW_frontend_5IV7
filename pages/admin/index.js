@@ -107,7 +107,7 @@ export default function CentroReportes() {
               </div>
               <button
                 className={styles.btnListaNegra}
-                onClick={() => router.push('/ADMIN/listadoNegro')}
+                onClick={() => router.push('/admin/listadoNegro')}
               >
                 Ver lista negra
               </button>
@@ -164,7 +164,7 @@ export default function CentroReportes() {
                     </p>
                     <button
                       className={styles.btnDetalle}
-                      onClick={() => router.push(`/ADMIN/reportes/${reporte.id_reporte}`)}
+                      onClick={() => router.push(`/admin/reportes/${reporte.id_reporte}`)}
 
                     >
                       Revisar Detalle &gt;
