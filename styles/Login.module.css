@@ -40,7 +40,6 @@
     position: relative;
 }
 
-
 .ilustracionLateral img {
     width: 100%;
     height: 100%;
@@ -48,7 +47,11 @@
 }
 
 
-.contenedorCentral {
+
+.contenedorCentrado {
+    width: 100%;
+    max-width: 450px;
+    position: relative;
     flex: 0 1 450px;
     min-width: 0;
     width: 100%;
@@ -56,26 +59,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    position: relative;
-}
-
-
-.contenedorCentrado {
-    width: 100%;
-    max-width: 450px;
-    position: relative;
+    
 }
 
 /* formulario*/
 .encabezado-formulario {
     text-align: center;
     margin-bottom: 30px;
-    font-family: 'Nunito', sans-serif;
 }
 
 .encabezado-formulario h2 {
-    color: #FFFFFF;
+ 
     font-size: 28px;
     font-weight: 800;
     margin-bottom: 8px;
@@ -86,8 +80,9 @@
     width: 100%;
     box-sizing: border-box;
 
-    background-color: #0B162C;
+    
     padding: 40px 35px;
+    background-color: #CFE3F3;
 
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
@@ -105,13 +100,12 @@
 
 
 .campo label {
-    color: #CBD5E1;
+   
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-left: 4px;
-    font-family: 'Nunito', sans-serif;
 }
 
 
@@ -119,58 +113,24 @@
     display: flex;
     align-items: center;
 
-    background-color: rgba(30, 41, 59, 0.8);
-    border: 1.5px solid #334155;
+    background-color:white;
+    border: 1.5px solid #1E293B;
     border-radius: 12px;
     padding: 12px 16px;
 
     transition: all 0.3s ease;
 }
 
-/* efecto al seleccionar el campo/input */
+/* efecto al seleccionar el campo*/
 .campo-input:focus-within {
     border-color: #F59E0B;
-    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
-    background-color: #FFFFFF;
-}
-
-.campo-input:focus-within input {
-    color: #0F172A;
 }
 
 .campo-input input::placeholder{
-    color: #64748B;
+    color: #94A3B8;
 }
 
 
-/* AUTOCOMPLETADO DEL NAVEGADOR */
-.campo-input input:-webkit-autofill,
-.campo-input input:-webkit-autofill:hover,
-.campo-input input:-webkit-autofill:focus,
-.campo-input input:-webkit-autofill:active {
-
-    -webkit-text-fill-color: #DEE2EA !important;
-
-    caret-color: #DEE2EA;
-
-    -webkit-box-shadow: 0 0 0 1000px #1E293B inset !important;
-
-    box-shadow: 0 0 0 1000px #1E293B inset !important;
-
-    background-color: transparent !important;
-
-    transition: background-color 99999s ease-in-out 0s;
-}
-
-/* AUTOCOMPLETADO EN NAVEGADORES COMPATIBLES */
-.campo-input input:autofill {
-
-    color: #DEE2EA !important;
-
-    caret-color: #DEE2EA;
-
-    box-shadow: 0 0 0 1000px #1E293B inset !important;
-}
 
 /*Ocultar ojo del navegador*/
 .campo-input input::-ms-reveal,
@@ -178,12 +138,24 @@
     display: none;
 }
 
+/* CONTROLAR EL AUTOCOMPLETADO DEL NAVEGADOR */
+.campo-input input:-webkit-autofill,
+.campo-input input:-webkit-autofill:hover,
+.campo-input input:-webkit-autofill:focus,
+.campo-input input:-webkit-autofill:active {
+
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -webkit-text-fill-color: #1E293B;
+
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 /* ICONOS */
 .icono-input {
     width: 16px;
     height: 16px;
+    object-fit: contain;
     margin-right: 12px;
-    opacity: 0.7;
     flex-shrink: 0;
 }
 
@@ -196,17 +168,12 @@
     border: none;
     outline: none;
 
-    color: #DEE2EA;
     font-size: 15px;
-    font-family: 'Nunito', sans-serif;
 }
 
-.campo-input input::placeholder {
-    color: #64748B;
-}
 
 .campo-input:focus-within input::placeholder {
-    color: #94A3B8;
+    color: #E18821;
 }
 
 /* BOTÓN DEL OJO */
@@ -247,7 +214,7 @@
 
 .btnlogin {
     width: 100%;
-    max-width: 250px;
+    max-width: 150px;
 
     display: block;
     margin: 30px auto 0 auto;
@@ -262,8 +229,6 @@
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-
-    box-shadow: 0 10px 20px -5px rgba(219, 157, 50, 0.3);
     transition: all 0.2s ease;
 
     font-family: 'Nunito', sans-serif;
@@ -271,7 +236,6 @@
 
 .btnlogin:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px -4px rgba(238, 152, 1, 0.45);
 }
 
 .btnlogin:active {
@@ -285,7 +249,7 @@
 
 
 .registro {
-    color: #FFFFFF;
+    font-weight: 700;
     margin-top: 25px;
     font-size: 14px;
     text-align: center;
@@ -293,7 +257,7 @@
 }
 
 .registro a {
-    color: #FBBF24;
+    color: #C46210;
     font-weight: 700;
     text-decoration: none;
     margin-left: 4px;
@@ -301,7 +265,7 @@
 }
 
 .registro a:hover {
-    color: #F59E0B;
+    color: #DCA443;
     text-decoration: underline;
 }
 

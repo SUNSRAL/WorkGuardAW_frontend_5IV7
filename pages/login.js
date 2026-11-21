@@ -77,7 +77,7 @@ export default function Login() {
 
       {/* logo */}
       <div className={estilos["logoEsquina"]}>
-        <Link href="/">
+        <Link href="/"> {/**Regreso al index pagina principal*/}
           <Image
             src="/img/logo.png"
             alt="Logo WorkGuard"
@@ -98,7 +98,6 @@ export default function Login() {
         />
       </div>
 
-      <div className={estilos["contenedorCentral"]}>
         <main className={estilos["contenedorCentrado"]}>
           <form
             onSubmit={manejarLogin}
@@ -126,7 +125,7 @@ export default function Login() {
 
               <div className={estilos["campo-input"]}>
                 <Image
-                  src="/img/user.png"
+                  src="/img/userp.png"
                   alt="Usuario"
                   width={16}
                   height={16}
@@ -148,7 +147,7 @@ export default function Login() {
               <label htmlFor="contrasena">Contraseña</label>
               <div className={estilos["campo-input"]}>
                 <Image
-                  src="/img/password.png"
+                  src="/img/passwordp.png"
                   alt="Contraseña"
                   width={16}
                   height={16}
@@ -243,7 +242,7 @@ export default function Login() {
             </p>
           </form>
         </main>
-      </div>
+      
 
       <div className={estilos["ilustracionLateral"]}>
         <Image
