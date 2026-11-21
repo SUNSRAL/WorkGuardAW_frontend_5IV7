@@ -1,0 +1,356 @@
+/* ── BASE (FLAT & FONDO BLANCO) ── */
+.pageWrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── HEADER ── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background-color: #0B162C;
+    border-bottom: 3px solid #DCA443;
+}
+
+.headerBrand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.headerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.roleLabel {
+    color: #DCA443;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.panelTitle {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.navActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btnNav {
+    background-color: #1E293B;
+    color: #FFFFFF;
+    border: 1px solid #475569;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+}
+
+.btnNav:hover {
+    background-color: #334155;
+}
+
+.btnCerrarSesion {
+    background-color: #EF4444;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+}
+
+.btnCerrarSesion:hover {
+    background-color: #DC2626;
+}
+
+/* ── MAIN ── */
+.main {
+    flex: 1;
+    padding: 36px 20px 56px;
+}
+
+.container {
+    max-width: 1060px;
+    margin: 0 auto;
+}
+
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #E2E8F0;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.titulo {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #0B162C;
+    margin: 0 0 6px 0;
+}
+
+.subtituloTexto {
+    font-size: 0.92rem;
+    color: #475569;
+    margin: 0;
+}
+
+.btnListaNegra {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background-color: #DCA443;
+    color: #0B162C;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+}
+
+.btnListaNegra:hover {
+    background-color: #C58E32;
+}
+
+/* ── BARRA DE BÚSQUEDA Y FILTROS ── */
+.filterBar {
+    display: flex;
+    gap: 12px;
+    background-color: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.searchBox {
+    flex: 1;
+    min-width: 240px;
+    display: flex;
+    align-items: center;
+    background-color: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    padding: 0 12px;
+}
+
+.searchBox:focus-within {
+    border-color: #0B162C;
+    background-color: #FFFFFF;
+}
+
+.searchIcon {
+    color: #64748B;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.searchInput {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 10px 0;
+    font-size: 0.92rem;
+    font-family: 'Nunito', sans-serif;
+    color: #0F172A;
+    outline: none;
+}
+
+.selectGroup {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.selectWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.selectIcon {
+    position: absolute;
+    left: 10px;
+    color: #64748B;
+    pointer-events: none;
+}
+
+.selectWrapper .select {
+    padding-left: 30px;
+}
+
+.select {
+    background-color: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    color: #0B162C;
+    cursor: pointer;
+    outline: none;
+}
+
+.select:focus {
+    border-color: #0B162C;
+}
+
+.resultCount {
+    font-size: 0.85rem;
+    color: #64748B;
+    margin: 0 0 18px 0;
+}
+
+/* ── GRID DE TARJETAS ── */
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 18px;
+}
+
+.companyCard {
+    background-color: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-top: 4px solid #0B162C;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.12s ease;
+}
+
+.companyCard:hover {
+    border-color: #0B162C;
+    border-top-color: #DCA443;
+    transform: translateY(-2px);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+
+.giroBadge {
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #F59E0B;
+    font-size: 0.74rem;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 4px;
+}
+
+.idTag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #64748B;
+}
+
+.companyName {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0B162C;
+    margin: 0 0 4px 0;
+}
+
+.rfcText {
+    font-size: 0.82rem;
+    color: #64748B;
+    font-weight: 600;
+    margin: 0 0 14px 0;
+}
+
+.metaRow {
+    display: flex;
+    gap: 16px;
+    padding: 10px 0;
+    border-top: 1px solid #E2E8F0;
+    border-bottom: 1px solid #E2E8F0;
+    margin-bottom: 14px;
+}
+
+.metaItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #334155;
+}
+
+.cardFooter {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.verDetalleLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0B162C;
+}
+
+.companyCard:hover .verDetalleLink {
+    color: #B45309;
+}
+
+/* ── MENSAJES ── */
+.mensajeEstado {
+    text-align: center;
+    color: #64748B;
+    padding: 45px 0;
+}
+
+.mensajeError {
+    background-color: #FEE2E2;
+    border: 1px solid #F87171;
+    color: #B91C1C;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+@media (max-width: 640px) {
+    .header {
+        padding: 14px 18px;
+    }
+
+    .btnListaNegra {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,52 @@
+name: Despliegue en Vercel
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  pull_request:
+    branches:
+      - main
+      - qa
+  push:
+    branches:
+      - main
+      - qa
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Instalar Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Descargar configuración de Vercel
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          else
+            vercel pull --yes --environment=preview --git-branch=${{ github.ref_name }} --token=${{ secrets.VERCEL_TOKEN }}
+          fi
+
+
+      - name: Construir proyecto (Validación y Build)
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          else
+            vercel build --token=${{ secrets.VERCEL_TOKEN }}
+          fi
+
+      # Solo se ejecuta cuando se hace push/merge directo a main o qa (NO en Pull Requests)
+      - name: Subir despliegue a Vercel
+        if: github.event_name == 'push'
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+          else
+            URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+            vercel alias set $URL workguard-bc-qa.vercel.app --token=${{ secrets.VERCEL_TOKEN }}
+          fi

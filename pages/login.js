@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import estilos from "../styles/Login.module.css";
 import Footer from '../components/footerlinks.js';
+import Cargando from "../components/cargando.js";
 
 
 export default function Login() {

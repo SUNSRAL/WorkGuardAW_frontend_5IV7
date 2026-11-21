@@ -4,3 +4,6 @@
 //sI ESTA REPORTADA Y EN LA LISTA NEGRA LE APARECE UN ANUNCIO GRANDE DE REPORTADA Y DE FONDO SU CUENTA
 
 
+export default function EnConstruccion() {
+  return <div>Página en construcción</div>;
+}
