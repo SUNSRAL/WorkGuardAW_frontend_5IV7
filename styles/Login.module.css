@@ -40,7 +40,6 @@
     position: relative;
 }
 
-
 .ilustracionLateral img {
     width: 100%;
     height: 100%;
@@ -125,7 +124,6 @@
 /* efecto al seleccionar el campo*/
 .campo-input:focus-within {
     border-color: #F59E0B;
-    background-color: #FFFFFF;
 }
 
 .campo-input input::placeholder{
@@ -140,12 +138,24 @@
     display: none;
 }
 
+/* CONTROLAR EL AUTOCOMPLETADO DEL NAVEGADOR */
+.campo-input input:-webkit-autofill,
+.campo-input input:-webkit-autofill:hover,
+.campo-input input:-webkit-autofill:focus,
+.campo-input input:-webkit-autofill:active {
+
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -webkit-text-fill-color: #1E293B;
+
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 /* ICONOS */
 .icono-input {
     width: 16px;
     height: 16px;
+    object-fit: contain;
     margin-right: 12px;
-    opacity: 0.7;
     flex-shrink: 0;
 }
 
