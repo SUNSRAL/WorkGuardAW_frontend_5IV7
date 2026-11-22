@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "/components/footerlinks.js";
+import { apiFetch } from "../../utils/api.js";
+import Cargando from "../../components/cargando.js";
 import estilos from "/styles/registroCons.module.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -25,17 +27,16 @@ export default function RegistroConsultor() {
     setConfirContrasena("");
   }, []);
 
-
   //No acompletado
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setUsuario("");
-    setContrasena("");
-    setConfirContrasena("");
-  }, 50);
+    const timer = setTimeout(() => {
+      setUsuario("");
+      setContrasena("");
+      setConfirContrasena("");
+    }, 50);
 
-  return () => clearTimeout(timer);
-}, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   const manejarRegistro = async (e) => {
     e.preventDefault();
@@ -59,28 +60,11 @@ export default function RegistroConsultor() {
 
     setCargando(true);
 
-    try {
-      const respuesta = await fetch("/api/registro", {
+        try {
+      await apiFetch("/api/usuarios/consultores", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          usuario,
-          nombre,
-          correo,
-          contrasena,
-        }),
+        body: { usuario, nombre, correo, contrasena },
       });
-
-      const datos = await respuesta.json();
-
-      if (!respuesta.ok) {
-        setMensaje({
-          texto: datos.mensaje || "No se pudo completar el registro.",
-          tipo: "error",
-        });
-        setCargando(false);
-        return;
-      }
 
       setMensaje({
         texto: "¡Cuenta creada con éxito! Redirigiendo...",
@@ -92,7 +76,7 @@ export default function RegistroConsultor() {
       }, 1500);
     } catch (error) {
       setMensaje({
-        texto: "Error de conexión al intentar registrar la cuenta.",
+        texto: error.message || "No se pudo completar el registro.",
         tipo: "error",
       });
       setCargando(false);

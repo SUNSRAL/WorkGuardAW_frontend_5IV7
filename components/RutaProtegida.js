@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { apiFetch } from '../utils/api';
 
-// Mapa exacto entre el rol que devuelve tu backend y las carpetas/archivos de tu Next.js
 const RUTAS_INICIO_POR_ROL = {
     administrador: '/admin',
     consultor: '/consultor',
@@ -13,28 +13,18 @@ export default function RutaProtegida({ children, rolPermitido }) {
     const [autorizado, setAutorizado] = useState(false);
 
     useEffect(() => {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL ;
-
         async function verificarAcceso() {
             try {
-                // Consulta al backend enviando la cookie de sesión
-                const res = await fetch(`${API_URL}/api/auth/verificar`, {
-                    credentials: 'include'
-                });
+                const datos = await apiFetch('/api/auth/verificar');
 
-                // Si no hay sesión válida, manda al login
-                if (!res.ok) {
-                    router.replace('/login');
-                    return;
-                }
-
-                const datos = await res.json();
-
-                // Si tiene sesión pero su rol no corresponde a esta pantalla, lo redirige a su inicio
-                if (rolPermitido && datos.usuario.rol !== rolPermitido) {
-                    const rutaDestino = RUTAS_INICIO_POR_ROL[datos.usuario.rol] || '/login';
-                    router.replace(rutaDestino);
-                    return;
+                // Rol en arreglo para varios roles y valida el rol del usuario
+                if (rolPermitido) {
+                    const rolesValidos = Array.isArray(rolPermitido) ? rolPermitido : [rolPermitido];
+                    if (!rolesValidos.includes(datos.usuario.rol)) {
+                        const rutaDestino = RUTAS_INICIO_POR_ROL[datos.usuario.rol] || '/login';
+                        router.replace(rutaDestino);
+                        return;
+                    }
                 }
 
                 setAutorizado(true);

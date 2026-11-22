@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { apiFetch } from '../../utils/api.js';
 import Footer from "/components/footerlinks.js";
 import estilos from "/styles/registroCons.module.css";
 import { useEffect, useState } from "react";

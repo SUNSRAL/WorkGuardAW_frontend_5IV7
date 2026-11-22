@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { apiFetch } from '../../utils/api.js';
 import {
     ArrowLeft, ShieldCheck, CheckCircle2, Briefcase,
     FileText, MapPin, ExternalLink, Building2,
@@ -43,11 +44,7 @@ export default function TarjetaDetallada() {
 
         async function cargarEmpresa() {
             try {
-                const res = await fetch(`${API_URL}/api/mipymes/${idMipyme}`, {
-                    credentials: 'include',
-                });
-                const datos = await res.json();
-                if (!res.ok) throw new Error(datos.error || 'No se pudo cargar la empresa');
+                const datos = await apiFetch(`/api/mipymes/${idMipyme}`);
                 setEmpresa(datos);
             } catch (err) {
                 setError(err.message);
