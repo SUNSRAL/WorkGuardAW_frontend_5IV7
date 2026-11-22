@@ -21,7 +21,7 @@ export default function Roles() {
 
       <main className={estilos["contenedorbtnrol"]}>
         {/**Boton de consultor  */}
-        <Link href="consultor/registroCons" className={estilos["btnOpcion"]}>
+        <Link href="consultor/registro" className={estilos["btnOpcion"]}>
           <Image
             src="/img/Consultores.png"
             alt="Consultor"
