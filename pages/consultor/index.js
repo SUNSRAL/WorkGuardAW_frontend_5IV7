@@ -46,13 +46,9 @@ export default function IndexConsultor() {
     cargarEmpresas();
   }, [API_URL]);
 
-  /* ── Cerrar sesión ── */
-  const cerrarSesion = async () => {
-    await fetch(`${API_URL}/api/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-    router.push("/login");
+  /* ── bton perfil── */
+  const Perfil = async () => {
+  
   };
 
   /* ── Extraer listas únicas para los selectores de filtro ── */
@@ -114,14 +110,10 @@ export default function IndexConsultor() {
           </div>
 
           <nav className={styles.navActions}>
-            <button
-              className={styles.btnNav}
-              onClick={() => router.push("/consultor/cuenta")}
-            >
-              Mi Cuenta
-            </button>
-            <button className={styles.btnCerrarSesion} onClick={cerrarSesion}>
-              Cerrar Sesión
+          
+            <button className={styles.btnPerfil}
+            onClick={() => router.push("/consultor/cuenta")}>
+              Perfil
             </button>
           </nav>
         </header>
