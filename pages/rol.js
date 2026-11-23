@@ -37,7 +37,7 @@ export default function Roles() {
         </Link>
 
         {/**Boton de MIpyme */}
-        <Link href="mipyme/registroMipyme" className={estilos["btnOpcion"]}>
+        <Link href="mipyme/registro" className={estilos["btnOpcion"]}>
           <Image src="/img/mipyme.png" alt="MiPyME" width={300} height={300} />
           <span>MiPyME</span>
 
