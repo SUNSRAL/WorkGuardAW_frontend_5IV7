@@ -1,0 +1,268 @@
+/* ── BASE (FLAT & FONDO BLANCO) ── */
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #F8FAFC;
+  color: #0F172A;
+  font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  background-color: #0B162C;
+  border-bottom: 3px solid #DCA443;
+}
+
+.headerBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adminLabel {
+  color: #DCA443;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.panelTitle {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.btnCerrarSesion {
+  background-color: #EF4444;
+  color: #FFFFFF;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.btnCerrarSesion:hover {
+  background-color: #DC2626;
+}
+
+/* ── MAIN & CONTENEDOR ── */
+.main {
+  flex: 1;
+  padding: 36px 20px 56px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid #E2E8F0;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.titulo {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0B162C;
+  margin: 0 0 8px 0;
+  line-height: 1.1;
+}
+
+.badgeNuevos {
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #F59E0B;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.btnListaNegra {
+  background-color: #DCA443;
+  color: #0B162C;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.btnListaNegra:hover {
+  background-color: #C58E32;
+}
+
+/* ── MENSAJES DE ESTADO ── */
+.mensajeEstado {
+  font-size: 0.95rem;
+  color: #64748B;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.mensajeError {
+  font-size: 0.9rem;
+  color: #B91C1C;
+  background-color: #FEE2E2;
+  border: 1px solid #F87171;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+/* ── TARJETAS DE REPORTES (FLAT) ── */
+.reportList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.reportCard {
+  background-color: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-left: 5px solid #0B162C;
+  border-radius: 8px;
+  padding: 20px 24px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.reportCard:hover {
+  border-color: #0B162C;
+  border-left-color: #DCA443;
+  background-color: #FFFFFF;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #0B162C;
+  background-color: #E2E8F0;
+  flex-shrink: 0;
+}
+
+.username {
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: #0B162C;
+}
+
+.statusDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.dotPendiente {
+  background-color: #F59E0B;
+}
+.dotRevisado {
+  background-color: #10B981;
+}
+.dotDefault {
+  background-color: #94A3B8;
+}
+
+.cardBody {
+  padding-left: 52px;
+}
+
+.companyTag {
+  display: inline-block;
+  background-color: #F1F5F9;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.reportText {
+  font-size: 0.9rem;
+  color: #334155;
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.reportText strong {
+  color: #0B162C;
+}
+
+.btnDetalle {
+  background-color: #0B162C;
+  color: #FFFFFF;
+  border: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.btnDetalle:hover {
+  background-color: #1E293B;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .header {
+    padding: 14px 18px;
+  }
+  .titulo {
+    font-size: 1.5rem;
+  }
+  .cardBody {
+    padding-left: 0;
+  }
+  .headerSection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btnListaNegra {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,0 +1,119 @@
+
+.principalfooter {
+  background-color: #0b192c; 
+  color: #ffffff;
+  padding: 60px 40px;
+  font-family: sans-serif;
+  display: grid;
+  grid-template-columns: 1.6fr repeat(3, 1fr); 
+  gap: 40px;
+  align-items: start;
+}
+
+.contenidoFooter {
+  grid-column: 1 / 2; 
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.informacion {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.informacion p {
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Redes Sociales */
+.redesSociales {
+  display: flex;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.redesSociales a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.redesSociales a:hover {
+  transform: translateY(-2px);
+  background-color: #f0f0f0;
+}
+
+.empresa {
+  margin-top: 15px;
+}
+
+.columna {
+  display: flex;
+  flex-direction: column;
+}
+
+.columnaTit {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.columnalinks,
+.columnaLink {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; 
+}
+
+.columnalinks li a,
+.columnaLink li a {
+  color: #ffffff; /* Tono grisáceo elegante para los enlaces */
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.columnalinks li a:hover,
+.columnaLink li a:hover {
+  color: #afbde7; /* Se aclaran al pasar el cursor */
+}
+
+.derechos {
+  grid-column: 1 / -1; /* Hace que ocupe todo el ancho horizontal del footer */
+  text-align: center;
+  color: #a0aec0;
+  font-size: 13px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Una línea divisoria*/
+}
+
+
+/*Adpatacion a celulares*/
+@media (max-width: 900px) {
+  .footer {
+    grid-template-columns: repeat(2, 1fr); /* Pasa a COLUMNAS en pantallas medianas */
+  }
+}
+
+@media (max-width: 600px) {
+  .footer {
+    grid-template-columns: 1fr; /* Todo en una sola columna en celulares */
+    padding: 40px 20px;
+  }
+}
