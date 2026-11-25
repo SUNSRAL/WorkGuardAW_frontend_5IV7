@@ -1,370 +1,333 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Footer from '../../components/footerlinks.js';
-import Cargando from '../../components/cargando.js';
-import { apiFetch } from '../../utils/api.js';
-import estilos from '../../styles/RegistroMipyme.module.css';
+import styles from '../../styles/RegistroMipyme.module.css';
+import { apiFetch } from '../../utils/api';
 
-
-const PASOS_TITULOS = [
-  "1. Existencia Fiscal",
-  "2. Ubicación",
-  "3. Representante",
-  "4. Situación y Tamaño",
-  "5. Dictamen",
-  "6. Crear Cuenta",
+const PASOS_WIZARD = [
+  { num: 1, titulo: 'Existencia Fiscal', desc: 'RFC, SAT y Constancia' },
+  { num: 2, titulo: 'Actividad y Ubicación', desc: 'Mapa y Comprobante' },
+  { num: 3, titulo: 'Representante Legal', desc: 'Identidad y CURP' },
+  { num: 4, titulo: 'Cumplimiento y Tamaño', desc: 'DOF y Opinión 32-D' },
+  { num: 5, titulo: 'Credenciales de Acceso', desc: 'Activación Sello WorkGuard' }
 ];
 
 export default function RegistroMipyme() {
   const router = useRouter();
-  const [pasoActual, setPasoActual] = useState(1);
-  const [cargandoCatalogos, setCargandoCatalogos] = useState(true);
-  const [procesando, setProcesando] = useState(false);
-  const [errorGeneral, setErrorGeneral] = useState("");
-  const [mensajePaso, setMensajePaso] = useState("");
 
-  // Catálogos traídos desde Supabase
+  // Paso actual del asistente (1 a 5)
+  const [pasoActual, setPasoActual] = useState(1);
+
+  // Catálogos traídos desde el backend (/api/mipymes/catalogos)
   const [catalogos, setCatalogos] = useState({
     giros: [],
     alcaldias_fiscal: [],
     entidades_fiscal: [],
     alcaldias_operaciones: [],
     entidades_operaciones: [],
-    tamanos: [],
+    tamanos: []
   });
 
-  // Resultados de evaluación por paso: { 1: { estado: 'VERDE'|'NARANJA', mensaje: '...' }, ... }
-  const [resultadosPasos, setResultadosPasos] = useState({});
-
-  // Estado del formulario completo
+  // Estado general del formulario
   const [form, setForm] = useState({
-    tipo_persona: "MORAL",
-    nombre_comercial: "",
-    representante_legal: "",
-    rfc: "",
-    id_giro: "",
-    // Domicilio fiscal
-    cp_fiscal: "",
-    calle_fiscal: "",
-    numero_fiscal: "",
-    id_alcaldia_fiscal: "",
-    id_entidad_federativa_fiscal: "",
-    // Paso 2: Actividad y Operaciones
-    pagina_web: "",
-    facebook: "",
-    instagram: "",
-    twitter: "",
+    // Paso 1: Existencia Fiscal
+    tipo_persona: 'MORAL',
+    nombre_comercial: '',
+    rfc: '',
+    id_giro: '',
+    cp_fiscal: '',
+    calle_fiscal: '',
+    numero_fiscal: '',
+    id_alcaldia_fiscal: '',
+    id_entidad_federativa_fiscal: '',
+
+    // Paso 2: Actividad y Ubicación
     mismo_domicilio: false,
-    cp_operaciones: "",
-    calle_operaciones: "",
-    numero_operaciones: "",
-    id_alcaldia_operaciones: "",
-    id_entidad_federativa_operaciones: "",
-    // Paso 3: Representante
-    curp: "",
-    // Paso 4: Tamaño y 32-D
-    numero_trabajadores: "",
-    id_tamano: "",
-    // Paso 6: Credenciales
-    usuario: "",
-    contrasena: "",
-    confirmar_contrasena: "",
-    acepta_terminos: false,
+    cp_operaciones: '',
+    calle_operaciones: '',
+    numero_operaciones: '',
+    id_alcaldia_operaciones: '',
+    id_entidad_federativa_operaciones: '',
+    pagina_web: '',
+    facebook: '',
+    instagram: '',
+    twitter: '',
+
+    // Paso 3: Representante Legal / Titular
+    nombre_completo: '',
+    curp: '',
+
+    // Paso 4: Cumplimiento y Tamaño
+    numero_trabajadores: '',
+
+    // Paso 5: Credenciales
+    usuario: '',
+    contrasena: '',
+    confirmar_contrasena: ''
   });
 
-  // Archivos adjuntos en memoria del navegador (File)
+  // Archivos PDF en memoria (nunca se suben hasta evaluar cada paso)
   const [archivos, setArchivos] = useState({
     doc_csf: null,
-    doc_acta: null,
     doc_comprobante: null,
-    doc_acreditacion: null,
-    doc_opinion_32d: null,
+    doc_curp: null,
+    doc_opinion_32d: null
   });
 
-  // Coordenadas OpenStreetMap para Paso 2
-  const [mapaCoords, setMapaCoords] = useState(null);
+  // Geolocalización y Mapa (Paso 2)
+  const [coordenadas, setCoordenadas] = useState(null); // { lat, lon, display_name }
+  const [geolocalizado, setGeolocalizado] = useState(false);
   const [buscandoMapa, setBuscandoMapa] = useState(false);
+
+  // Resultados de validación de cada paso
+  const [resultadosPasos, setResultadosPasos] = useState({});
+  const [validadoDenue, setValidadoDenue] = useState(false);
+  const [tamanoCalculado, setTamanoCalculado] = useState('');
+  const [idTamanoCalculado, setIdTamanoCalculado] = useState(null);
+
+  // Estados de interfaz, alertas y bloqueo
+  const [cargando, setCargando] = useState(false);
+  const [alerta, setAlerta] = useState(null); // { tipo: 'VERDE' | 'NARANJA' | 'ROJO', mensaje: '' }
+  const [bloqueado, setBloqueado] = useState(false);
+  const [registroExitoso, setRegistroExitoso] = useState(false);
 
   // Cargar catálogos al abrir la página
   useEffect(() => {
     async function cargarCatalogos() {
       try {
-        const data = await apiFetch("/api/mipymes/catalogos");
+        const data = await apiFetch('/api/mipymes/catalogos');
         setCatalogos(data);
+
+        // Preseleccionar primera entidad federativa si existe
         setForm((prev) => ({
           ...prev,
-          id_giro: data.giros?.[0]?.id_giro || "",
-          id_alcaldia_fiscal:
-            data.alcaldias_fiscal?.[0]?.id_alcaldia_fiscal || "",
-          id_entidad_federativa_fiscal:
-            data.entidades_fiscal?.[0]?.id_entidad_federativa_fiscal || "",
-          id_alcaldia_operaciones:
-            data.alcaldias_operaciones?.[0]?.id_alcaldia_operaciones || "",
-          id_entidad_federativa_operaciones:
-            data.entidades_operaciones?.[0]
-              ?.id_entidad_federativa_operaciones || "",
-          id_tamano: data.tamanos?.[0]?.id_catalogo_tamano || "",
+          id_entidad_federativa_fiscal: data.entidades_fiscal?.[0]?.id_entidad_federativa_fiscal || '',
+          id_entidad_federativa_operaciones: data.entidades_operaciones?.[0]?.id_entidad_federativa_operaciones || ''
         }));
       } catch (err) {
-        setErrorGeneral(
-          err.message || "No se pudieron cargar los catálogos de registro.",
-        );
-      } finally {
-        setCargandoCatalogos(false);
+        setAlerta({
+          tipo: 'NARANJA',
+          mensaje: err.message || 'No se pudieron cargar los catálogos del servidor. Recarga la página.'
+        });
       }
     }
     cargarCatalogos();
   }, []);
 
-  // Advertencia nativa si intenta recargar o cerrar la pestaña con avances
-  useEffect(() => {
-    const manejarSalida = (e) => {
-      if (form.nombre_comercial || form.rfc) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", manejarSalida);
-    return () => window.removeEventListener("beforeunload", manejarSalida);
-  }, [form.nombre_comercial, form.rfc]);
-
-  const pasoYaAprobadoVerde = resultadosPasos[pasoActual]?.estado === "VERDE";
-
-  const handleChange = (e) => {
+  // Actualizar campos de texto / selects
+  function manejarCambio(e) {
     const { name, value, type, checked } = e.target;
-    setErrorGeneral("");
+    setAlerta(null);
 
-    if (name === "mismo_domicilio") {
+    if (name === 'mismo_domicilio') {
+      setGeolocalizado(false);
+      setCoordenadas(null);
       setForm((prev) => ({
         ...prev,
         mismo_domicilio: checked,
-        ...(checked
-          ? {
-              cp_operaciones: prev.cp_fiscal,
-              calle_operaciones: prev.calle_fiscal,
-              numero_operaciones: prev.numero_fiscal,
-              id_alcaldia_operaciones: prev.id_alcaldia_fiscal,
-              id_entidad_federativa_operaciones:
-                prev.id_entidad_federativa_fiscal,
-            }
-          : {}),
+        cp_operaciones: checked ? prev.cp_fiscal : '',
+        calle_operaciones: checked ? prev.calle_fiscal : '',
+        numero_operaciones: checked ? prev.numero_fiscal : ''
       }));
       return;
     }
 
+    if (['cp_operaciones', 'calle_operaciones', 'numero_operaciones', 'id_alcaldia_operaciones'].includes(name)) {
+      setGeolocalizado(false);
+    }
+
+    const valorFinal = name === 'rfc' || name === 'curp' ? value.toUpperCase() : value;
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === 'checkbox' ? checked : valorFinal
     }));
-  };
+  }
 
-  const handleFileChange = (campo, file) => {
-    if (!file) return;
-    setArchivos((prev) => ({ ...prev, [campo]: file }));
-  };
+  // Validar y guardar archivo PDF seleccionado (máximo 5 MB)
+  function manejarArchivo(e, campo) {
+    const file = e.target.files?.[0];
+    setAlerta(null);
 
-  const quitarArchivo = (campo) => {
-    setArchivos((prev) => ({ ...prev, [campo]: null }));
-  };
-
-  // Geocodificación gratuita con OpenStreetMap (Nominatim)
-  const ubicarEnMapa = async () => {
-    setErrorGeneral("");
-    if (
-      !form.calle_operaciones ||
-      !form.numero_operaciones ||
-      !form.cp_operaciones
-    ) {
-      setErrorGeneral(
-        "Ingresa calle, número y código postal de operaciones antes de ubicar en el mapa.",
-      );
+    if (!file) {
+      setArchivos((prev) => ({ ...prev, [campo]: null }));
       return;
     }
 
-    setBuscandoMapa(true);
-    try {
-      const alcObj = catalogos.alcaldias_operaciones.find(
-        (a) =>
-          String(a.id_alcaldia_operaciones) ===
-          String(form.id_alcaldia_operaciones),
-      );
-      const alcaldiaNombre = alcObj?.opcion_alcaldia || "";
-      const query = encodeURIComponent(
-        `${form.calle_operaciones} ${form.numero_operaciones}, ${alcaldiaNombre}, ${form.cp_operaciones}, Ciudad de Mexico, Mexico`,
-      );
-      const resp = await fetch(`https://openstreetmap.org{query}`);
-      const results = await resp.json();
+    if (file.type !== 'application/pdf' || !file.name.toLowerCase().endsWith('.pdf')) {
+      setAlerta({ tipo: 'NARANJA', mensaje: 'Únicamente se aceptan documentos oficiales en formato PDF.' });
+      e.target.value = '';
+      return;
+    }
 
-      if (results && results.length > 0) {
-        setMapaCoords({
-          lat: parseFloat(results[0].lat),
-          lon: parseFloat(results[0].lon),
-          display: results[0].display_name,
-        });
-      } else {
-        setMapaCoords(null);
-        setErrorGeneral(
-          "No se encontró pin exacto en OpenStreetMap; podrás continuar, pero el paso quedará en Naranja para revisión.",
-        );
-      }
-    } catch {
-      setErrorGeneral(
-        "No se pudo consultar el servicio de mapas en este momento.",
+    if (file.size > 5 * 1024 * 1024) {
+      setAlerta({ tipo: 'NARANJA', mensaje: 'El archivo PDF no debe superar los 5 MB.' });
+      e.target.value = '';
+      return;
+    }
+
+    setArchivos((prev) => ({ ...prev, [campo]: file }));
+  }
+
+  // Ubicar domicilio de operaciones en OpenStreetMap (Nominatim)
+  async function ubicarEnMapa() {
+    setAlerta(null);
+
+    if (!form.calle_operaciones.trim() || !form.numero_operaciones.trim() || !form.cp_operaciones.trim()) {
+      setAlerta({
+        tipo: 'NARANJA',
+        mensaje: 'Ingresa Calle, Número y Código Postal del domicilio de operaciones antes de ubicar en el mapa.'
+      });
+      return;
+    }
+
+    const alcaldiaObj = catalogos.alcaldias_operaciones.find(
+      (a) => String(a.id_alcaldia_operaciones) === String(form.id_alcaldia_operaciones)
+    );
+    const nombreAlcaldia = alcaldiaObj?.opcion_alcaldia || '';
+
+    try {
+      setBuscandoMapa(true);
+      const query = encodeURIComponent(
+        `${form.calle_operaciones} ${form.numero_operaciones}, ${form.cp_operaciones}, ${nombreAlcaldia}, Mexico`
       );
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}`;
+      const resp = await fetch(url, {
+        headers: { 'Accept-Language': 'es' }
+      });
+      const resultados = await resp.json();
+
+      if (!Array.isArray(resultados) || resultados.length === 0) {
+        setGeolocalizado(false);
+        setCoordenadas(null);
+        setAlerta({
+          tipo: 'NARANJA',
+          mensaje: 'No encontramos ese domicilio exacto en el mapa. Verifica que la calle y el código postal estén bien escritos.'
+        });
+        return;
+      }
+
+      const lugar = resultados[0];
+      setCoordenadas({
+        lat: Number(lugar.lat),
+        lon: Number(lugar.lon),
+        display_name: lugar.display_name
+      });
+      setGeolocalizado(true);
+      setAlerta({
+        tipo: 'VERDE',
+        mensaje: 'Domicilio localizado correctamente en el mapa.'
+      });
+    } catch (err) {
+      setAlerta({
+        tipo: 'NARANJA',
+        mensaje: 'Error al consultar el servicio de mapas. Intenta nuevamente.'
+      });
     } finally {
       setBuscandoMapa(false);
     }
-  };
+  }
 
-  // Evaluar paso actual contra el backend (POST /api/mipymes/evaluar-paso)
-  const validarYAvanzar = async () => {
-    setErrorGeneral("");
-    setMensajePaso("");
+  // Evaluar cada paso (1 al 4) contra el backend antes de avanzar
+  async function validarYAvanzar(e) {
+    e.preventDefault();
+    if (bloqueado) return;
+    setAlerta(null);
 
-    if (pasoYaAprobadoVerde) {
-      setPasoActual((p) => p + 1);
-      return;
-    }
-
-    if (pasoActual === 5) {
-      setPasoActual(6);
-      return;
-    }
-
-    setProcesando(true);
     try {
+      setCargando(true);
       const fd = new FormData();
-      fd.append("paso", String(pasoActual));
-      fd.append("tipo_persona", form.tipo_persona);
+      fd.append('paso', String(pasoActual));
+      fd.append('rfc', form.rfc.trim());
+      fd.append('nombre_comercial', form.nombre_comercial.trim());
+      fd.append('tipo_persona', form.tipo_persona);
 
       if (pasoActual === 1) {
-        if (
-          !form.nombre_comercial.trim() ||
-          !form.representante_legal.trim() ||
-          !form.rfc.trim() ||
-          !form.cp_fiscal.trim() ||
-          !form.calle_fiscal.trim() ||
-          !form.numero_fiscal.trim()
-        ) {
-          throw new Error(
-            "Completa todos los campos fiscales obligatorios del Paso 1.",
-          );
-        }
-        fd.append("nombre_comercial", form.nombre_comercial);
-        fd.append("representante_legal", form.representante_legal);
-        fd.append("rfc", form.rfc.toUpperCase());
-        fd.append("id_giro", form.id_giro);
-        fd.append("cp_fiscal", form.cp_fiscal);
-        if (archivos.doc_csf) fd.append("doc_csf", archivos.doc_csf);
+        fd.append('id_giro', form.id_giro);
+        fd.append('cp_fiscal', form.cp_fiscal.trim());
+        fd.append('calle_fiscal', form.calle_fiscal.trim());
+        fd.append('numero_fiscal', form.numero_fiscal.trim());
+        fd.append('id_alcaldia_fiscal', form.id_alcaldia_fiscal);
+        if (archivos.doc_csf) fd.append('doc_csf', archivos.doc_csf);
       }
 
       if (pasoActual === 2) {
-        if (
-          !form.cp_operaciones.trim() ||
-          !form.calle_operaciones.trim() ||
-          !form.numero_operaciones.trim()
-        ) {
-          throw new Error(
-            "Completa todos los campos del domicilio de operaciones.",
-          );
-        }
-        fd.append("cp_operaciones", form.cp_operaciones);
-        fd.append("calle_operaciones", form.calle_operaciones);
-        fd.append("numero_operaciones", form.numero_operaciones);
-        fd.append("geolocalizado", mapaCoords ? "true" : "false");
-        if (archivos.doc_comprobante)
-          fd.append("doc_comprobante", archivos.doc_comprobante);
-        if (form.tipo_persona === "MORAL" && archivos.doc_acta) {
-          fd.append("doc_acta", archivos.doc_acta);
-        }
+        fd.append('cp_operaciones', form.cp_operaciones.trim());
+        fd.append('calle_operaciones', form.calle_operaciones.trim());
+        fd.append('numero_operaciones', form.numero_operaciones.trim());
+        fd.append('id_alcaldia_operaciones', form.id_alcaldia_operaciones);
+        fd.append('geolocalizado', String(geolocalizado));
+        if (archivos.doc_comprobante) fd.append('doc_comprobante', archivos.doc_comprobante);
       }
 
       if (pasoActual === 3) {
-        if (!form.curp.trim()) {
-          throw new Error("Ingresa la CURP del representante legal.");
-        }
-        fd.append("curp", form.curp.toUpperCase());
-        fd.append("rfc", form.rfc.toUpperCase());
-        if (archivos.doc_acreditacion)
-          fd.append("doc_acreditacion", archivos.doc_acreditacion);
+        fd.append('nombre_completo', form.nombre_completo.trim());
+        fd.append('curp', form.curp.trim());
+        if (archivos.doc_curp) fd.append('doc_curp', archivos.doc_curp);
       }
 
       if (pasoActual === 4) {
-        if (!form.numero_trabajadores || Number(form.numero_trabajadores) < 1) {
-          throw new Error("Ingresa el número de trabajadores (mínimo 1).");
-        }
-        fd.append("numero_trabajadores", form.numero_trabajadores);
-        fd.append("rfc", form.rfc.toUpperCase());
-        if (archivos.doc_opinion_32d)
-          fd.append("doc_opinion_32d", archivos.doc_opinion_32d);
+        fd.append('numero_trabajadores', String(form.numero_trabajadores));
+        if (archivos.doc_opinion_32d) fd.append('doc_opinion_32d', archivos.doc_opinion_32d);
       }
 
-      const resp = await apiFetch("/api/mipymes/evaluar-paso", {
-        method: "POST",
-        body: fd,
+      const data = await apiFetch('/api/mipymes/evaluar-paso', {
+        method: 'POST',
+        body: fd
       });
 
-      setResultadosPasos((prev) => ({
-        ...prev,
-        [pasoActual]: {
-          estado: resp.estado,
-          mensaje: resp.mensaje,
-        },
-      }));
-
-      if (pasoActual === 4 && resp.tamano_calculado) {
-        const match = catalogos.tamanos.find((t) =>
-          t.opcion_tamano_empresa
-            .toLowerCase()
-            .includes(resp.tamano_calculado.toLowerCase().split(" ")[0]),
-        );
-        if (match) {
-          setForm((prev) => ({ ...prev, id_tamano: match.id_catalogo_tamano }));
-        }
+      setResultadosPasos((prev) => ({ ...prev, [pasoActual]: data }));
+      if (pasoActual === 2) {
+        setValidadoDenue(Boolean(data.validado_denue));
+      }
+      if (pasoActual === 4) {
+        setTamanoCalculado(data.tamano_calculado || '');
+        setIdTamanoCalculado(data.id_tamano || null);
       }
 
-      setMensajePaso(resp.mensaje);
-      setPasoActual((p) => p + 1);
+      setAlerta({ tipo: 'VERDE', mensaje: data.mensaje });
+      setPasoActual((prev) => prev + 1);
     } catch (err) {
-      setErrorGeneral(err.message || "Error al validar los datos del paso.");
-      setResultadosPasos((prev) => ({
-        ...prev,
-        [pasoActual]: { estado: "ROJO", mensaje: err.message },
-      }));
+      const msg = err.message || 'No se pudo validar el paso.';
+      const esRojo =
+        msg.toLowerCase().includes('bloqueado') ||
+        msg.toLowerCase().includes('efos') ||
+        msg.toLowerCase().includes('listado negro') ||
+        msg.toLowerCase().includes('negativo') ||
+        msg.toLowerCase().includes('ya cuenta con una empresa') ||
+        msg.toLowerCase().includes('ya se encuentra asociada') ||
+        msg.toLowerCase().includes('límite de 3 intentos');
+
+      if (esRojo) setBloqueado(true);
+
+      setAlerta({
+        tipo: esRojo ? 'ROJO' : 'NARANJA',
+        mensaje: msg
+      });
     } finally {
-      setProcesando(false);
+      setCargando(false);
     }
-  };
-  // Envío final del registro completo (Paso 6 -> POST /api/mipymes/registro)
-  const finalizarRegistro = async (e) => {
+  }
+
+  // Enviar registro definitivo en el Paso 5
+  async function finalizarRegistro(e) {
     e.preventDefault();
-    setErrorGeneral("");
-    if (form.usuario.trim().length < 6) {
-      setErrorGeneral("El nombre de usuario debe tener al menos 6 caracteres.");
+    if (bloqueado) return;
+    setAlerta(null);
+
+    if (form.usuario.trim().length < 4) {
+      setAlerta({ tipo: 'NARANJA', mensaje: 'El nombre de usuario debe tener al menos 4 caracteres.' });
       return;
     }
-    const regexPass =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{12,}$/;
-    if (!regexPass.test(form.contrasena)) {
-      setErrorGeneral(
-        "La contraseña debe tener mínimo 12 caracteres, mayúscula, minúscula, número y carácter especial.",
-      );
+    if (form.contrasena.length < 8) {
+      setAlerta({ tipo: 'NARANJA', mensaje: 'La contraseña debe tener al menos 8 caracteres.' });
       return;
     }
     if (form.contrasena !== form.confirmar_contrasena) {
-      setErrorGeneral("Las contraseñas no coinciden.");
+      setAlerta({ tipo: 'NARANJA', mensaje: 'Las contraseñas no coinciden.' });
       return;
     }
-    if (!form.acepta_terminos) {
-      setErrorGeneral(
-        "Debes aceptar los Términos, Condiciones y el Aviso de Privacidad.",
-      );
-      return;
-    }
-    setProcesando(true);
+
     try {
+      setCargando(true);
       const payload = {
         usuario: form.usuario.trim(),
         contrasena: form.contrasena,
@@ -373,707 +336,809 @@ export default function RegistroMipyme() {
         rfc: form.rfc.trim().toUpperCase(),
         id_giro: Number(form.id_giro),
         numero_trabajadores: Number(form.numero_trabajadores),
-        id_tamano: Number(form.id_tamano),
+        id_tamano: idTamanoCalculado,
+        validado_denue: validadoDenue,
         domicilio_fiscal: {
           codigo_postal: form.cp_fiscal.trim(),
           calle: form.calle_fiscal.trim(),
           numero: form.numero_fiscal.trim(),
           id_alcaldia_fiscal: Number(form.id_alcaldia_fiscal),
-          id_entidad_federativa_fiscal: Number(
-            form.id_entidad_federativa_fiscal,
-          ),
+          id_entidad_federativa_fiscal: Number(form.id_entidad_federativa_fiscal)
         },
         domicilio_operaciones: {
           codigo_postal: form.cp_operaciones.trim(),
           calle: form.calle_operaciones.trim(),
           numero: form.numero_operaciones.trim(),
           id_alcaldia_operaciones: Number(form.id_alcaldia_operaciones),
-          id_entidad_federativa_operaciones: Number(
-            form.id_entidad_federativa_operaciones,
-          ),
+          id_entidad_federativa_operaciones: Number(form.id_entidad_federativa_operaciones)
         },
         actividad: {
-          pagina_web: form.pagina_web.trim(),
-          facebook: form.facebook.trim(),
-          instagram: form.instagram.trim(),
-          twitter: form.twitter.trim(),
+          pagina_web: form.pagina_web.trim() || null,
+          facebook: form.facebook.trim() || null,
+          instagram: form.instagram.trim() || null,
+          twitter: form.twitter.trim() || null
         },
         representante: {
-          nombre_completo: form.representante_legal.trim(),
-          curp: form.curp.trim().toUpperCase(),
-        },
-        resultados_pasos: {
-          paso1: resultadosPasos[1] || {
-            estado: "NARANJA",
-            mensaje: "Pendiente",
-          },
-          paso2: resultadosPasos[2] || {
-            estado: "NARANJA",
-            mensaje: "Pendiente",
-          },
-          paso3: resultadosPasos[3] || {
-            estado: "NARANJA",
-            mensaje: "Pendiente",
-          },
-          paso4: resultadosPasos[4] || {
-            estado: "NARANJA",
-            mensaje: "Pendiente",
-          },
-        },
+          nombre_completo: form.nombre_completo.trim(),
+          curp: form.curp.trim().toUpperCase()
+        }
       };
-      const resp = await apiFetch("/api/mipymes/registro", {
-        method: "POST",
-        body: payload,
-      });
-      alert(`${resp.mensaje}\n\n${resp.detalle_estatus}`);
 
-      router.push("/login");
+      await apiFetch('/api/mipymes/registro', {
+        method: 'POST',
+        body: payload
+      });
+
+      setRegistroExitoso(true);
     } catch (err) {
-      setErrorGeneral(
-        err.message || "No se pudo completar el registro de la MiPyME.",
-      );
+      const msg = err.message || 'No se pudo completar el registro.';
+      const esRojo =
+        msg.toLowerCase().includes('bloqueado') ||
+        msg.toLowerCase().includes('efos') ||
+        msg.toLowerCase().includes('listado negro');
+
+      if (esRojo) setBloqueado(true);
+
+      setAlerta({
+        tipo: esRojo ? 'ROJO' : 'NARANJA',
+        mensaje: msg
+      });
     } finally {
-      setProcesando(false);
+      setCargando(false);
     }
-  };
-  const cancelarRegistro = () => {
-    if (
-      confirm(
-        "¿Seguro que deseas cancelar el registro? Se perderán los datos capturados.",
-      )
-    ) {
-      router.push("/rol");
-    }
-  };
-  if (cargandoCatalogos) return <Cargando />;
-  const hayNaranjas = [1, 2, 3, 4].some(
-    (n) => resultadosPasos[n]?.estado === "NARANJA",
-  );
+  }
 
   return (
-    <div className={estilos.envolturaPagina}>
-      <section className={estilos.seccionFormulario}>
-        <div className={estilos.logoEsquina}>
-          <Link href="/">
-            <Image
-              src="/img/logo.png"
-              alt="Logo WorkGuard"
-              width={60}
-              height={60}
-              style={{ width: 'auto', height: 'auto' }}
-            />
-          </Link>
+    <main className={styles.contenedor}>
+      {/* LOGO EN LA ESQUINA */}
+      <img
+        src="/img/logo.png"
+        alt="Logo WorkGuard"
+        className={styles.logoEsquina}
+        onClick={() => router.push('/')}
+      />
+
+      <section className={styles.contenido}>
+        {/* LADO IZQUIERDO: ILUSTRACIÓN Y TEXTO INSTITUCIONAL */}
+        <div className={styles.panelImagen}>
+          <img
+            src="/img/consultores.png"
+            alt="Ilustración WorkGuard"
+            className={styles.ilustracion}
+          />
+          <h2>Tu seguridad es importante</h2>
+          <p>
+            Validamos tu existencia fiscal, domicilio y cumplimiento ante el SAT en memoria RAM.
+            Ningún PDF se almacena en nuestros servidores.
+          </p>
         </div>
 
-        <div className={estilos.tarjetaWizard}>
-          <div className={estilos.encabezado}>
-            <div>
-              <h1 className={estilos.titulo}>Verificación y Registro MiPyME</h1>
-              <p className={estilos.subtitulo}>
-                Completa las etapas para obtener el Sello de Confianza WorkGuard.
-              </p>
-            </div>
-            <button type="button" onClick={cancelarRegistro} className={estilos.botonCancelar}>
-              Cancelar
+        {/* LADO DERECHO: FORMULARIO Y PASOS */}
+        <div className={styles.panelFormulario}>
+          {/* BOTONES SUPERIORES */}
+          <div className={styles.accionesSuperiores}>
+            <button
+              type="button"
+              className={styles.botonVolverInicio}
+              onClick={() => router.push('/login')}
+            >
+              ¿Ya tienes cuenta? Inicia sesión
             </button>
           </div>
 
-          {/* Barra de progreso de 6 indicadores circulares */}
-          <div className={estilos.barraProgreso}>
-            {PASOS_TITULOS.map((etiqueta, idx) => {
-              const num = idx + 1;
-              const res = resultadosPasos[num]?.estado;
-              let claseCirculo = estilos.circulo;
-              if (num === pasoActual) claseCirculo += ` ${estilos.circuloActivo}`;
-              else if (res === 'VERDE') claseCirculo += ` ${estilos.circuloVerde}`;
-              else if (res === 'NARANJA') claseCirculo += ` ${estilos.circuloNaranja}`;
-              else if (res === 'ROJO') claseCirculo += ` ${estilos.circuloRojo}`;
+          {registroExitoso ? (
+            <div className={styles.pantallaExito}>
+              <div className={styles.selloActivoBadge}>🛡️ SELLO WORKGUARD ACTIVO</div>
+              <h1>¡Bienvenido a WorkGuard, {form.nombre_comercial}!</h1>
+              <p>
+                Tu empresa superó las 4 validaciones oficiales y ya es visible en el directorio
+                para los consultores verificados de la plataforma.
+              </p>
 
-              return (
-                <div key={num} className={estilos.pasoItem}>
-                  <div className={claseCirculo}>{res === 'VERDE' ? '✓' : num}</div>
-                  <span className={estilos.etiquetaPaso}>{etiqueta}</span>
+              <div className={styles.resumenFinal}>
+                <div>
+                  <span>RFC Validado:</span>
+                  <strong>{form.rfc}</strong>
                 </div>
-              );
-            })}
-          </div>
-
-          {errorGeneral && (
-            <div className={`${estilos.alerta} ${estilos.alertaRojo}`}>{errorGeneral}</div>
-          )}
-
-          {mensajePaso && !errorGeneral && (
-            <div
-              className={`${estilos.alerta} ${
-                resultadosPasos[pasoActual - 1]?.estado === 'VERDE'
-                  ? estilos.alertaVerde
-                  : estilos.alertaNaranja
-              }`}
-            >
-              <strong>Resultado paso anterior:</strong> {mensajePaso}
-            </div>
-          )}
-
-          {pasoYaAprobadoVerde && (
-            <div className={estilos.bannerBloqueado}>
-              ✓ Paso validado en Verde. Edición bloqueada para proteger la integridad de la verificación.
-            </div>
-          )}
-
-          {/* ================= PASO 1: EXISTENCIA FISCAL ================= */}
-          {pasoActual === 1 && (
-            <div>
-              <div className={estilos.selectorTipoPersona}>
-                <button
-                  type="button"
-                  disabled={pasoYaAprobadoVerde}
-                  onClick={() => setForm((p) => ({ ...p, tipo_persona: 'MORAL' }))}
-                  className={`${estilos.tarjetaTipo} ${form.tipo_persona === 'MORAL' ? estilos.tarjetaTipoActiva : ''}`}
-                >
-                  <span className={estilos.tarjetaTipoTitulo}>Persona Moral (Empresa)</span>
-                  <span className={estilos.tarjetaTipoDesc}>RFC de 12 caracteres y Acta Constitutiva.</span>
-                </button>
-
-                <button
-                  type="button"
-                  disabled={pasoYaAprobadoVerde}
-                  onClick={() => setForm((p) => ({ ...p, tipo_persona: 'FISICA' }))}
-                  className={`${estilos.tarjetaTipo} ${form.tipo_persona === 'FISICA' ? estilos.tarjetaTipoActiva : ''}`}
-                >
-                  <span className={estilos.tarjetaTipoTitulo}>Persona Física con Act. Empresarial</span>
-                  <span className={estilos.tarjetaTipoDesc}>RFC de 13 caracteres vinculado a CURP.</span>
-                </button>
-              </div>
-
-              <div className={estilos.gridCompacto}>
-                <div className={estilos.campo}>
-                  <label>Nombre Comercial *</label>
-                  <input
-                    className={estilos.input}
-                    name="nombre_comercial"
-                    value={form.nombre_comercial}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                    placeholder="Ej. Cafetería Roma"
-                  />
+                <div>
+                  <span>Clasificación DOF:</span>
+                  <strong>{tamanoCalculado || 'MiPyME'} ({form.numero_trabajadores} trabajadores)</strong>
                 </div>
-
-                <div className={estilos.campo}>
-                  <label>Representante Legal / Titular *</label>
-                  <input
-                    className={estilos.input}
-                    name="representante_legal"
-                    value={form.representante_legal}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                    placeholder="Nombre completo"
-                  />
-                </div>
-
-                <div className={estilos.campo}>
-                  <label>RFC ({form.tipo_persona === 'MORAL' ? '12' : '13'}&nbsp;caract.) *</label>
-                  <input
-                    className={estilos.input}
-                    name="rfc"
-                    maxLength={form.tipo_persona === 'MORAL' ? 12 : 13}
-                    value={form.rfc}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                    placeholder={form.tipo_persona === 'MORAL' ? 'ABC240101XY1' : 'LOAA900101XY1'}
-                  />
-                </div>
-
-                <div className={estilos.campo}>
-                  <label>Giro Principal *</label>
-                  <select
-                    className={estilos.select}
-                    name="id_giro"
-                    value={form.id_giro}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                  >
-                    {catalogos.giros.map((g) => (
-                      <option key={g.id_giro} value={g.id_giro}>
-                        {g.opcion_giro}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={estilos.campo}>
-                  <label>Calle Fiscal *</label>
-                  <input
-                    className={estilos.input}
-                    name="calle_fiscal"
-                    value={form.calle_fiscal}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                  />
-                </div>
-
-                <div className={estilos.campo}>
-                  <label>Número Ext / Int *</label>
-                  <input
-                    className={estilos.input}
-                    name="numero_fiscal"
-                    value={form.numero_fiscal}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                  />
-                </div>
-
-                <div className={estilos.campo}>
-                  <label>Código Postal Fiscal *</label>
-                  <input
-                    className={estilos.input}
-                    name="cp_fiscal"
-                    maxLength={5}
-                    value={form.cp_fiscal}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                  />
-                </div>
-
-                <div className={estilos.campo}>
-                  <label>Alcaldía Fiscal *</label>
-                  <select
-                    className={estilos.select}
-                    name="id_alcaldia_fiscal"
-                    value={form.id_alcaldia_fiscal}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                  >
-                    {catalogos.alcaldias_fiscal.map((a) => (
-                      <option key={a.id_alcaldia_fiscal} value={a.id_alcaldia_fiscal}>
-                        {a.opcion_alcaldia}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={estilos.campo}>
-                  <label>Constancia Situación Fiscal (PDF SAT)</label>
-                  <div className={estilos.cajaArchivo}>
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      disabled={pasoYaAprobadoVerde}
-                      onChange={(e) => handleFileChange('doc_csf', e.target.files)}
-                    />
-                    {archivos.doc_csf && !pasoYaAprobadoVerde && (
-                      <button type="button" onClick={() => quitarArchivo('doc_csf')} className={estilos.botonQuitarArchivo}>
-                        ✕
-                      </button>
-                    )}
-                  </div>
+                <div>
+                  <span>Respaldo DENUE (INEGI):</span>
+                  <strong>{validadoDenue ? '✓ Confirmado en DENUE' : 'Validado por Comprobante y Mapa'}</strong>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* ================= PASO 2: ACTIVIDAD Y UBICACIÓN ================= */}
-          {pasoActual === 2 && (
-            <div className={estilos.gridCompacto}>
-              <div className={estilos.campo}>
-                <label>Página Web (Opcional)</label>
-                <input
-                  className={estilos.input}
-                  name="pagina_web"
-                  value={form.pagina_web}
-                  onChange={handleChange}
-                  disabled={pasoYaAprobadoVerde}
-                  placeholder="https://tuempresa.mx"
-                />
-              </div>
-
-              <div className={estilos.campo}>
-                <label>Facebook (Opcional)</label>
-                <input
-                  className={estilos.input}
-                  name="facebook"
-                  value={form.facebook}
-                  onChange={handleChange}
-                  disabled={pasoYaAprobadoVerde}
-                />
-              </div>
-
-              <div className={estilos.campo}>
-                <label>Instagram / X (Opcional)</label>
-                <input
-                  className={estilos.input}
-                  name="instagram_x"
-                  value={form.instagram_x}
-                  onChange={handleChange}
-                  disabled={pasoYaAprobadoVerde}
-                />
-              </div>
-
-              <div className={`${estilos.campo} ${estilos.campoCompleto}`}>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="mismo_domicilio"
-                    checked={form.mismo_domicilio}
-                    onChange={handleChange}
-                    disabled={pasoYaAprobadoVerde}
-                  />{' '}
-                  El domicilio de operaciones es el mismo que el domicilio fiscal.
-                </label>
-              </div>
-
-              {!form.mismo_domicilio && (
-                <>
-                  <div className={estilos.campo}>
-                    <label>Calle Operaciones *</label>
-                    <input
-                      className={estilos.input}
-                      name="calle_operaciones"
-                      value={form.calle_operaciones}
-                      onChange={handleChange}
-                      disabled={pasoYaAprobadoVerde}
-                    />
-                  </div>
-                  <div className={estilos.campo}>
-                    <label>Número *</label>
-                    <input
-                      className={estilos.input}
-                      name="numero_operaciones"
-                      value={form.numero_operaciones}
-                      onChange={handleChange}
-                      disabled={pasoYaAprobadoVerde}
-                    />
-                  </div>
-                  <div className={estilos.campo}>
-                    <label>Código Postal *</label>
-                    <input
-                      className={estilos.input}
-                      name="cp_operaciones"
-                      maxLength={5}
-                      value={form.cp_operaciones}
-                      onChange={handleChange}
-                      disabled={pasoYaAprobadoVerde}
-                    />
-                  </div>
-                  <div className={estilos.campo}>
-                    <label>Alcaldía Operaciones *</label>
-                    <select
-                      className={estilos.select}
-                      name="id_alcaldia_operaciones"
-                      value={form.id_alcaldia_operaciones}
-                      onChange={handleChange}
-                      disabled={pasoYaAprobadoVerde}
-                    >
-                      {catalogos.alcaldias_operaciones.map((a) => (
-                        <option key={a.id_alcaldia_operaciones} value={a.id_alcaldia_operaciones}>
-                          {a.opcion_alcaldia}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )}
-
-              <div className={estilos.campo}>
-                <label>Comprobante Domicilio (PDF &le; 4MB)</label>
-                <div className={estilos.cajaArchivo}>
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    disabled={pasoYaAprobadoVerde}
-                    onChange={(e) => handleFileChange('doc_comprobante', e.target.files)}
-                  />
-                  {archivos.doc_comprobante && !pasoYaAprobadoVerde && (
-                    <button type="button" onClick={() => quitarArchivo('doc_comprobante')} className={estilos.botonQuitarArchivo}>
-                      ✕
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {form.tipo_persona === 'MORAL' && (
-                <div className={estilos.campo}>
-                  <label>Acta Constitutiva (PDF)</label>
-                  <div className={estilos.cajaArchivo}>
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      disabled={pasoYaAprobadoVerde}
-                      onChange={(e) => handleFileChange('doc_acta', e.target.files)}
-                    />
-                    {archivos.doc_acta && !pasoYaAprobadoVerde && (
-                      <button type="button" onClick={() => quitarArchivo('doc_acta')} className={estilos.botonQuitarArchivo}>
-                        ✕
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              <div className={`${estilos.campoCompleto} ${estilos.filaMapa}`}>
-                <button
-                  type="button"
-                  onClick={ubicarEnMapa}
-                  disabled={buscandoMapa || pasoYaAprobadoVerde}
-                  className={estilos.botonSecundario}
-                >
-                  {buscandoMapa ? 'Buscando...' : '📍 Ubicar en Mapa'}
-                </button>
-
-                {mapaCoords && (
-                  <iframe
-                    title="Mapa de operaciones"
-                    className={estilos.iframeMapa}
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapaCoords.lon - 0.005}%2C${mapaCoords.lat - 0.005}%2C${mapaCoords.lon + 0.005}%2C${mapaCoords.lat + 0.005}&layer=mapnik&marker=${mapaCoords.lat}%2C${mapaCoords.lon}`}
-                  />
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ================= PASO 3: REPRESENTANTE Y CURP ================= */}
-          {pasoActual === 3 && (
-            <div className={estilos.gridCompacto}>
-              <div className={estilos.campo}>
-                <label>Nombre del Representante</label>
-                <input
-                  className={estilos.input}
-                  value={form.representante_legal}
-                  disabled
-                />
-              </div>
-              <div className={estilos.campo}>
-                <label>CURP (18 caracteres) *</label>
-                <input
-                  className={estilos.input}
-                  name="curp"
-                  maxLength={18}
-                  value={form.curp}
-                  onChange={handleChange}
-                  disabled={pasoYaAprobadoVerde}
-                  placeholder="AAAA000000HDFRRN00"
-                />
-              </div>
-              <div className={`${estilos.campo} ${estilos.campoCompleto}`}>
-                <label>Documento de Acreditación / Poder Notarial / Constancia CURP (PDF)</label>
-                <div className={estilos.cajaArchivo}>
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    disabled={pasoYaAprobadoVerde}
-                    onChange={(e) => handleFileChange('doc_acreditacion', e.target.files)}
-                  />
-                  {archivos.doc_acreditacion && !pasoYaAprobadoVerde && (
-                    <button type="button" onClick={() => quitarArchivo('doc_acreditacion')} className={estilos.botonQuitarArchivo}>
-                      ✕
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ================= PASO 4: SITUACIÓN FISCAL Y TAMAÑO ================= */}
-          {pasoActual === 4 && (
-            <div className={estilos.gridCompacto}>
-              <div className={estilos.campo}>
-                <label>Número de Trabajadores Activos (1 - 250) *</label>
-                <input
-                  type="number"
-                  className={estilos.input}
-                  name="num_trabajadores"
-                  min={1}
-                  max={250}
-                  value={form.num_trabajadores}
-                  onChange={handleChange}
-                  disabled={pasoYaAprobadoVerde}
-                />
-              </div>
-
-              <div className={estilos.campo}>
-                <label>Tamaño Autodeclarado (DOF) *</label>
-                <select
-                  className={estilos.select}
-                  name="id_tamano_empresa"
-                  value={form.id_tamano_empresa}
-                  onChange={handleChange}
-                  disabled={pasoYaAprobadoVerde}
-                >
-                  {catalogos.tamanos.map((t) => (
-                    <option key={t.id_tamano_empresa} value={t.id_tamano_empresa}>
-                      {t.opcion_tamano_empresa}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className={`${estilos.campo} ${estilos.campoCompleto}`}>
-                <label>Opinión del Cumplimiento de Obligaciones Fiscales 32-D (PDF SAT &le; 30 días)</label>
-                <div className={estilos.cajaArchivo}>
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    disabled={pasoYaAprobadoVerde}
-                    onChange={(e) => handleFileChange('doc_opinion_32d', e.target.files)}
-                  />
-                  {archivos.doc_opinion_32d && !pasoYaAprobadoVerde && (
-                    <button type="button" onClick={() => quitarArchivo('doc_opinion_32d')} className={estilos.botonQuitarArchivo}>
-                      ✕
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ================= PASO 5: DICTAMEN DE CUMPLIMIENTO ================= */}
-          {pasoActual === 5 && (
-            <div>
-              {hayNaranjas ? (
-                <div className={`${estilos.alerta} ${estilos.alertaNaranja}`}>
-                  ⚠️ Indicadores en Naranja: Puedes crear tu cuenta, pero tu empresa no será visible para consultores ni tendrá Sello WorkGuard hasta que un Administrador la apruebe manualmente.
-                </div>
-              ) : (
-                <div className={`${estilos.alerta} ${estilos.alertaVerde}`}>
-                  ✓ Validación Exitosa: Todos tus rubros están en Verde y listos para confirmación final del Administrador.
-                </div>
-              )}
-
-              {[1, 2, 3, 4].map((num) => {
-                const info = resultadosPasos[num] || { estado: 'NARANJA', mensaje: 'Pendiente' };
-                const claseBadge =
-                  info.estado === 'VERDE'
-                    ? estilos.badgeVerde
-                    : info.estado === 'ROJO'
-                    ? estilos.badgeRojo
-                    : estilos.badgeNaranja;
-                return (
-                  <div key={num} className={estilos.filaDictamen}>
-                    <span>{PASOS_TITULOS[num - 1]} — {info.mensaje}</span>
-                    <span className={`${estilos.badge} ${claseBadge}`}>{info.estado}</span>
-                  </div>
-                );
-              })}
-
-              <div className={estilos.filaDictamen}>
-                <span>Listado EFOS (Art. 69-B SAT) — Sin antecedentes</span>
-                <span className={`${estilos.badge} ${estilos.badgeVerde}`}>LIMPIO</span>
-              </div>
-            </div>
-          )}
-
-          {/* ================= PASO 6: CREAR CUENTA ================= */}
-          {pasoActual === 6 && (
-            <div className={estilos.gridCompacto}>
-              <div className={estilos.campo}>
-                <label>Usuario (6 a 15 caract.) *</label>
-                <input
-                  className={estilos.input}
-                  name="usuario"
-                  value={form.usuario}
-                  onChange={handleChange}
-                  placeholder="usuario_mipyme"
-                />
-              </div>
-
-              <div className={estilos.campo}>
-                <label>Contraseña (mín. 12, Mayús/Min/Núm/Símb) *</label>
-                <input
-                  type="password"
-                  className={estilos.input}
-                  name="contrasena"
-                  value={form.contrasena}
-                  onChange={handleChange}
-                  placeholder="••••••••••••"
-                />
-              </div>
-
-              <div className={estilos.campo}>
-                <label>Confirmar Contraseña *</label>
-                <input
-                  type="password"
-                  className={estilos.input}
-                  name="confirmar_contrasena"
-                  value={form.confirmar_contrasena}
-                  onChange={handleChange}
-                  placeholder="••••••••••••"
-                />
-              </div>
-
-              <div className={`${estilos.campo} ${estilos.campoCompleto}`}>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="acepto_terminos"
-                    checked={form.acepto_terminos}
-                    onChange={handleChange}
-                  />{' '}
-                  Acepto los Términos, Condiciones y Aviso de Privacidad de WorkGuard (los PDFs analizados no se almacenan).
-                </label>
-              </div>
-
-              <div className={`${estilos.campoCompleto} ${estilos.accionesCrear}`}>
-                <button
-                  type="button"
-                  onClick={() => setPasoActual(5)}
-                  className={estilos.botonSecundario}
-                  disabled={procesando}
-                >
-                  ← Regresar al Dictamen
-                </button>
-                <button
-                  type="button"
-                  onClick={() => alert('¡Cuenta creada con éxito!')}
-                  className={estilos.botonPrimario}
-                  disabled={procesando || !form.acepto_terminos}
-                >
-                  {procesando ? 'Registrando...' : 'Finalizar y Crear Cuenta'}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Botonera de navegación para los pasos 1 al 5 */}
-          {pasoActual < 6 && (
-            <div className={estilos.botoneraPaso}>
-              {pasoActual > 1 ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setErrorGeneral('');
-                    setPasoActual((p) => p - 1);
-                  }}
-                  className={estilos.botonSecundario}
-                  disabled={procesando}
-                >
-                  ← Anterior
-                </button>
-              ) : (
-                <div />
-              )}
 
               <button
                 type="button"
-                onClick={() => {
-                  setErrorGeneral('');
-                  if (pasoActual === 5) {
-                    setPasoActual(6);
-                  } else {
-                    setPasoActual((p) => p + 1);
-                  }
-                }}
-                className={estilos.botonPrimario}
-                disabled={procesando}
+                className={styles.botonPrincipal}
+                onClick={() => router.push('/login')}
               >
-                {procesando
-                  ? 'Validando...'
-                  : pasoActual === 5
-                  ? 'Continuar a Crear Cuenta →'
-                  : 'Validar y Continuar →'}
+                Ir a Iniciar Sesión
               </button>
             </div>
+          ) : (
+            <>
+              <div className={styles.cabeceraPaso}>
+                <div className={styles.cabeceraTexto}>
+                  <span className={styles.indicadorPaso}>Paso {pasoActual} de 5</span>
+                  <h1>{PASOS_WIZARD[pasoActual - 1]?.titulo}</h1>
+                  <p className={styles.subtitulo}>
+                    Completa los datos exactamente como aparecen en tus documentos oficiales.
+                  </p>
+                </div>
+
+                {/* PUNTOS DE VERIFICACIÓN SUPERIORES DERECHOS */}
+                <div className={styles.indicadoresDerechaSuperior}>
+                  {PASOS_WIZARD.map((p) => {
+                    const completado = pasoActual > p.num;
+                    const activo = pasoActual === p.num;
+                    return (
+                      <div
+                        key={p.num}
+                        className={`${styles.puntoPasoSuperior} ${activo ? styles.activo : ''} ${
+                          completado ? styles.completado : ''
+                        }`}
+                        title={`${p.num}. ${p.titulo}`}
+                      >
+                        {completado ? '✓' : p.num}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* BANNER DE ALERTAS (VERDE / NARANJA / ROJO) */}
+              {alerta && (
+                <div
+                  className={`${styles.alerta} ${
+                    alerta.tipo === 'VERDE'
+                      ? styles.alertaVerde
+                      : alerta.tipo === 'ROJO'
+                      ? styles.alertaRoja
+                      : styles.alertaNaranja
+                  }`}
+                >
+                  <strong>
+                    {alerta.tipo === 'VERDE'
+                      ? '✓ Validado: '
+                      : alerta.tipo === 'ROJO'
+                      ? '⛔ Registro Bloqueado: '
+                      : '⚠️ Atención: '}
+                  </strong>
+                  <span>{alerta.mensaje}</span>
+                </div>
+              )}
+
+              {/* ========================================================= */}
+              {/* PASO 1: EXISTENCIA FISCAL                                 */}
+              {/* ========================================================= */}
+              {pasoActual === 1 && (
+                <form onSubmit={validarYAvanzar} className={styles.formulario}>
+                  <div className={styles.filaDos}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="tipo_persona">Tipo de Persona *</label>
+                      <select
+                        id="tipo_persona"
+                        name="tipo_persona"
+                        value={form.tipo_persona}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      >
+                        <option value="MORAL">Persona Moral (Empresa / Sociedad)</option>
+                        <option value="FISICA">Persona Física con Actividad Empresarial</option>
+                      </select>
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="rfc">
+                        RFC ({form.tipo_persona === 'MORAL' ? '12 caracteres' : '13 caracteres'}) *
+                      </label>
+                      <input
+                        id="rfc"
+                        name="rfc"
+                        type="text"
+                        maxLength={form.tipo_persona === 'MORAL' ? 12 : 13}
+                        placeholder={form.tipo_persona === 'MORAL' ? 'ABC210101XYZ' : 'ABCD900101XYZ'}
+                        value={form.rfc}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.filaDos}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="nombre_comercial">Nombre Comercial *</label>
+                      <input
+                        id="nombre_comercial"
+                        name="nombre_comercial"
+                        type="text"
+                        placeholder="Ej. Soluciones Industriales del Centro"
+                        value={form.nombre_comercial}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="id_giro">Giro Comercial *</label>
+                      <select
+                        id="id_giro"
+                        name="id_giro"
+                        value={form.id_giro}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      >
+                        <option value="">Selecciona un giro...</option>
+                        {catalogos.giros?.map((g) => (
+                          <option key={g.id_giro} value={g.id_giro}>
+                            {g.opcion_giro}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <h3 className={styles.seccionTitulo}>Domicilio Fiscal</h3>
+
+                  <div className={styles.filaTres}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="calle_fiscal">Calle *</label>
+                      <input
+                        id="calle_fiscal"
+                        name="calle_fiscal"
+                        type="text"
+                        placeholder="Av. Insurgentes Sur"
+                        value={form.calle_fiscal}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="numero_fiscal">Número Exterior *</label>
+                      <input
+                        id="numero_fiscal"
+                        name="numero_fiscal"
+                        type="text"
+                        placeholder="1450"
+                        value={form.numero_fiscal}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="cp_fiscal">Código Postal *</label>
+                      <input
+                        id="cp_fiscal"
+                        name="cp_fiscal"
+                        type="text"
+                        maxLength={5}
+                        placeholder="03100"
+                        value={form.cp_fiscal}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.filaDos}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="id_entidad_federativa_fiscal">Entidad Federativa *</label>
+                      <select
+                        id="id_entidad_federativa_fiscal"
+                        name="id_entidad_federativa_fiscal"
+                        value={form.id_entidad_federativa_fiscal}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      >
+                        <option value="">Selecciona entidad...</option>
+                        {catalogos.entidades_fiscal?.map((e) => (
+                          <option key={e.id_entidad_federativa_fiscal} value={e.id_entidad_federativa_fiscal}>
+                            {e.opcion_entidad_federativa}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="id_alcaldia_fiscal">Alcaldía / Municipio *</label>
+                      <select
+                        id="id_alcaldia_fiscal"
+                        name="id_alcaldia_fiscal"
+                        value={form.id_alcaldia_fiscal}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      >
+                        <option value="">Selecciona alcaldía...</option>
+                        {catalogos.alcaldias_fiscal?.map((a) => (
+                          <option key={a.id_alcaldia_fiscal} value={a.id_alcaldia_fiscal}>
+                            {a.opcion_alcaldia}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className={styles.grupoArchivo}>
+                    <label htmlFor="doc_csf">Constancia de Situación Fiscal (PDF original del SAT con QR) *</label>
+                    <input
+                      id="doc_csf"
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={(e) => manejarArchivo(e, 'doc_csf')}
+                      disabled={bloqueado}
+                      required
+                    />
+                    <small>Se verificará automáticamente el RFC y el Código QR oficial del SAT.</small>
+                  </div>
+
+                  <div className={styles.acciones}>
+                    <button
+                      type="submit"
+                      className={styles.botonPrincipal}
+                      disabled={cargando || bloqueado}
+                    >
+                      {cargando ? 'Validando con SAT...' : 'Validar Paso 1 y Continuar →'}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* ========================================================= */}
+              {/* PASO 2: ACTIVIDAD Y UBICACIÓN                             */}
+              {/* ========================================================= */}
+              {pasoActual === 2 && (
+                <form onSubmit={validarYAvanzar} className={styles.formulario}>
+                  <div className={styles.grupoCheckbox}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="mismo_domicilio"
+                        checked={form.mismo_domicilio}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                      />
+                      <span>El domicilio de operaciones es el mismo que el domicilio fiscal</span>
+                    </label>
+                  </div>
+
+                  <div className={styles.filaTres}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="calle_operaciones">Calle de Operaciones *</label>
+                      <input
+                        id="calle_operaciones"
+                        name="calle_operaciones"
+                        type="text"
+                        placeholder="Av. Reforma"
+                        value={form.calle_operaciones}
+                        onChange={manejarCambio}
+                        disabled={bloqueado || form.mismo_domicilio}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="numero_operaciones">Número Exterior *</label>
+                      <input
+                        id="numero_operaciones"
+                        name="numero_operaciones"
+                        type="text"
+                        placeholder="222"
+                        value={form.numero_operaciones}
+                        onChange={manejarCambio}
+                        disabled={bloqueado || form.mismo_domicilio}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="cp_operaciones">Código Postal *</label>
+                      <input
+                        id="cp_operaciones"
+                        name="cp_operaciones"
+                        type="text"
+                        maxLength={5}
+                        placeholder="06600"
+                        value={form.cp_operaciones}
+                        onChange={manejarCambio}
+                        disabled={bloqueado || form.mismo_domicilio}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.filaDos}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="id_entidad_federativa_operaciones">Entidad Federativa *</label>
+                      <select
+                        id="id_entidad_federativa_operaciones"
+                        name="id_entidad_federativa_operaciones"
+                        value={form.id_entidad_federativa_operaciones}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      >
+                        <option value="">Selecciona entidad...</option>
+                        {catalogos.entidades_operaciones?.map((e) => (
+                          <option key={e.id_entidad_federativa_operaciones} value={e.id_entidad_federativa_operaciones}>
+                            {e.opcion_entidad_federativa}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="id_alcaldia_operaciones">Alcaldía / Municipio *</label>
+                      <select
+                        id="id_alcaldia_operaciones"
+                        name="id_alcaldia_operaciones"
+                        value={form.id_alcaldia_operaciones}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      >
+                        <option value="">Selecciona alcaldía...</option>
+                        {catalogos.alcaldias_operaciones?.map((a) => (
+                          <option key={a.id_alcaldia_operaciones} value={a.id_alcaldia_operaciones}>
+                            {a.opcion_alcaldia}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* BOTÓN Y VISTA PREVIA DE MAPA */}
+                  <div className={styles.cajaMapa}>
+                    <div className={styles.cabeceraMapa}>
+                      <div>
+                        <strong>Verificación Geográfica del Establecimiento *</strong>
+                        <p>Confirma que tu ubicación física exista antes de subir tu comprobante.</p>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.botonSecundario}
+                        onClick={ubicarEnMapa}
+                        disabled={buscandoMapa || bloqueado}
+                      >
+                        {buscandoMapa ? 'Buscando...' : geolocalizado ? '✓ Ubicado en Mapa' : '📍 Ubicar en Mapa'}
+                      </button>
+                    </div>
+
+                    {coordenadas && (
+                      <div className={styles.vistaPreviaMapa}>
+                        <iframe
+                          title="Mapa de ubicación MiPyME"
+                          width="100%"
+                          height="160"
+                          frameBorder="0"
+                          src={`https://www.openstreetmap.org/export/embed.html?bbox=${
+                            coordenadas.lon - 0.005
+                          }%2C${coordenadas.lat - 0.005}%2C${coordenadas.lon + 0.005}%2C${
+                            coordenadas.lat + 0.005
+                          }&layer=mapnik&marker=${coordenadas.lat}%2C${coordenadas.lon}`}
+                        />
+                        <small>{coordenadas.display_name}</small>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={styles.grupoArchivo}>
+                    <label htmlFor="doc_comprobante">Comprobante de Domicilio Digital (Luz, Agua, Teléfono o Predial en PDF) *</label>
+                    <input
+                      id="doc_comprobante"
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={(e) => manejarArchivo(e, 'doc_comprobante')}
+                      disabled={bloqueado}
+                      required
+                    />
+                  </div>
+
+                  <h3 className={styles.seccionTitulo}>Presencia Digital (Opcional)</h3>
+
+                  <div className={styles.filaDos}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="pagina_web">Sitio Web</label>
+                      <input
+                        id="pagina_web"
+                        name="pagina_web"
+                        type="url"
+                        placeholder="https://www.tuempresa.com"
+                        value={form.pagina_web}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="facebook">Facebook</label>
+                      <input
+                        id="facebook"
+                        name="facebook"
+                        type="text"
+                        placeholder="facebook.com/tuempresa"
+                        value={form.facebook}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.filaDos}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="instagram">Instagram</label>
+                      <input
+                        id="instagram"
+                        name="instagram"
+                        type="text"
+                        placeholder="@tuempresa"
+                        value={form.instagram}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="twitter">X (Twitter)</label>
+                      <input
+                        id="twitter"
+                        name="twitter"
+                        type="text"
+                        placeholder="@tuempresa"
+                        value={form.twitter}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.accionesDoble}>
+                    <button
+                      type="button"
+                      className={styles.botonAtras}
+                      onClick={() => setPasoActual(1)}
+                      disabled={cargando || bloqueado}
+                    >
+                      ← Anterior
+                    </button>
+
+                    <button
+                      type="submit"
+                      className={styles.botonPrincipal}
+                      disabled={cargando || bloqueado}
+                    >
+                      {cargando ? 'Validando Ubicación...' : 'Validar Paso 2 y Continuar →'}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* ========================================================= */}
+              {/* PASO 3: REPRESENTANTE LEGAL / TITULAR                     */}
+              {/* ========================================================= */}
+              {pasoActual === 3 && (
+                <form onSubmit={validarYAvanzar} className={styles.formulario}>
+                  <div className={styles.grupo}>
+                    <label htmlFor="nombre_completo">
+                      Nombre Completo del {form.tipo_persona === 'MORAL' ? 'Representante Legal' : 'Titular'} *
+                    </label>
+                    <input
+                      id="nombre_completo"
+                      name="nombre_completo"
+                      type="text"
+                      placeholder="Nombre(s) y Apellidos"
+                      value={form.nombre_completo}
+                      onChange={manejarCambio}
+                      disabled={bloqueado}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.grupo}>
+                    <label htmlFor="curp">CURP (18 caracteres) *</label>
+                    <input
+                      id="curp"
+                      name="curp"
+                      type="text"
+                      maxLength={18}
+                      placeholder="ABCD900101HDFXXX00"
+                      value={form.curp}
+                      onChange={manejarCambio}
+                      disabled={bloqueado}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.grupoArchivo}>
+                    <label htmlFor="doc_curp">Constancia Oficial de la CURP (PDF descargado de gob.mx/curp) *</label>
+                    <input
+                      id="doc_curp"
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={(e) => manejarArchivo(e, 'doc_curp')}
+                      disabled={bloqueado}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.accionesDoble}>
+                    <button
+                      type="button"
+                      className={styles.botonAtras}
+                      onClick={() => setPasoActual(2)}
+                      disabled={cargando || bloqueado}
+                    >
+                      ← Anterior
+                    </button>
+
+                    <button
+                      type="submit"
+                      className={styles.botonPrincipal}
+                      disabled={cargando || bloqueado}
+                    >
+                      {cargando ? 'Validando Identidad...' : 'Validar Paso 3 y Continuar →'}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* ========================================================= */}
+              {/* PASO 4: CUMPLIMIENTO Y TAMAÑO (DOF + OPINIÓN 32-D)        */}
+              {/* ========================================================= */}
+              {pasoActual === 4 && (
+                <form onSubmit={validarYAvanzar} className={styles.formulario}>
+                  <div className={styles.grupo}>
+                    <label htmlFor="numero_trabajadores">
+                      Número Total de Trabajadores (1 a 250 según criterios DOF) *
+                    </label>
+                    <input
+                      id="numero_trabajadores"
+                      name="numero_trabajadores"
+                      type="number"
+                      min={1}
+                      max={250}
+                      placeholder="Ej. 15"
+                      value={form.numero_trabajadores}
+                      onChange={manejarCambio}
+                      disabled={bloqueado}
+                      required
+                    />
+                    <small>1–10: Microempresa | 11–50: Pequeña empresa | 51–250: Mediana empresa.</small>
+                  </div>
+
+                  <div className={styles.grupoArchivo}>
+                    <label htmlFor="doc_opinion_32d">
+                      Opinión del Cumplimiento de Obligaciones Fiscales 32-D (PDF POSITIVO del SAT) *
+                    </label>
+                    <input
+                      id="doc_opinion_32d"
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={(e) => manejarArchivo(e, 'doc_opinion_32d')}
+                      disabled={bloqueado}
+                      required
+                    />
+                    <small>Se verificará sentido POSITIVO, RFC y Código QR oficial del SAT.</small>
+                  </div>
+
+                  <div className={styles.accionesDoble}>
+                    <button
+                      type="button"
+                      className={styles.botonAtras}
+                      onClick={() => setPasoActual(3)}
+                      disabled={cargando || bloqueado}
+                    >
+                      ← Anterior
+                    </button>
+
+                    <button
+                      type="submit"
+                      className={styles.botonPrincipal}
+                      disabled={cargando || bloqueado}
+                    >
+                      {cargando ? 'Verificando 32-D...' : 'Validar Paso 4 y Continuar →'}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* ========================================================= */}
+              {/* PASO 5: CREDENCIALES Y ACTIVACIÓN DE SELLO                */}
+              {/* ========================================================= */}
+              {pasoActual === 5 && (
+                <form onSubmit={finalizarRegistro} className={styles.formulario}>
+                  <div className={styles.resumenVerificacion}>
+                    <strong>✓ Todas las validaciones oficiales fueron aprobadas</strong>
+                    <p>
+                      Empresa: {form.nombre_comercial} | RFC: {form.rfc} | Clasificación:{' '}
+                      <strong>{tamanoCalculado || 'MiPyME'}</strong>
+                    </p>
+                  </div>
+
+                  <div className={styles.grupo}>
+                    <label htmlFor="usuario">Nombre de Usuario para Iniciar Sesión *</label>
+                    <input
+                      id="usuario"
+                      name="usuario"
+                      type="text"
+                      minLength={4}
+                      placeholder="Ej. soluciones_centro"
+                      value={form.usuario}
+                      onChange={manejarCambio}
+                      disabled={bloqueado}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.filaDos}>
+                    <div className={styles.grupo}>
+                      <label htmlFor="contrasena">Contraseña (mínimo 8 caracteres) *</label>
+                      <input
+                        id="contrasena"
+                        name="contrasena"
+                        type="password"
+                        minLength={8}
+                        placeholder="••••••••"
+                        value={form.contrasena}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.grupo}>
+                      <label htmlFor="confirmar_contrasena">Confirmar Contraseña *</label>
+                      <input
+                        id="confirmar_contrasena"
+                        name="confirmar_contrasena"
+                        type="password"
+                        minLength={8}
+                        placeholder="••••••••"
+                        value={form.confirmar_contrasena}
+                        onChange={manejarCambio}
+                        disabled={bloqueado}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.accionesDoble}>
+                    <button
+                      type="button"
+                      className={styles.botonAtras}
+                      onClick={() => setPasoActual(4)}
+                      disabled={cargando || bloqueado}
+                    >
+                      ← Anterior
+                    </button>
+
+                    <button
+                      type="submit"
+                      className={styles.botonPrincipal}
+                      disabled={cargando || bloqueado}
+                    >
+                      {cargando ? 'Creando cuenta...' : 'Finalizar y Activar Sello WorkGuard'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </>
           )}
         </div>
       </section>
-    </div>
+    </main>
   );
 }
