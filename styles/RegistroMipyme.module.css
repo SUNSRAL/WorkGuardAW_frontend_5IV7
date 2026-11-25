@@ -14,10 +14,10 @@
 /* LOGO EN LA ESQUINA */
 .logoEsquina {
     position: absolute;
-    top: 30px;
-    left: 40px;
+    top: 25px;
+    left: 35px;
     z-index: 20;
-    width: 80px;
+    width: 75px;
     height: auto;
     object-fit: contain;
     cursor: pointer;
@@ -26,7 +26,7 @@
 /* DISTRIBUCIÓN PRINCIPAL (1/3 y 2/3) */
 .contenido {
     display: grid;
-    grid-template-columns: 38% 62%;
+    grid-template-columns: 35% 65%;
     width: 100%;
     min-height: 100vh;
     flex: 1;
@@ -51,16 +51,16 @@
 
 .ilustracion {
     width: 100%;
-    max-width: 420px;
-    max-height: 55vh;
+    max-width: 400px;
+    max-height: 50vh;
     height: auto;
     object-fit: contain;
     margin-bottom: 20px;
 }
 
 .panelImagen h2 {
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-size: 26px;
+    margin-bottom: 10px;
     color: #1B263B;
     font-weight: bold;
 }
@@ -69,28 +69,161 @@
     max-width: 360px;
     line-height: 1.5;
     color: #1B263B;
-    font-size: 14px;
+    font-size: 15px;
 }
 
-/* LADO DERECHO (Formulario y botones superiores) */
+/* LADO DERECHO (Formulario centrado verticalmente) */
 .panelFormulario {
     background-color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 60px 50px 40px;
+    justify-content: center; /* Centrado vertical perfecto */
+    padding: 35px 50px;
     box-sizing: border-box;
     min-width: 0;
     position: relative;
 }
 
-/* BOTONES SUPERIORES DERECHOS (Acceso / Regresar) */
+/* BOTONES SUPERIORES FIJOS EN SU LUGAR */
 .accionesSuperiores {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.contenedorSemaforoDesplegable {
+    position: relative;
+    margin-right: auto;
+}
+
+.botonSemaforoDiscreto {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    color: #334155;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.botonSemaforoDiscreto:hover {
+    background: #F1F5F9;
+    border-color: #94A3B8;
+    color: #1B263B;
+}
+
+.miniPuntos {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.miniVerde,
+.miniNaranja,
+.miniRojo {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.miniVerde {
+    background-color: #10B981;
+}
+
+.miniNaranja {
+    background-color: #F59E0B;
+}
+
+.miniRojo {
+    background-color: #EF4444;
+}
+
+.popoverSemaforo {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 320px;
+    background: #ffffff;
+    border: 1.5px solid #1B263B;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+    z-index: 40;
+    text-align: left;
+}
+
+.cabeceraPopover {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.cabeceraPopover strong {
+    font-size: 13px;
+    color: #1B263B;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.cerrarPopover {
+    background: transparent;
+    border: none;
+    color: #64748B;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.cerrarPopover:hover {
+    background: #F1F5F9;
+    color: #1B263B;
+}
+
+.itemSemaforo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #334155;
+    margin-bottom: 9px;
+    line-height: 1.4;
+}
+
+.itemSemaforo:last-child {
+    margin-bottom: 0;
+}
+
+.puntoVerde,
+.puntoNaranja,
+.puntoRojo {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    border-radius: 50%;
+    margin-top: 3px;
+}
+
+.puntoVerde {
+    background-color: #10B981;
+}
+
+.puntoNaranja {
+    background-color: #F59E0B;
+}
+
+.puntoRojo {
+    background-color: #EF4444;
 }
 
 .botonVolverInicio {
@@ -98,9 +231,9 @@
     border: 1.5px solid #1B263B;
     color: #1B263B;
     padding: 8px 16px;
-    border-radius: 7px;
+    border-radius: 6px;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -110,89 +243,116 @@
     color: #ffffff;
 }
 
-/* CABECERA DEL PASO Y PUNTOS DE VERIFICACIÓN */
-.cabeceraPaso {
-    margin-bottom: 20px;
+/* PASOS SUPERIORES */
+.contenedorPasosArriba {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 1px solid #F1F5F9;
-    padding-bottom: 15px;
-}
-
-.cabeceraTexto {
-    display: flex;
-    flex-direction: column;
-}
-
-.indicadorPaso {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: bold;
-    color: #1B263B;
-    background: #E2E8F0;
-    padding: 4px 10px;
-    border-radius: 10px;
-    margin-bottom: 6px;
-    width: max-content;
-}
-
-.cabeceraPaso h1 {
-    font-size: 24px;
-    margin: 0 0 6px 0;
-    color: #1B263B;
-}
-
-.subtitulo {
-    margin: 0;
-    color: #64748B;
-    font-size: 13px;
-}
-
-/* PUNTOS DE VERIFICACIÓN SUPERIORES DERECHOS */
-.indicadoresDerechaSuperior {
-    display: flex;
-    gap: 6px;
+    justify-content: center;
     align-items: center;
+    gap: 16px;
+    margin-bottom: 15px;
+    padding: 0;
+    background: transparent;
+    border: none;
 }
 
-.puntoPasoSuperior {
-    width: 26px;
-    height: 26px;
+.pasoArribaItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.45;
+    transition: all 0.3s ease;
+}
+
+.pasoArribaItem.activo {
+    opacity: 1;
+}
+
+.pasoArribaItem.completado {
+    opacity: 0.9;
+}
+
+.circuloPasoArriba {
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: #E2E8F0;
     color: #64748B;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: bold;
-    transition: all 0.2s ease;
 }
 
-.puntoPasoSuperior.activo {
+.pasoArribaItem.activo .circuloPasoArriba {
     background: #C59B27;
     color: #1B263B;
+    box-shadow: 0 0 0 3px rgba(197, 155, 39, 0.2);
 }
 
-.puntoPasoSuperior.completado {
+.pasoArribaItem.completado .circuloPasoArriba {
     background: #10B981;
     color: #ffffff;
 }
 
-/* FORMULARIO Y CAMPOS */
+.textoPasoArriba {
+    display: flex;
+    flex-direction: column;
+}
+
+.textoPasoArriba strong {
+    font-size: 12px;
+    color: #1B263B;
+}
+
+.textoPasoArriba span {
+    font-size: 10px;
+    color: #64748B;
+}
+
+/* CABECERA DEL PASO */
+.cabeceraPaso {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 10px;
+}
+
+.indicadorPaso {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #1B263B;
+    background: #E2E8F0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+.cabeceraPaso h1 {
+    font-size: 24px;
+    margin: 0 0 4px 0;
+    color: #1B263B;
+}
+
+.subtitulo {
+    margin: 0;
+    color: #64748B;
+    font-size: 14px;
+}
+
+/* FORMULARIO Y CAMPOS (Letra más grandecita y legible) */
 .formulario {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 14px;
     width: 100%;
 }
 
 .seccionTitulo {
     font-size: 15px;
     color: #1B263B;
-    margin: 5px 0 0 0;
-    padding-top: 10px;
+    margin: 4px 0 0 0;
+    padding-top: 8px;
     border-top: 1px dashed #CBD5E1;
     font-weight: bold;
 }
@@ -200,13 +360,13 @@
 .filaDos {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 14px;
 }
 
 .filaTres {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    gap: 15px;
+    gap: 14px;
 }
 
 .grupo {
@@ -226,10 +386,10 @@
 .grupo input[type='password'],
 .grupo input[type='url'],
 .grupo select {
-    padding: 10px;
+    padding: 11px;
     border: 1px solid #CBD5E1;
-    border-radius: 7px;
-    font-size: 13px;
+    border-radius: 6px;
+    font-size: 14px; /* Letra más grande */
     color: #0F172A;
     background: #ffffff;
     outline: none;
@@ -241,10 +401,15 @@
     border-color: #C59B27;
 }
 
+/* CONTENEDOR DE ARCHIVO */
 .grupoArchivo {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    border: 1.5px dashed #CBD5E1;
+    border-radius: 6px;
+    padding: 12px;
+    background: #F8FAFC;
 }
 
 .grupoArchivo label {
@@ -254,17 +419,30 @@
 }
 
 .grupoArchivo input[type='file'] {
-    padding: 8px;
-    border: 1px dashed #C59B27;
-    border-radius: 7px;
-    background: #F8FAFC;
     font-size: 12px;
-    box-sizing: border-box;
+    color: #475569;
+}
+
+.grupoArchivo input[type='file']::file-selector-button {
+    background-color: #1B263B;
+    color: #ffffff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
     cursor: pointer;
+    margin-right: 12px;
+    transition: background 0.2s ease;
+}
+
+.grupoArchivo input[type='file']::file-selector-button:hover {
+    background-color: #C59B27;
+    color: #1B263B;
 }
 
 .grupoArchivo small {
-    font-size: 11px;
+    font-size: 12px;
     color: #64748B;
 }
 
@@ -278,77 +456,174 @@
     cursor: pointer;
     background: #F8FAFC;
     padding: 10px 12px;
-    border-radius: 7px;
+    border-radius: 6px;
     border: 1px solid #E2E8F0;
 }
 
-/* MAPA PASO 2 */
-.cajaMapa {
-    border: 1px solid #CBD5E1;
-    border-radius: 8px;
-    padding: 12px;
-    background: #F8FAFC;
+/* DISTRIBUCIÓN HORIZONTAL PASO 2 */
+.layoutPasoDos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
 }
 
-.cabeceraMapa {
+.columnaFormularioPasoDos {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.columnaMapaPasoDos {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
-.cabeceraMapa strong {
-    display: block;
-    font-size: 13px;
-    color: #0F172A;
+/* CAJA MAPA MODERNO */
+.cajaMapaModerno {
+    border: 1.5px solid #1B263B;
+    border-radius: 6px;
+    background: #FFFFFF;
+    overflow: hidden;
 }
 
-.cabeceraMapa p {
+.cabeceraMapaModerno {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #1B263B;
+    color: #ffffff;
+}
+
+.cabeceraMapaModerno strong {
+    font-size: 13px;
+    display: block;
+}
+
+.cabeceraMapaModerno p {
     margin: 2px 0 0 0;
     font-size: 11px;
-    color: #64748B;
+    color: #94A3B8;
 }
 
-.vistaPreviaMapa {
-    margin-top: 10px;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid #CBD5E1;
-}
-
-.vistaPreviaMapa small {
-    display: block;
-    padding: 6px 8px;
+.gridMapaContenido {
+    display: flex;
+    flex-direction: column;
     background: #ffffff;
-    color: #475569;
-    font-size: 11px;
 }
 
-/* ALERTAS SEMÁFORO */
+.columnaIframeMapa {
+    position: relative;
+    width: 100%;
+    min-height: 230px;
+    background: #E2E8F0;
+}
+
+.columnaInfoMapa {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #F8FAFC;
+    border-top: 1.5px solid #1B263B;
+}
+
+.infoItemMapa span {
+    font-size: 11px;
+    color: #64748B;
+    display: block;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.infoItemMapa strong {
+    font-size: 13px;
+    color: #1B263B;
+}
+
+.pieMapaModerno {
+    padding: 8px 14px;
+    background: #1B263B;
+    border-top: 1px solid #283854;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pieMapaModerno small {
+    color: #CBD5E1;
+    font-size: 11px;
+    max-width: 65%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.linkMapaGoogle {
+    font-size: 11px;
+    font-weight: bold;
+    color: #C59B27;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.linkMapaGoogle:hover {
+    text-decoration: underline;
+}
+
+/* ALERTAS ESTILO WORKGUARD CORPORATIVO (SIN PASTEL) */
 .alerta {
+    border-radius: 4px;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.franjaAlerta {
     padding: 10px 14px;
-    border-radius: 7px;
-    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 13px;
+    background: #1B263B;
+}
+
+.cuerpoAlerta {
+    padding: 12px 14px;
+    margin: 0;
     line-height: 1.4;
-    margin-bottom: 15px;
+    background: #ffffff;
+    color: #1B263B;
+    font-size: 13px;
 }
 
 .alertaVerde {
-    background: #DCFCE7;
-    border: 1px solid #10B981;
-    color: #065F46;
+    border: 1.5px solid #10B981;
+}
+.alertaVerde .franjaAlerta {
+    color: #10B981;
+    border-bottom: 1px solid #10B981;
 }
 
 .alertaNaranja {
-    background: #FEF3C7;
-    border: 1px solid #F59E0B;
-    color: #92400E;
+    border: 1.5px solid #F59E0B;
+}
+.alertaNaranja .franjaAlerta {
+    color: #F59E0B;
+    border-bottom: 1px solid #F59E0B;
 }
 
 .alertaRoja {
-    background: #FEE2E2;
-    border: 1px solid #EF4444;
-    color: #991B1B;
+    border: 1.5px solid #EF4444;
+}
+.alertaRoja .franjaAlerta {
+    color: #EF4444;
+    border-bottom: 1px solid #EF4444;
 }
 
 /* BOTONES DE ACCIÓN */
@@ -356,8 +631,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 10px;
-    padding-top: 12px;
+    margin-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid #F1F5F9;
 }
 
@@ -366,8 +641,8 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    margin-top: 10px;
-    padding-top: 12px;
+    margin-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid #F1F5F9;
 }
 
@@ -375,9 +650,9 @@
     background: #C59B27;
     color: #1B263B;
     border: none;
-    padding: 10px 20px;
-    border-radius: 7px;
-    font-size: 13px;
+    padding: 11px 22px;
+    border-radius: 6px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s;
@@ -398,7 +673,7 @@
     color: #ffffff;
     border: none;
     padding: 8px 14px;
-    border-radius: 6px;
+    border-radius: 4px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -413,9 +688,9 @@
     background: #F1F5F9;
     color: #334155;
     border: 1px solid #CBD5E1;
-    padding: 10px 16px;
-    border-radius: 7px;
-    font-size: 13px;
+    padding: 11px 18px;
+    border-radius: 6px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
 }
@@ -424,72 +699,73 @@
     background: #E2E8F0;
 }
 
-/* PANTALLA ÉXITO */
+/* PANTALLA ÉXITO / RESUMEN MÁS GRANDE Y ELEGANTE */
 .pantallaExito {
     text-align: center;
-    padding: 20px 10px;
+    padding: 10px 20px;
 }
 
 .selloActivoBadge {
     display: inline-block;
-    background: #DCFCE7;
-    color: #166534;
-    border: 1.5px solid #22C55E;
+    background: #1B263B;
+    color: #10B981;
+    border: 2px solid #10B981;
     font-weight: 800;
-    font-size: 13px;
-    padding: 8px 16px;
+    font-size: 14px;
+    padding: 10px 20px;
     border-radius: 20px;
     margin-bottom: 15px;
 }
 
 .pantallaExito h1 {
-    font-size: 24px;
+    font-size: 26px;
     color: #1B263B;
-    margin: 0 0 8px 0;
+    margin: 0 0 10px 0;
 }
 
 .pantallaExito p {
     color: #475569;
-    max-width: 480px;
+    max-width: 500px;
     margin: 0 auto 20px auto;
     line-height: 1.5;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .resumenFinal {
     background: #F8FAFC;
-    border: 1px solid #E2E8F0;
+    border: 2px solid #1B263B;
     border-radius: 8px;
-    padding: 15px 18px;
-    max-width: 420px;
-    margin: 0 auto 20px auto;
+    padding: 20px 24px;
+    max-width: 480px;
+    margin: 0 auto 24px auto;
     text-align: left;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
 }
 
 .resumenFinal div {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .resumenVerificacion {
     background: #F0F9FF;
-    border: 1px solid #BAE6FD;
-    border-radius: 7px;
-    padding: 12px 14px;
-    font-size: 13px;
+    border: 1.5px solid #BAE6FD;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 14px;
     color: #0C4A6E;
+    margin-bottom: 16px;
 }
 
 .resumenVerificacion p {
     margin: 4px 0 0 0;
 }
 
-/* RESPONSIVO PARA PANTALLAS PEQUEÑAS */
-@media (max-width: 850px) {
+/* RESPONSIVO */
+@media (max-width: 950px) {
     .contenedor {
         height: auto;
         min-height: 100vh;
@@ -502,22 +778,30 @@
     }
 
     .panelImagen {
-        min-height: 320px;
-        padding: 90px 25px 30px;
+        min-height: 280px;
+        padding: 80px 20px 20px;
     }
 
     .ilustracion {
-        max-width: 220px;
+        max-width: 200px;
     }
 
     .panelFormulario {
-        padding: 35px 25px;
+        padding: 30px 20px;
         overflow: visible;
     }
 
     .logoEsquina {
         width: 70px;
         top: 20px;
-        left: 25px;
+        left: 20px;
+    }
+
+    .contenedorPasosArriba {
+        display: none;
+    }
+
+    .layoutPasoDos {
+        grid-template-columns: 1fr;
     }
 }

@@ -14,10 +14,9 @@ const PASOS_WIZARD = [
 export default function RegistroMipyme() {
   const router = useRouter();
 
-  // Paso actual del asistente (1 a 5)
   const [pasoActual, setPasoActual] = useState(1);
+  const [mostrarGuiaSemaforo, setMostrarGuiaSemaforo] = useState(false);
 
-  // Catálogos traídos desde el backend (/api/mipymes/catalogos)
   const [catalogos, setCatalogos] = useState({
     giros: [],
     alcaldias_fiscal: [],
@@ -27,9 +26,7 @@ export default function RegistroMipyme() {
     tamanos: []
   });
 
-  // Estado general del formulario
   const [form, setForm] = useState({
-    // Paso 1: Existencia Fiscal
     tipo_persona: 'MORAL',
     nombre_comercial: '',
     rfc: '',
@@ -40,7 +37,6 @@ export default function RegistroMipyme() {
     id_alcaldia_fiscal: '',
     id_entidad_federativa_fiscal: '',
 
-    // Paso 2: Actividad y Ubicación
     mismo_domicilio: false,
     cp_operaciones: '',
     calle_operaciones: '',
@@ -52,20 +48,14 @@ export default function RegistroMipyme() {
     instagram: '',
     twitter: '',
 
-    // Paso 3: Representante Legal / Titular
     nombre_completo: '',
     curp: '',
-
-    // Paso 4: Cumplimiento y Tamaño
     numero_trabajadores: '',
-
-    // Paso 5: Credenciales
     usuario: '',
     contrasena: '',
     confirmar_contrasena: ''
   });
 
-  // Archivos PDF en memoria (nunca se suben hasta evaluar cada paso)
   const [archivos, setArchivos] = useState({
     doc_csf: null,
     doc_comprobante: null,
@@ -73,31 +63,39 @@ export default function RegistroMipyme() {
     doc_opinion_32d: null
   });
 
-  // Geolocalización y Mapa (Paso 2)
-  const [coordenadas, setCoordenadas] = useState(null); // { lat, lon, display_name }
+  const [coordenadas, setCoordenadas] = useState(null);
   const [geolocalizado, setGeolocalizado] = useState(false);
   const [buscandoMapa, setBuscandoMapa] = useState(false);
 
-  // Resultados de validación de cada paso
   const [resultadosPasos, setResultadosPasos] = useState({});
   const [validadoDenue, setValidadoDenue] = useState(false);
   const [tamanoCalculado, setTamanoCalculado] = useState('');
   const [idTamanoCalculado, setIdTamanoCalculado] = useState(null);
 
-  // Estados de interfaz, alertas y bloqueo
   const [cargando, setCargando] = useState(false);
-  const [alerta, setAlerta] = useState(null); // { tipo: 'VERDE' | 'NARANJA' | 'ROJO', mensaje: '' }
+  const [alerta, setAlerta] = useState(null);
   const [bloqueado, setBloqueado] = useState(false);
   const [registroExitoso, setRegistroExitoso] = useState(false);
 
-  // Cargar catálogos al abrir la página
+  useEffect(() => {
+    function manejarBeforeUnload(e) {
+      if (!registroExitoso) {
+        e.preventDefault();
+        e.returnValue = '¿Estás seguro de que deseas salir? Tu progreso y registro actual se descartarán.';
+      }
+    }
+    window.addEventListener('beforeunload', manejarBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', manejarBeforeUnload);
+    };
+  }, [registroExitoso]);
+
   useEffect(() => {
     async function cargarCatalogos() {
       try {
         const data = await apiFetch('/api/mipymes/catalogos');
         setCatalogos(data);
 
-        // Preseleccionar primera entidad federativa si existe
         setForm((prev) => ({
           ...prev,
           id_entidad_federativa_fiscal: data.entidades_fiscal?.[0]?.id_entidad_federativa_fiscal || '',
@@ -113,7 +111,6 @@ export default function RegistroMipyme() {
     cargarCatalogos();
   }, []);
 
-  // Actualizar campos de texto / selects
   function manejarCambio(e) {
     const { name, value, type, checked } = e.target;
     setAlerta(null);
@@ -126,7 +123,8 @@ export default function RegistroMipyme() {
         mismo_domicilio: checked,
         cp_operaciones: checked ? prev.cp_fiscal : '',
         calle_operaciones: checked ? prev.calle_fiscal : '',
-        numero_operaciones: checked ? prev.numero_fiscal : ''
+        numero_operaciones: checked ? prev.numero_fiscal : '',
+        id_alcaldia_operaciones: checked ? prev.id_alcaldia_fiscal : prev.id_alcaldia_operaciones
       }));
       return;
     }
@@ -142,7 +140,6 @@ export default function RegistroMipyme() {
     }));
   }
 
-  // Validar y guardar archivo PDF seleccionado (máximo 5 MB)
   function manejarArchivo(e, campo) {
     const file = e.target.files?.[0];
     setAlerta(null);
@@ -167,7 +164,6 @@ export default function RegistroMipyme() {
     setArchivos((prev) => ({ ...prev, [campo]: file }));
   }
 
-  // Ubicar domicilio de operaciones en OpenStreetMap (Nominatim)
   async function ubicarEnMapa() {
     setAlerta(null);
 
@@ -226,7 +222,11 @@ export default function RegistroMipyme() {
     }
   }
 
-  // Evaluar cada paso (1 al 4) contra el backend antes de avanzar
+  function irAPaso(nuevoPaso) {
+    setAlerta(null);
+    setPasoActual(nuevoPaso);
+  }
+
   async function validarYAvanzar(e) {
     e.preventDefault();
     if (bloqueado) return;
@@ -283,8 +283,7 @@ export default function RegistroMipyme() {
         setIdTamanoCalculado(data.id_tamano || null);
       }
 
-      setAlerta({ tipo: 'VERDE', mensaje: data.mensaje });
-      setPasoActual((prev) => prev + 1);
+      irAPaso(pasoActual + 1);
     } catch (err) {
       const msg = err.message || 'No se pudo validar el paso.';
       const esRojo =
@@ -307,7 +306,6 @@ export default function RegistroMipyme() {
     }
   }
 
-  // Enviar registro definitivo en el Paso 5
   async function finalizarRegistro(e) {
     e.preventDefault();
     if (bloqueado) return;
@@ -369,6 +367,7 @@ export default function RegistroMipyme() {
         body: payload
       });
 
+      setAlerta(null);
       setRegistroExitoso(true);
     } catch (err) {
       const msg = err.message || 'No se pudo completar el registro.';
@@ -388,9 +387,15 @@ export default function RegistroMipyme() {
     }
   }
 
+  const alcaldiaSeleccionadaObj = catalogos.alcaldias_operaciones.find(
+    (a) => String(a.id_alcaldia_operaciones) === String(form.id_alcaldia_operaciones)
+  );
+  const nombreAlcaldiaTexto = alcaldiaSeleccionadaObj?.opcion_alcaldia || '';
+  const nombreParaMapa = form.nombre_comercial.trim() ? `${form.nombre_comercial.trim()}, ` : '';
+  const queryMapaStr = `${nombreParaMapa}${form.calle_operaciones} ${form.numero_operaciones}, ${form.cp_operaciones}, ${nombreAlcaldiaTexto}, Mexico`;
+
   return (
     <main className={styles.contenedor}>
-      {/* LOGO EN LA ESQUINA */}
       <img
         src="/img/logo.png"
         alt="Logo WorkGuard"
@@ -399,10 +404,9 @@ export default function RegistroMipyme() {
       />
 
       <section className={styles.contenido}>
-        {/* LADO IZQUIERDO: ILUSTRACIÓN Y TEXTO INSTITUCIONAL */}
         <div className={styles.panelImagen}>
           <img
-            src="/img/consultores.png"
+            src="/img/reporte.png"
             alt="Ilustración WorkGuard"
             className={styles.ilustracion}
           />
@@ -413,10 +417,66 @@ export default function RegistroMipyme() {
           </p>
         </div>
 
-        {/* LADO DERECHO: FORMULARIO Y PASOS */}
         <div className={styles.panelFormulario}>
           {/* BOTONES SUPERIORES */}
           <div className={styles.accionesSuperiores}>
+            <div className={styles.contenedorSemaforoDesplegable}>
+              <button
+                type="button"
+                className={styles.botonSemaforoDiscreto}
+                onClick={() => setMostrarGuiaSemaforo((prev) => !prev)}
+                aria-expanded={mostrarGuiaSemaforo}
+              >
+                <span className={styles.miniPuntos}>
+                  <span className={styles.miniVerde}></span>
+                  <span className={styles.miniNaranja}></span>
+                  <span className={styles.miniRojo}></span>
+                </span>
+                <span>Reglas de validación {mostrarGuiaSemaforo ? '▴' : '▾'}</span>
+              </button>
+
+              {mostrarGuiaSemaforo && (
+                <div className={styles.popoverSemaforo}>
+                  <div className={styles.cabeceraPopover}>
+                    <strong>Sistema de Validación Oficial</strong>
+                    <button
+                      type="button"
+                      className={styles.cerrarPopover}
+                      onClick={() => setMostrarGuiaSemaforo(false)}
+                      aria-label="Cerrar guía"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <div className={styles.itemSemaforo}>
+                    <span className={styles.puntoVerde}></span>
+                    <div>
+                      <strong>Verde:</strong> Documento y datos verificados.
+                    </div>
+                  </div>
+                  <div className={styles.itemSemaforo}>
+                    <span className={styles.puntoNaranja}></span>
+                    <div>
+                      <strong>Naranja:</strong> Error corregible (máx. 3 intentos por paso).
+                    </div>
+                  </div>
+                  <div className={styles.itemSemaforo}>
+                    <span className={styles.puntoRojo}></span>
+                    <div>
+                      <strong>Rojo:</strong> Bloqueo inmediato (Listas negras, duplicados o 3 fallos).
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              className={styles.botonVolverInicio}
+              onClick={() => router.push('/')}
+            >
+              ← Regresar a WorkGuard
+            </button>
             <button
               type="button"
               className={styles.botonVolverInicio}
@@ -460,60 +520,38 @@ export default function RegistroMipyme() {
             </div>
           ) : (
             <>
-              <div className={styles.cabeceraPaso}>
-                <div className={styles.cabeceraTexto}>
-                  <span className={styles.indicadorPaso}>Paso {pasoActual} de 5</span>
-                  <h1>{PASOS_WIZARD[pasoActual - 1]?.titulo}</h1>
-                  <p className={styles.subtitulo}>
-                    Completa los datos exactamente como aparecen en tus documentos oficiales.
-                  </p>
-                </div>
-
-                {/* PUNTOS DE VERIFICACIÓN SUPERIORES DERECHOS */}
-                <div className={styles.indicadoresDerechaSuperior}>
-                  {PASOS_WIZARD.map((p) => {
-                    const completado = pasoActual > p.num;
-                    const activo = pasoActual === p.num;
-                    return (
-                      <div
-                        key={p.num}
-                        className={`${styles.puntoPasoSuperior} ${activo ? styles.activo : ''} ${
-                          completado ? styles.completado : ''
-                        }`}
-                        title={`${p.num}. ${p.titulo}`}
-                      >
+              <div className={styles.contenedorPasosArriba}>
+                {PASOS_WIZARD.map((p) => {
+                  const completado = pasoActual > p.num;
+                  const activo = pasoActual === p.num;
+                  return (
+                    <div
+                      key={p.num}
+                      className={`${styles.pasoArribaItem} ${activo ? styles.activo : ''} ${
+                        completado ? styles.completado : ''
+                      }`}
+                    >
+                      <div className={styles.circuloPasoArriba}>
                         {completado ? '✓' : p.num}
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className={styles.textoPasoArriba}>
+                        <strong>{p.titulo}</strong>
+                        <span>Paso {p.num}</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* BANNER DE ALERTAS (VERDE / NARANJA / ROJO) */}
-              {alerta && (
-                <div
-                  className={`${styles.alerta} ${
-                    alerta.tipo === 'VERDE'
-                      ? styles.alertaVerde
-                      : alerta.tipo === 'ROJO'
-                      ? styles.alertaRoja
-                      : styles.alertaNaranja
-                  }`}
-                >
-                  <strong>
-                    {alerta.tipo === 'VERDE'
-                      ? '✓ Validado: '
-                      : alerta.tipo === 'ROJO'
-                      ? '⛔ Registro Bloqueado: '
-                      : '⚠️ Atención: '}
-                  </strong>
-                  <span>{alerta.mensaje}</span>
-                </div>
-              )}
+              <div className={styles.cabeceraPaso}>
+                <span className={styles.indicadorPaso}>Paso {pasoActual} de 5</span>
+                <h1>{PASOS_WIZARD[pasoActual - 1]?.titulo}</h1>
+                <p className={styles.subtitulo}>
+                  Completa los datos exactamente como aparecen en tus documentos oficiales.
+                </p>
+              </div>
 
-              {/* ========================================================= */}
-              {/* PASO 1: EXISTENCIA FISCAL                                 */}
-              {/* ========================================================= */}
+              {/* PASO 1 */}
               {pasoActual === 1 && (
                 <form onSubmit={validarYAvanzar} className={styles.formulario}>
                   <div className={styles.filaDos}>
@@ -557,7 +595,7 @@ export default function RegistroMipyme() {
                         id="nombre_comercial"
                         name="nombre_comercial"
                         type="text"
-                        placeholder="Ej. Soluciones Industriales del Centro"
+                        placeholder="Ej. Soluciones Industriales"
                         value={form.nombre_comercial}
                         onChange={manejarCambio}
                         disabled={bloqueado}
@@ -680,10 +718,41 @@ export default function RegistroMipyme() {
                       accept=".pdf,application/pdf"
                       onChange={(e) => manejarArchivo(e, 'doc_csf')}
                       disabled={bloqueado}
-                      required
+                      required={!archivos.doc_csf}
                     />
+                    {archivos.doc_csf && (
+                      <small style={{ color: '#059669', fontWeight: 600 }}>
+                        ✓ Archivo cargado en memoria: {archivos.doc_csf.name}
+                      </small>
+                    )}
                     <small>Se verificará automáticamente el RFC y el Código QR oficial del SAT.</small>
                   </div>
+
+                  {alerta && (
+                    <div
+                      className={`${styles.alerta} ${
+                        alerta.tipo === 'VERDE'
+                          ? styles.alertaVerde
+                          : alerta.tipo === 'ROJO'
+                          ? styles.alertaRoja
+                          : styles.alertaNaranja
+                      }`}
+                    >
+                      <div className={styles.franjaAlerta}>
+                        <span>
+                          {alerta.tipo === 'VERDE' ? '🟢' : alerta.tipo === 'ROJO' ? '🔴' : '⚠️'}
+                        </span>
+                        <span>
+                          {alerta.tipo === 'VERDE'
+                            ? 'Validación Aprobada'
+                            : alerta.tipo === 'ROJO'
+                            ? 'Registro Bloqueado'
+                            : 'Por favor corrige los siguientes puntos:'}
+                        </span>
+                      </div>
+                      <p className={styles.cuerpoAlerta}>{alerta.mensaje}</p>
+                    </div>
+                  )}
 
                   <div className={styles.acciones}>
                     <button
@@ -697,154 +766,199 @@ export default function RegistroMipyme() {
                 </form>
               )}
 
-              {/* ========================================================= */}
-              {/* PASO 2: ACTIVIDAD Y UBICACIÓN                             */}
-              {/* ========================================================= */}
+              {/* PASO 2 (DISTRIBUCIÓN HORIZONTAL CON MARCADOR FORZADO Y DENUE) */}
               {pasoActual === 2 && (
                 <form onSubmit={validarYAvanzar} className={styles.formulario}>
-                  <div className={styles.grupoCheckbox}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="mismo_domicilio"
-                        checked={form.mismo_domicilio}
-                        onChange={manejarCambio}
-                        disabled={bloqueado}
-                      />
-                      <span>El domicilio de operaciones es el mismo que el domicilio fiscal</span>
-                    </label>
-                  </div>
-
-                  <div className={styles.filaTres}>
-                    <div className={styles.grupo}>
-                      <label htmlFor="calle_operaciones">Calle de Operaciones *</label>
-                      <input
-                        id="calle_operaciones"
-                        name="calle_operaciones"
-                        type="text"
-                        placeholder="Av. Reforma"
-                        value={form.calle_operaciones}
-                        onChange={manejarCambio}
-                        disabled={bloqueado || form.mismo_domicilio}
-                        required
-                      />
-                    </div>
-
-                    <div className={styles.grupo}>
-                      <label htmlFor="numero_operaciones">Número Exterior *</label>
-                      <input
-                        id="numero_operaciones"
-                        name="numero_operaciones"
-                        type="text"
-                        placeholder="222"
-                        value={form.numero_operaciones}
-                        onChange={manejarCambio}
-                        disabled={bloqueado || form.mismo_domicilio}
-                        required
-                      />
-                    </div>
-
-                    <div className={styles.grupo}>
-                      <label htmlFor="cp_operaciones">Código Postal *</label>
-                      <input
-                        id="cp_operaciones"
-                        name="cp_operaciones"
-                        type="text"
-                        maxLength={5}
-                        placeholder="06600"
-                        value={form.cp_operaciones}
-                        onChange={manejarCambio}
-                        disabled={bloqueado || form.mismo_domicilio}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className={styles.filaDos}>
-                    <div className={styles.grupo}>
-                      <label htmlFor="id_entidad_federativa_operaciones">Entidad Federativa *</label>
-                      <select
-                        id="id_entidad_federativa_operaciones"
-                        name="id_entidad_federativa_operaciones"
-                        value={form.id_entidad_federativa_operaciones}
-                        onChange={manejarCambio}
-                        disabled={bloqueado}
-                        required
-                      >
-                        <option value="">Selecciona entidad...</option>
-                        {catalogos.entidades_operaciones?.map((e) => (
-                          <option key={e.id_entidad_federativa_operaciones} value={e.id_entidad_federativa_operaciones}>
-                            {e.opcion_entidad_federativa}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className={styles.grupo}>
-                      <label htmlFor="id_alcaldia_operaciones">Alcaldía / Municipio *</label>
-                      <select
-                        id="id_alcaldia_operaciones"
-                        name="id_alcaldia_operaciones"
-                        value={form.id_alcaldia_operaciones}
-                        onChange={manejarCambio}
-                        disabled={bloqueado}
-                        required
-                      >
-                        <option value="">Selecciona alcaldía...</option>
-                        {catalogos.alcaldias_operaciones?.map((a) => (
-                          <option key={a.id_alcaldia_operaciones} value={a.id_alcaldia_operaciones}>
-                            {a.opcion_alcaldia}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* BOTÓN Y VISTA PREVIA DE MAPA */}
-                  <div className={styles.cajaMapa}>
-                    <div className={styles.cabeceraMapa}>
-                      <div>
-                        <strong>Verificación Geográfica del Establecimiento *</strong>
-                        <p>Confirma que tu ubicación física exista antes de subir tu comprobante.</p>
+                  <div className={styles.layoutPasoDos}>
+                    {/* COLUMNA IZQUIERDA: CAMPOS */}
+                    <div className={styles.columnaFormularioPasoDos}>
+                      <div className={styles.grupoCheckbox}>
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="mismo_domicilio"
+                            checked={form.mismo_domicilio}
+                            onChange={manejarCambio}
+                            disabled={bloqueado}
+                          />
+                          <span>El domicilio de operaciones es el mismo que el fiscal</span>
+                        </label>
                       </div>
-                      <button
-                        type="button"
-                        className={styles.botonSecundario}
-                        onClick={ubicarEnMapa}
-                        disabled={buscandoMapa || bloqueado}
-                      >
-                        {buscandoMapa ? 'Buscando...' : geolocalizado ? '✓ Ubicado en Mapa' : '📍 Ubicar en Mapa'}
-                      </button>
-                    </div>
 
-                    {coordenadas && (
-                      <div className={styles.vistaPreviaMapa}>
-                        <iframe
-                          title="Mapa de ubicación MiPyME"
-                          width="100%"
-                          height="160"
-                          frameBorder="0"
-                          src={`https://www.openstreetmap.org/export/embed.html?bbox=${
-                            coordenadas.lon - 0.005
-                          }%2C${coordenadas.lat - 0.005}%2C${coordenadas.lon + 0.005}%2C${
-                            coordenadas.lat + 0.005
-                          }&layer=mapnik&marker=${coordenadas.lat}%2C${coordenadas.lon}`}
+                      <div className={styles.grupo}>
+                        <label htmlFor="calle_operaciones">Calle de Operaciones *</label>
+                        <input
+                          id="calle_operaciones"
+                          name="calle_operaciones"
+                          type="text"
+                          placeholder="Av. Reforma"
+                          value={form.calle_operaciones}
+                          onChange={manejarCambio}
+                          disabled={bloqueado || form.mismo_domicilio}
+                          required
                         />
-                        <small>{coordenadas.display_name}</small>
                       </div>
-                    )}
-                  </div>
 
-                  <div className={styles.grupoArchivo}>
-                    <label htmlFor="doc_comprobante">Comprobante de Domicilio Digital (Luz, Agua, Teléfono o Predial en PDF) *</label>
-                    <input
-                      id="doc_comprobante"
-                      type="file"
-                      accept=".pdf,application/pdf"
-                      onChange={(e) => manejarArchivo(e, 'doc_comprobante')}
-                      disabled={bloqueado}
-                      required
-                    />
+                      <div className={styles.filaDos}>
+                        <div className={styles.grupo}>
+                          <label htmlFor="numero_operaciones">Número *</label>
+                          <input
+                            id="numero_operaciones"
+                            name="numero_operaciones"
+                            type="text"
+                            placeholder="222"
+                            value={form.numero_operaciones}
+                            onChange={manejarCambio}
+                            disabled={bloqueado || form.mismo_domicilio}
+                            required
+                          />
+                        </div>
+
+                        <div className={styles.grupo}>
+                          <label htmlFor="cp_operaciones">C.P. *</label>
+                          <input
+                            id="cp_operaciones"
+                            name="cp_operaciones"
+                            type="text"
+                            maxLength={5}
+                            placeholder="06600"
+                            value={form.cp_operaciones}
+                            onChange={manejarCambio}
+                            disabled={bloqueado || form.mismo_domicilio}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.grupo}>
+                        <label htmlFor="id_entidad_federativa_operaciones">Entidad Federativa *</label>
+                        <select
+                          id="id_entidad_federativa_operaciones"
+                          name="id_entidad_federativa_operaciones"
+                          value={form.id_entidad_federativa_operaciones}
+                          onChange={manejarCambio}
+                          disabled={bloqueado}
+                          required
+                        >
+                          <option value="">Selecciona entidad...</option>
+                          {catalogos.entidades_operaciones?.map((e) => (
+                            <option key={e.id_entidad_federativa_operaciones} value={e.id_entidad_federativa_operaciones}>
+                              {e.opcion_entidad_federativa}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className={styles.grupo}>
+                        <label htmlFor="id_alcaldia_operaciones">Alcaldía / Municipio *</label>
+                        <select
+                          id="id_alcaldia_operaciones"
+                          name="id_alcaldia_operaciones"
+                          value={form.id_alcaldia_operaciones}
+                          onChange={manejarCambio}
+                          disabled={bloqueado}
+                          required
+                        >
+                          <option value="">Selecciona alcaldía...</option>
+                          {catalogos.alcaldias_operaciones?.map((a) => (
+                            <option key={a.id_alcaldia_operaciones} value={a.id_alcaldia_operaciones}>
+                              {a.opcion_alcaldia}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className={styles.grupoArchivo}>
+                        <label htmlFor="doc_comprobante">Comprobante de Domicilio (PDF) *</label>
+                        <input
+                          id="doc_comprobante"
+                          type="file"
+                          accept=".pdf,application/pdf"
+                          onChange={(e) => manejarArchivo(e, 'doc_comprobante')}
+                          disabled={bloqueado}
+                          required={!archivos.doc_comprobante}
+                        />
+                        {archivos.doc_comprobante && (
+                          <small style={{ color: '#059669', fontWeight: 600 }}>
+                            ✓ Cargado: {archivos.doc_comprobante.name}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* COLUMNA DERECHA: MAPA ARRIBA Y DATOS / DENUE ABAJO */}
+                    <div className={styles.columnaMapaPasoDos}>
+                      <div className={styles.cajaMapaModerno}>
+                        <div className={styles.cabeceraMapaModerno}>
+                          <div>
+                            <strong>Verificación Geográfica *</strong>
+                            <p>Confirma tu ubicación en Google Maps.</p>
+                          </div>
+                          <button
+                            type="button"
+                            className={styles.botonSecundario}
+                            onClick={ubicarEnMapa}
+                            disabled={buscandoMapa || bloqueado}
+                          >
+                            {buscandoMapa ? 'Buscando...' : geolocalizado ? '✓ Verificado' : '📍 Actualizar Mapa'}
+                          </button>
+                        </div>
+
+                        <div className={styles.gridMapaContenido}>
+                          {/* Mapa con marcador forzado por zoom y coordenadas exactas si existen */}
+                          <div className={styles.columnaIframeMapa}>
+                            <iframe
+                              title="Ubicación exacta en Google Maps"
+                              width="100%"
+                              height="100%"
+                              style={{ border: 0, position: 'absolute', top: 0, left: 0 }}
+                              loading="lazy"
+                              src={
+                                coordenadas
+                                  ? `https://maps.google.com/maps?q=${coordenadas.lat},${coordenadas.lon}&z=17&output=embed`
+                                  : `https://maps.google.com/maps?q=${encodeURIComponent(queryMapaStr)}&z=17&output=embed`
+                              }
+                            />
+                          </div>
+
+                          {/* Info detallada e indicador DENUE abajo del mapa */}
+                          <div className={styles.columnaInfoMapa}>
+                            <div className={styles.infoItemMapa}>
+                              <span>Alcaldía o Municipio:</span>
+                              <strong>{nombreAlcaldiaTexto || 'No seleccionada'}</strong>
+                            </div>
+                            <div className={styles.infoItemMapa}>
+                              <span>Domicilio a buscar:</span>
+                              <strong>{form.calle_operaciones ? `${form.calle_operaciones} #${form.numero_operaciones}, C.P. ${form.cp_operaciones}` : 'Completa los campos'}</strong>
+                            </div>
+                            <div className={styles.infoItemMapa}>
+                              <span>Estado GPS / Marcador:</span>
+                              <strong style={{ color: geolocalizado ? '#10B981' : '#D97706' }}>
+                                {geolocalizado ? '✓ Pin y Establecimiento Localizado' : 'Pendiente de actualizar mapa'}
+                              </strong>
+                            </div>
+                            <div className={styles.infoItemMapa}>
+                              <span>Validación DENUE (INEGI):</span>
+                              <strong style={{ color: validadoDenue ? '#10B981' : '#2563EB' }}>
+                                {validadoDenue ? '✓ Aprobado y Confirmado en DENUE' : 'Se evaluará al continuar el paso'}
+                              </strong>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className={styles.pieMapaModerno}>
+                          <small>{coordenadas ? coordenadas.display_name : queryMapaStr}</small>
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryMapaStr)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.linkMapaGoogle}
+                          >
+                            Abrir ruta en Google Maps ↗
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <h3 className={styles.seccionTitulo}>Presencia Digital (Opcional)</h3>
@@ -905,11 +1019,37 @@ export default function RegistroMipyme() {
                     </div>
                   </div>
 
+                  {alerta && (
+                    <div
+                      className={`${styles.alerta} ${
+                        alerta.tipo === 'VERDE'
+                          ? styles.alertaVerde
+                          : alerta.tipo === 'ROJO'
+                          ? styles.alertaRoja
+                          : styles.alertaNaranja
+                      }`}
+                    >
+                      <div className={styles.franjaAlerta}>
+                        <span>
+                          {alerta.tipo === 'VERDE' ? '🟢' : alerta.tipo === 'ROJO' ? '🔴' : '⚠️'}
+                        </span>
+                        <span>
+                          {alerta.tipo === 'VERDE'
+                            ? 'Validación Aprobada'
+                            : alerta.tipo === 'ROJO'
+                            ? 'Registro Bloqueado'
+                            : 'Por favor corrige los siguientes puntos:'}
+                        </span>
+                      </div>
+                      <p className={styles.cuerpoAlerta}>{alerta.mensaje}</p>
+                    </div>
+                  )}
+
                   <div className={styles.accionesDoble}>
                     <button
                       type="button"
                       className={styles.botonAtras}
-                      onClick={() => setPasoActual(1)}
+                      onClick={() => irAPaso(1)}
                       disabled={cargando || bloqueado}
                     >
                       ← Anterior
@@ -926,9 +1066,7 @@ export default function RegistroMipyme() {
                 </form>
               )}
 
-              {/* ========================================================= */}
-              {/* PASO 3: REPRESENTANTE LEGAL / TITULAR                     */}
-              {/* ========================================================= */}
+              {/* PASO 3 */}
               {pasoActual === 3 && (
                 <form onSubmit={validarYAvanzar} className={styles.formulario}>
                   <div className={styles.grupo}>
@@ -970,15 +1108,46 @@ export default function RegistroMipyme() {
                       accept=".pdf,application/pdf"
                       onChange={(e) => manejarArchivo(e, 'doc_curp')}
                       disabled={bloqueado}
-                      required
+                      required={!archivos.doc_curp}
                     />
+                    {archivos.doc_curp && (
+                      <small style={{ color: '#059669', fontWeight: 600 }}>
+                        ✓ Archivo cargado en memoria: {archivos.doc_curp.name}
+                      </small>
+                    )}
                   </div>
+
+                  {alerta && (
+                    <div
+                      className={`${styles.alerta} ${
+                        alerta.tipo === 'VERDE'
+                          ? styles.alertaVerde
+                          : alerta.tipo === 'ROJO'
+                          ? styles.alertaRoja
+                          : styles.alertaNaranja
+                      }`}
+                    >
+                      <div className={styles.franjaAlerta}>
+                        <span>
+                          {alerta.tipo === 'VERDE' ? '🟢' : alerta.tipo === 'ROJO' ? '🔴' : '⚠️'}
+                        </span>
+                        <span>
+                          {alerta.tipo === 'VERDE'
+                            ? 'Validación Aprobada'
+                            : alerta.tipo === 'ROJO'
+                            ? 'Registro Bloqueado'
+                            : 'Por favor corrige los siguientes puntos:'}
+                        </span>
+                      </div>
+                      <p className={styles.cuerpoAlerta}>{alerta.mensaje}</p>
+                    </div>
+                  )}
 
                   <div className={styles.accionesDoble}>
                     <button
                       type="button"
                       className={styles.botonAtras}
-                      onClick={() => setPasoActual(2)}
+                      onClick={() => irAPaso(2)}
                       disabled={cargando || bloqueado}
                     >
                       ← Anterior
@@ -995,9 +1164,7 @@ export default function RegistroMipyme() {
                 </form>
               )}
 
-              {/* ========================================================= */}
-              {/* PASO 4: CUMPLIMIENTO Y TAMAÑO (DOF + OPINIÓN 32-D)        */}
-              {/* ========================================================= */}
+              {/* PASO 4 */}
               {pasoActual === 4 && (
                 <form onSubmit={validarYAvanzar} className={styles.formulario}>
                   <div className={styles.grupo}>
@@ -1029,16 +1196,47 @@ export default function RegistroMipyme() {
                       accept=".pdf,application/pdf"
                       onChange={(e) => manejarArchivo(e, 'doc_opinion_32d')}
                       disabled={bloqueado}
-                      required
+                      required={!archivos.doc_opinion_32d}
                     />
+                    {archivos.doc_opinion_32d && (
+                      <small style={{ color: '#059669', fontWeight: 600 }}>
+                        ✓ Archivo cargado en memoria: {archivos.doc_opinion_32d.name}
+                      </small>
+                    )}
                     <small>Se verificará sentido POSITIVO, RFC y Código QR oficial del SAT.</small>
                   </div>
+
+                  {alerta && (
+                    <div
+                      className={`${styles.alerta} ${
+                        alerta.tipo === 'VERDE'
+                          ? styles.alertaVerde
+                          : alerta.tipo === 'ROJO'
+                          ? styles.alertaRoja
+                          : styles.alertaNaranja
+                      }`}
+                    >
+                      <div className={styles.franjaAlerta}>
+                        <span>
+                          {alerta.tipo === 'VERDE' ? '🟢' : alerta.tipo === 'ROJO' ? '🔴' : '⚠️'}
+                        </span>
+                        <span>
+                          {alerta.tipo === 'VERDE'
+                            ? 'Validación Aprobada'
+                            : alerta.tipo === 'ROJO'
+                            ? 'Registro Bloqueado'
+                            : 'Por favor corrige los siguientes puntos:'}
+                        </span>
+                      </div>
+                      <p className={styles.cuerpoAlerta}>{alerta.mensaje}</p>
+                    </div>
+                  )}
 
                   <div className={styles.accionesDoble}>
                     <button
                       type="button"
                       className={styles.botonAtras}
-                      onClick={() => setPasoActual(3)}
+                      onClick={() => irAPaso(3)}
                       disabled={cargando || bloqueado}
                     >
                       ← Anterior
@@ -1055,9 +1253,7 @@ export default function RegistroMipyme() {
                 </form>
               )}
 
-              {/* ========================================================= */}
-              {/* PASO 5: CREDENCIALES Y ACTIVACIÓN DE SELLO                */}
-              {/* ========================================================= */}
+              {/* PASO 5 */}
               {pasoActual === 5 && (
                 <form onSubmit={finalizarRegistro} className={styles.formulario}>
                   <div className={styles.resumenVerificacion}>
@@ -1115,11 +1311,37 @@ export default function RegistroMipyme() {
                     </div>
                   </div>
 
+                  {alerta && (
+                    <div
+                      className={`${styles.alerta} ${
+                        alerta.tipo === 'VERDE'
+                          ? styles.alertaVerde
+                          : alerta.tipo === 'ROJO'
+                          ? styles.alertaRoja
+                          : styles.alertaNaranja
+                      }`}
+                    >
+                      <div className={styles.franjaAlerta}>
+                        <span>
+                          {alerta.tipo === 'VERDE' ? '🟢' : alerta.tipo === 'ROJO' ? '🔴' : '⚠️'}
+                        </span>
+                        <span>
+                          {alerta.tipo === 'VERDE'
+                            ? 'Validación Aprobada'
+                            : alerta.tipo === 'ROJO'
+                            ? 'Registro Bloqueado'
+                            : 'Por favor corrige los siguientes puntos:'}
+                        </span>
+                      </div>
+                      <p className={styles.cuerpoAlerta}>{alerta.mensaje}</p>
+                    </div>
+                  )}
+
                   <div className={styles.accionesDoble}>
                     <button
                       type="button"
                       className={styles.botonAtras}
-                      onClick={() => setPasoActual(4)}
+                      onClick={() => irAPaso(4)}
                       disabled={cargando || bloqueado}
                     >
                       ← Anterior
