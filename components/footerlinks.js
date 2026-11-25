@@ -9,10 +9,10 @@ export default function Footer() {
                 {/* Info */}
                 <div className={estilos.informacion}>
                     <Image
-                        src="/img/Logoworkguard.png"
+                        src="/img/logo.png"
                         alt="Logo WorkGuard"
-                        width={30}
-                        height={30}
+                        width={100}
+                        height={100}
                     />
                     <p>
                         WorkGuard centraliza y valida información crítica sobre empresas, ofreciendo a los consultores una fuente de datos rigurosa, transparente y en tiempo real. Minimiza el riesgo en tus análisis y acelera la investigación corporativa con total confianza.
@@ -31,7 +31,7 @@ export default function Footer() {
                         />
                     </a>
 
-                    {/* Facebook */}
+                    {/* Face*/}
                     <a href="#" target="_blank" rel="noopener noreferrer">
                         <Image
                             src="/img/facebook.png"
@@ -62,18 +62,18 @@ export default function Footer() {
                     </a>
                 </div>
 
-                {/* Logo de la empresa/desarrollador dentro de la primera columna */}
+                {/*  Kairós Dev */}
                 <div className={estilos.empresa}>
                     <Image
                         src="/img/kairosDev.png"
                         alt="KairósDev"
                         width={100}
-                        height={30}
+                        height={100}
                     />
                 </div>
             </div>
 
-            {/* Columna 2: Servicios */}
+            {/*Servicios */}
             <div className={estilos.columna}>
                 <h3 className={estilos.columnaTit}>Servicios</h3>
                 <ul className={estilos.columnalinks}>
@@ -84,7 +84,7 @@ export default function Footer() {
                 </ul>
             </div>
 
-            {/* Columna 3: Información Legal */}
+            {/*Información Legal */}
             <div className={estilos.columna}>
                 <h3 className={estilos.columnaTit}>Información Legal</h3>
                 <ul className={estilos.columnaLink}>
@@ -95,7 +95,7 @@ export default function Footer() {
                 </ul>
             </div>
 
-            {/* Columna 4: Compañía */}
+            {/*Compañía */}
             <div className={estilos.columna}>
                 <h3 className={estilos.columnaTit}>Compañía</h3>
                 <ul className={estilos.columnaLink}>
@@ -106,7 +106,6 @@ export default function Footer() {
                 </ul>
             </div>
 
-            {/* Derechos Reservados */}
             <div className={estilos.derechos}>
                 © 2026 WorkGuard. Todos los derechos reservados.
             </div>

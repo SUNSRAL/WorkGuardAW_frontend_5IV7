@@ -7,7 +7,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import estilos from "../styles/Login.module.css";
-import Footer from "../components/footerlinks.js";
+import Cargando from "../components/cargando.js";
+import Footer from '../components/footerlinks.js'; 
 
 export default function Login() {
   const router = useRouter();
@@ -52,7 +53,7 @@ export default function Login() {
 
       setTimeout(() => {
         const rol = datos.usuario.rol;
-        if (rol === "admin") router.push("/admin");
+        if (rol === "administrador") router.push("/admin");
         else if (rol === "consultor") router.push("/consultor");
         else if (rol === "mipyme") router.push("/mipyme");
       }, 1200);
@@ -68,12 +69,19 @@ export default function Login() {
   };
 
   return (
-    <div className={estilos["paginaCompleta"]}>
-     
 
-      {/* LOGO */}
+    <>
+    <div className={estilos["paginaCompleta"]}>
+<<<<<<< HEAD
+     
+=======
+      {/* carga */}
+      {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
+>>>>>>> 1fed8605cb1c2b02e57d83bd0e9d0385d63aaf1d
+
+      {/* logo */}
       <div className={estilos["logoEsquina"]}>
-        <Link href="/">
+        <Link href="/"> {/**Regreso al index pagina principal*/}
           <Image
             src="/img/logo.png"
             alt="Logo WorkGuard"
@@ -83,7 +91,7 @@ export default function Login() {
         </Link>
       </div>
 
-      {/* ILUSTRACIÓN IZQUIERDA */}
+
       <div className={estilos["ilustracionLateral"]}>
         <Image
           src="/img/persona1.png"
@@ -94,20 +102,17 @@ export default function Login() {
         />
       </div>
 
-      {/* FORMULARIO CENTRAL */}
-      <div className={estilos["contenedorCentral"]}>
         <main className={estilos["contenedorCentrado"]}>
           <form
             onSubmit={manejarLogin}
             className={estilos["formulario-login"]}
             autoComplete="off"
           >
-            {/* ENCABEZADO */}
+
             <div className={estilos["encabezado-formulario"]}>
               <h2>Iniciar Sesión</h2>
             </div>
 
-            {/* MENSAJE DE ESTADO */}
             {estado.mensaje && (
               <p
                 className={estilos["mensaje-estado"]}
@@ -119,13 +124,12 @@ export default function Login() {
               </p>
             )}
 
-            {/* CAMPO USUARIO */}
             <div className={estilos["campo"]}>
               <label htmlFor="usuario">Usuario</label>
 
               <div className={estilos["campo-input"]}>
                 <Image
-                  src="/img/user.png"
+                  src="/img/userp.png"
                   alt="Usuario"
                   width={16}
                   height={16}
@@ -143,12 +147,11 @@ export default function Login() {
               </div>
             </div>
 
-            {/* CAMPO CONTRASEÑA */}
             <div className={estilos["campo"]}>
               <label htmlFor="contrasena">Contraseña</label>
               <div className={estilos["campo-input"]}>
                 <Image
-                  src="/img/password.png"
+                  src="/img/passwordp.png"
                   alt="Contraseña"
                   width={16}
                   height={16}
@@ -164,8 +167,7 @@ export default function Login() {
                   autoComplete="new-password"
                 />
 
-                {/* BOTÓN DEL OJO */}
-                {/* BOTÓN DEL OJO */}
+                {/* ojito */}
                 <button
                   type="button"
                   className={estilos["boton-ojo"]}
@@ -176,7 +178,7 @@ export default function Login() {
                   aria-pressed={mostrarPass}
                 >
                   {mostrarPass ? (
-                    /* OJO ABIERTO: contraseña visible */
+                    /* contraseña visible */
                     <svg viewBox="0 0 24 24" fill="none">
                       <path
                         d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
@@ -193,7 +195,7 @@ export default function Login() {
                       />
                     </svg>
                   ) : (
-                    /* OJO CERRADO: contraseña oculta */
+                    /* contraseña oculta */
                     <svg viewBox="0 0 24 24" fill="none">
                       <path
                         d="M3 3L21 21"
@@ -228,7 +230,7 @@ export default function Login() {
               </div>
             </div>
 
-            {/* BOTÓN INICIAR SESIÓN */}
+            {/* Iniciar sesión */}
             <button
               type="submit"
               className={estilos["btnlogin"]}
@@ -237,16 +239,15 @@ export default function Login() {
               {cargando ? "Verificando..." : "Iniciar Sesión"}
             </button>
 
-            {/* REGISTRO */}
+            {/* Registro */}
             <p className={estilos["registro"]}>
               ¿No tienes una cuenta?
-              <Link href="/registro">Registrarse</Link>
+              <Link href="/rol">Registrarse</Link>
             </p>
           </form>
         </main>
-      </div>
+      
 
-      {/* ILUSTRACIÓN DERECHA */}
       <div className={estilos["ilustracionLateral"]}>
         <Image
           src="/img/persona2.png"
@@ -257,5 +258,8 @@ export default function Login() {
         />
       </div>
     </div>
+
+    <Footer />
+    </>
   );
 }

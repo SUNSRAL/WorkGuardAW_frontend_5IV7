@@ -116,7 +116,7 @@ export default function Login() {
                             <Link href="/login" className={estilos['btnlogin']} style={{ textAlign: 'center', display: 'block', textDecoration: 'none' }}>
                                 Iniciar Sesión
                             </Link>
-                            <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/registro">Registrarse</Link></p>
+                            <p className={estilos['registro']}>¿No tienes una cuenta? <Link href="/rol">Registrarse</Link></p>
                         </div>
                     </form>
 
@@ -152,7 +152,7 @@ export default function Login() {
                                 />
                                 <p style={{ marginTop: '15px', fontWeight: '600' }}>Servicios de Administración Tributaria</p>
                             </div>
-                            {/* Reverso (Texto que aparece al girar) */}
+                            {/* Texto que aparece al girar */}
                             <div className={estilos['tarjetaReverso']}>
                                 <p className={estilos['textoOrg']}>
                                     Validación oficial de datos fiscales y situación de MiPyMEs.
@@ -161,7 +161,7 @@ export default function Login() {
                         </div>
                     </div>
 
-                    {/* Tarjeta 2 (Secretaría de Economía) */}
+                    {/* Secretaría de Economía */}
                     <div className={estilos['tarjetaOrgItem']}>
                         <div className={estilos['tarjetaInner']}>
                             {/* Frente */}
@@ -175,7 +175,7 @@ export default function Login() {
                                 />
                                 <p style={{ marginTop: '15px', fontWeight: '600' }}>Secretaría de Economía</p>
                             </div>
-                            {/* Reverso (Texto que aparece al girar) */}
+                            {/* Texto que aparece al girar */}
                             <div className={estilos['tarjetaReverso']}>
                                 <p className={estilos['textoOrg']}>
                                     Consultamos normativas, registros y el fomento a la actividad económica.
@@ -184,7 +184,7 @@ export default function Login() {
                         </div>
                     </div>
 
-                    {/* Tarjeta 3 (Secretaria de trabajo y prevencion social) */}
+                    {/*Secretaria de trabajo y prevencion social */}
                     <div className={estilos['tarjetaOrgItem']}>
                         <div className={estilos['tarjetaInner']}>
                             {/* Frente */}
@@ -198,7 +198,7 @@ export default function Login() {
                                 />
                                 <p style={{ marginTop: '15px', fontWeight: '600' }}>Secretaría de Trabajo y Prevención Social</p>
                             </div>
-                            {/* Reverso (Texto que aparece al girar) */}
+                            {/*Texto que aparece al girar*/}
                             <div className={estilos['tarjetaReverso']}>
                                 <p className={estilos['textoOrg']}>
                                     Apoyándonos en el cumplimiento de los derechos laborales, fomentando el empleo digno y mantener el equilibrio entre trabajadores y empleadores.
