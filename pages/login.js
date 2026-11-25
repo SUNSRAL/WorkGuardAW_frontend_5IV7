@@ -69,9 +69,7 @@ export default function Login() {
   };
 
   return (
-
-    
-    <div className={estilos["paginaCompleta"]}>
+    <>
 <div className={estilos["paginaCompleta"]}>
   {/* carga */}
   {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
@@ -260,5 +258,6 @@ export default function Login() {
 
     <Footer />
     </>
+    
   );
 }
