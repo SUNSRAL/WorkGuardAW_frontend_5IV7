@@ -74,8 +74,6 @@ export default function Login() {
   {/* carga */}
   {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
 
-  {/* logo */}
-
       {/* logo */}
       <div className={estilos["logoEsquina"]}>
         <Link href="/"> {/**Regreso al index pagina principal*/}
