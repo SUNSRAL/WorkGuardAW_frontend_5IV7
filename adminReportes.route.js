@@ -1,20 +1,3 @@
-// ============================================================
-//  RUTA BACKEND: /api/admin/reportes
-//  Framework: Express.js + PostgreSQL (pg)
-//
-//  INSTRUCCIONES DE INTEGRACIÓN:
-//  1. Coloca este archivo en tu carpeta de rutas (ej. routes/)
-//  2. En tu archivo principal (server.js / index.js) agrega:
-//       import adminReportesRouter from './routes/adminReportes.route.js';
-//       app.use('/api/admin/reportes', adminReportesRouter);
-//  3. Para fotos de perfil, agrega en server.js:
-//       import path from 'path';
-//       app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-//     Y crea la carpeta: uploads/fotos-perfil/
-//  4. Ajusta la importación de `pool` según la ubicación de tu db.js
-//  5. Descomenta el middleware `verificarAdmin` y adáptalo a tu sesión
-// ============================================================
-
 import express from 'express';
 import pool from '../db.js'; // ← AJUSTA la ruta a tu archivo de conexión PostgreSQL
 

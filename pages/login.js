@@ -69,8 +69,7 @@ export default function Login() {
 
   return (
     <div className={estilos["paginaCompleta"]}>
-      {/* COMPONENTE DE CARGA */}
-      {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
+     
 
       {/* LOGO */}
       <div className={estilos["logoEsquina"]}>
