@@ -13,6 +13,21 @@ const PASOS_WIZARD = [
 
 export default function RegistroMipyme() {
   const router = useRouter();
+  const [pasoActual, setPasoActual] = useState(1);
+  const [cargandoCatalogos, setCargandoCatalogos] = useState(true);
+  const [procesando, setProcesando] = useState(false);
+  const [errorGeneral, setErrorGeneral] = useState("");
+  const [mensajePaso, setMensajePaso] = useState("");
+
+  // Catálogos traídos desde Supabase
+  const [catalogos, setCatalogos] = useState({
+    giros: [],
+    alcaldias_fiscal: [],
+    entidades_fiscal: [],
+    alcaldias_operaciones: [],
+    entidades_operaciones: [],
+    tamanos: [],
+  });
 
   const [pasoActual, setPasoActual] = useState(1);
   const [mostrarGuiaSemaforo, setMostrarGuiaSemaforo] = useState(false);
@@ -180,6 +195,43 @@ export default function RegistroMipyme() {
     );
     const nombreAlcaldia = alcaldiaObj?.opcion_alcaldia || '';
 
+      if (results && results.length > 0) {
+        setMapaCoords({
+          lat: parseFloat(results[0].lat),
+          lon: parseFloat(results[0].lon),
+          display: results[0].display_name,
+        });
+      } else {
+        setMapaCoords(null);
+        setErrorGeneral(
+          "No se encontró pin exacto en OpenStreetMap; podrás continuar, pero el paso quedará en Naranja para revisión.",
+        );
+      }
+    } catch {
+      setErrorGeneral(
+        "No se pudo consultar el servicio de mapas en este momento.",
+      );
+    } finally {
+      setBuscandoMapa(false);
+    }
+  };
+
+  // Evaluar paso actual contra el backend (POST /api/mipymes/evaluar-paso)
+  const validarYAvanzar = async () => {
+    setErrorGeneral("");
+    setMensajePaso("");
+
+    if (pasoYaAprobadoVerde) {
+      setPasoActual((p) => p + 1);
+      return;
+    }
+
+    if (pasoActual === 5) {
+      setPasoActual(6);
+      return;
+    }
+
+    setProcesando(true);
     try {
       setBuscandoMapa(true);
       const query = encodeURIComponent(
