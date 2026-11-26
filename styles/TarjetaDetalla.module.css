@@ -1,16 +1,29 @@
+/* ==========================================================================
+   WorkGuard — Ficha de Empresa (Estilo Perfil Corporativo / Bento Grid)
+   Mantiene exactamente las clases de tu estructura actual sin alterar el JS
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'DM Sans', 'Nunito', 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
 .pageWrapper {
-    background-color: #0B162C;
-    color: #F8FAFC;
+    background-color: #F4F6F9;
+    color: #0F172A;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-family: 'Nunito', 'Inter', -apple-system, sans-serif;
 }
 
+/* ── NAVBAR ── */
 .navbar {
     height: 62px;
-    background-color: #0D121E;
-    border-bottom: 1px solid #232E47;
+    background-color: #0B162C;
+    border-bottom: 1px solid #1E293B;
     padding: 0 28px;
     display: flex;
     align-items: center;
@@ -23,38 +36,41 @@
 .navLeft {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
 }
 
 .btnRegresar {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #141B2D;
-    border: 1px solid #232E47;
-    color: #F8FAFC;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid #334155;
+    color: #E2E8F0;
     padding: 7px 14px;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.15s;
 }
 
 .btnRegresar:hover {
-    border-color: #D4A359;
-    color: #D4A359;
+    background: #1E293B;
+    border-color: #94A3B8;
+    color: #FFFFFF;
 }
 
 .brand {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 800;
+    color: #FFFFFF;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .brand span {
-    color: #D4A359;
+    color: #DCA443;
 }
 
 .navRight {
@@ -66,43 +82,50 @@
 .navItem {
     background: transparent;
     border: none;
-    color: #94A3B8;
+    color: #CBD5E1;
     font-size: 13px;
     font-weight: 600;
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
+    transition: 0.15s;
 }
 
 .navItem:hover {
-    color: #F8FAFC;
-    background: #141B2D;
+    color: #FFFFFF;
+    background: rgba(30, 41, 59, 0.7);
 }
 
+/* ── CONTENEDOR PRINCIPAL (APILADO EN BLOQUES ANCHOS COMO EL BENTO) ── */
 .workspace {
     flex: 1;
-    max-width: 1400px;
+    max-width: 1220px;
     width: 100%;
-    margin: 0 auto;
-    padding: 20px 28px;
-    display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: 22px;
-}
-
-.cartaEmpresa {
-    background: #0D121E;
-    border: 1px solid #232E47;
-    border-radius: 16px;
-    overflow: hidden;
+    margin: 24px auto 56px;
+    padding: 0 24px;
     display: flex;
     flex-direction: column;
+    gap: 20px;
 }
 
+/* ── BLOQUE SUPERIOR: PORTADA PANORÁMICA + IDENTIDAD + DATOS ── */
+.cartaEmpresa {
+    background: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Contenedor visual superior (Banner + Cabecera blanca) */
 .cajaFotos {
     position: relative;
-    height: 270px;
-    background: #000;
+    height: 220px;
+    background: #E2E8F0;
+    border-radius: 10px 10px 0 0;
+    border: 1px solid #E2E8F0;
+    border-bottom: none;
+    overflow: hidden;
 }
 
 .cajaFotos img {
@@ -112,58 +135,64 @@
 }
 
 .fotosGradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, #0D121E 5%, rgba(13, 18, 30, 0.2) 55%, transparent 100%);
-    pointer-events: none;
+    display: none;
 }
 
 .fotosControls {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    bottom: 14px;
+    right: 16px;
+    top: auto;
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    background: rgba(11, 22, 44, 0.8);
+    backdrop-filter: blur(6px);
+    padding: 4px 8px;
+    border-radius: 6px;
+    z-index: 6;
 }
 
 .circuloBtnFotos {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(13, 18, 30, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
     display: grid;
     place-items: center;
     cursor: pointer;
+    transition: 0.15s;
 }
 
 .circuloBtnFotos:hover {
-    background: #D4A359;
-    color: #000;
+    background: rgba(255, 255, 255, 0.15);
+    color: #DCA443;
 }
 
 .floatingThumbs {
     position: absolute;
-    bottom: 16px;
-    right: 20px;
+    bottom: 14px;
+    left: 16px;
+    right: auto;
     display: flex;
     gap: 8px;
     z-index: 5;
 }
 
 .miniThumb {
-    width: 52px;
-    height: 36px;
-    border-radius: 6px;
+    width: 48px;
+    height: 34px;
+    border-radius: 5px;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.6);
     cursor: pointer;
-    opacity: 0.65;
+    opacity: 0.75;
+    transition: 0.15s;
 }
 
-.activeThumb {
-    border-color: #D4A359;
+.activeThumb, .miniThumb:hover {
+    border-color: #DCA443;
     opacity: 1;
 }
 
@@ -173,22 +202,29 @@
     object-fit: cover;
 }
 
+/* Barra de Identidad blanca pegada debajo de la portada */
 .sheetHeader {
-    padding: 0 24px 18px;
-    margin-top: -30px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 20px 28px;
+    margin-top: -20px;
     position: relative;
     z-index: 4;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    gap: 16px;
-    border-bottom: 1px solid #232E47;
+    align-items: center;
+    gap: 20px;
     flex-wrap: wrap;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
 }
 
 .tituloEmpresa {
     font-size: 24px;
     font-weight: 800;
+    color: #0B162C;
+    letter-spacing: -0.025em;
     margin: 0 0 8px 0;
 }
 
@@ -203,21 +239,21 @@
     align-items: center;
     gap: 5px;
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 12px;
     font-weight: 600;
 }
 
 .cajaVerificado {
-    background: rgba(16, 185, 129, 0.12);
-    color: #10B981;
-    border: 1px solid rgba(16, 185, 129, 0.28);
+    background: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
 }
 
 .cajaCategoria {
-    background: rgba(212, 163, 89, 0.14);
-    color: #D4A359;
-    border: 1px solid rgba(212, 163, 89, 0.28);
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid #E2E8F0;
 }
 
 .headerActions {
@@ -228,54 +264,67 @@
 .btnFavs {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: #141B2D;
-    border: 1px solid #3B4D75;
-    color: #F8FAFC;
-    padding: 8px 14px;
-    border-radius: 8px;
+    gap: 7px;
+    height: 38px;
+    background: #0B162C;
+    border: 1px solid #0B162C;
+    color: #FFFFFF;
+    padding: 0 16px;
+    border-radius: 6px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.15s;
+}
+
+.btnFavs:hover {
+    background: #1E293B;
 }
 
 .activeFav {
-    background: rgba(212, 163, 89, 0.14);
-    border-color: #D4A359;
-    color: #D4A359;
+    background: #FEF3C7;
+    border-color: #F59E0B;
+    color: #92400E;
 }
 
 .btnReportar {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: #F87171;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
+    height: 38px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #64748B;
+    padding: 0 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
     cursor: pointer;
+    transition: 0.15s;
 }
 
 .btnReportar:hover {
-    background: #EF4444;
-    color: #FFFFFF;
+    background: #FEF2F2;
+    border-color: #EF4444;
+    color: #DC2626;
 }
 
+/* ── BENTO GRID CON TUS CAMPOS DE INFORMACIÓN ── */
 .cartaBody {
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
 }
 
 .cajaDescripcion {
-    background: #141B2D;
-    border: 1px solid #232E47;
-    border-radius: 12px;
-    padding: 16px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .blockLabel {
@@ -284,15 +333,15 @@
     gap: 7px;
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: #D4A359;
+    letter-spacing: 0.7px;
+    color: #64748B;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .descripcionTexto {
     font-size: 14px;
-    color: #CBD5E1;
+    color: #334155;
     line-height: 1.55;
     margin: 0;
 }
@@ -300,62 +349,74 @@
 .detallesGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 16px;
 }
 
 .detallesCard {
-    background: #141B2D;
-    border: 1px solid #232E47;
-    border-radius: 12px;
-    padding: 14px 16px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .detallesValue {
-    font-size: 13.5px;
-    color: #F8FAFC;
-    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0F172A;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
 }
 
 .btnGoogleMaps {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #D4A359;
-    font-size: 12px;
-    font-weight: 600;
+    color: #0B162C;
+    font-size: 12.5px;
+    font-weight: 700;
     text-decoration: none;
+    transition: 0.15s;
+}
+
+.btnGoogleMaps:hover {
+    color: #B45309;
 }
 
 .estadoActivo {
-    font-size: 11px;
-    color: #10B981;
+    font-size: 12px;
+    color: #059669;
     font-weight: 600;
 }
 
-/* COMENTARIOS */
+/* ── SECCIÓN DE COMENTARIOS (TARJETA BLANCA DE ANCHO COMPLETO) ── */
 .columnaComentarios {
-    background: #0D121E;
-    border: 1px solid #232E47;
-    border-radius: 16px;
-    padding: 20px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 24px 28px;
     display: flex;
     flex-direction: column;
-    min-height: 500px;
+    min-height: auto;
 }
 
 .encabezadoComentarios {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #F1F5F9;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .tituloComentarios {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
+    color: #0B162C;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -363,11 +424,12 @@
 }
 
 .badgeCount {
-    background: rgba(212, 163, 89, 0.14);
-    color: #D4A359;
+    background: #0B162C;
+    color: #FFFFFF;
     padding: 2px 9px;
     border-radius: 99px;
     font-size: 12px;
+    font-weight: 600;
 }
 
 .filtrosComentarios {
@@ -376,51 +438,100 @@
 }
 
 .botonFiltro {
-    background: #141B2D;
-    border: 1px solid #232E47;
-    color: #94A3B8;
-    font-size: 11px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    font-size: 12px;
     font-weight: 600;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 6px;
     cursor: pointer;
+    transition: 0.15s;
 }
 
-.activeFiltro {
-    border-color: #D4A359;
-    color: #D4A359;
+.activeFiltro, .botonFiltro:hover {
+    background: #0B162C;
+    border-color: #0B162C;
+    color: #FFFFFF;
 }
 
 .disclaimerNote {
-    font-size: 11.5px;
+    font-size: 12px;
     color: #64748B;
-    background: rgba(20, 27, 45, 0.6);
-    border-left: 2px solid #D4A359;
+    background: #F8FAFC;
+    border-left: 3px solid #DCA443;
     padding: 8px 12px;
-    margin: 0 0 14px 0;
+    border-radius: 0 6px 6px 0;
+    margin: 0 0 18px 0;
 }
 
-.scrollComentarios {
-    flex: 1;
-    overflow-y: auto;
+/* Composer arriba o abajo con estética limpia */
+.comentarioComposer {
     display: flex;
-    flex-direction: column;
     gap: 10px;
-    margin-bottom: 14px;
+    background: #F8FAFC;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #E2E8F0;
+    margin-top: 16px;
+}
+
+.comentarioComposer input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #0F172A;
+    padding: 0 10px;
+    font-size: 13.5px;
+    outline: none;
+}
+
+.comentarioComposer input::placeholder {
+    color: #94A3B8;
+}
+
+.btnPublicar {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    background: #0B162C;
+    color: #FFFFFF;
+    border: none;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.btnPublicar:hover {
+    background: #1E293B;
+}
+
+/* Feed de comentarios en cuadrícula moderna */
+.scrollComentarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
 .comentarioItem {
-    background: #141B2D;
-    border: 1px solid #232E47;
-    border-radius: 12px;
-    padding: 13px 15px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .comentarioHead {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .usuarioInfo {
@@ -430,12 +541,12 @@
 }
 
 .miniAvatar {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: #1C253D;
-    border: 1px solid #3B4D75;
-    color: #D4A359;
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    color: #0B162C;
     font-size: 11px;
     font-weight: 700;
     display: grid;
@@ -443,88 +554,66 @@
 }
 
 .usuarioName {
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 700;
+    color: #0F172A;
 }
 
 .comentarioTiempo {
-    font-size: 11px;
-    color: #64748B;
+    font-size: 11.5px;
+    color: #94A3B8;
 }
 
 .comentarioBody {
     font-size: 13.5px;
-    color: #E2E8F0;
-    margin: 0 0 8px 0;
+    color: #334155;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
 }
 
 .likeBtn {
-    background: transparent;
-    border: none;
+    align-self: flex-start;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
     color: #64748B;
     font-size: 11.5px;
     font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 5px;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     cursor: pointer;
+    transition: 0.15s;
 }
 
-.activeLike {
-    color: #D4A359;
-}
-
-.comentarioComposer {
-    display: flex;
-    gap: 10px;
-    padding-top: 12px;
-    border-top: 1px solid #232E47;
-}
-
-.comentarioComposer input {
-    flex: 1;
-    background: #141B2D;
-    border: 1px solid #3B4D75;
-    color: #F8FAFC;
-    padding: 10px 16px;
-    border-radius: 24px;
-    font-size: 13.5px;
-    outline: none;
-}
-
-.comentarioComposer input:focus {
-    border-color: #D4A359;
-}
-
-.btnPublicar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #D4A359;
-    color: #060911;
-    border: none;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
+.activeLike, .likeBtn:hover {
+    border-color: #0B162C;
+    color: #0B162C;
+    background: #F1F5F9;
 }
 
 .estadoTexto,
 .errorTexto {
-    grid-column: 1 / -1;
     text-align: center;
     padding: 40px;
+    color: #64748B;
 }
 
 .errorTexto {
-    color: #F87171;
+    color: #DC2626;
 }
 
-@media (max-width: 900px) {
-    .workspace {
+@media (max-width: 960px) {
+    .cartaBody {
         grid-template-columns: 1fr;
     }
 
     .detallesGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .scrollComentarios {
         grid-template-columns: 1fr;
     }
 }
