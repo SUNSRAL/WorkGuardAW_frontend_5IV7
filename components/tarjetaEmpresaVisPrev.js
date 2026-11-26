@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from './tarjetaEmpresaVisPrev.css';
+import estilo from './tarjetaEmpresaVisPrev.module.css';
 
 export default function TarjetaEmpresa({
     imagen,
@@ -10,34 +10,34 @@ export default function TarjetaEmpresa({
     const [errorImagen, setErrorImagen] = useState(false);
 
     return (
-        <article className={styles.tarjeta}>
+        <article className={estilo.tarjeta}>
 
-            <div className={styles.contenedorImagen}>
+            <div className={estilo.contenedorImagen}>
                 {imagen && !errorImagen ? (
                     <img
                         src={imagen}
                         alt={`Fotografía de ${nombre}`}
-                        className={styles.imagen}
+                        className={estilo.imagen}
                         onError={() => setErrorImagen(true)}
                     />
                 ) : (
-                    <div className={styles.imagenPredeterminada}>
+                    <div className={estilo.imagenPredeterminada}>
                         WG
                     </div>
                 )}
             </div>
 
-            <div className={styles.informacion}>
+            <div className={estilo.informacion}>
 
-                <h3 className={styles.nombre}>
+                <h3 className={estilo.nombre}>
                     {nombre}
                 </h3>
 
-                <p className={styles.giro}>
+                <p className={estilo.giro}>
                     {giro}
                 </p>
 
-                <p className={styles.ubicacion}>
+                <p className={estilo.ubicacion}>
                     <span>⌖</span> {ubicacion}
                 </p>
 

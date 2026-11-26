@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import TarjetaEmpresa from '../../components/consultor/TarjetaEmpresa';
+import TarjetaEmpresa from '../../components/tarjetaEmpresaVisPrev';
 import styles from '../../styles/Cuenta.module.css';
 
 export default function CuentaConsultor() {
@@ -100,7 +100,7 @@ export default function CuentaConsultor() {
             <header className={styles.encabezado}>
 
                 <img
-                    src="/img/Logoworkguard.png"
+                    src="/img/logo.png"
                     alt="Logo WorkGuard"
                     className={styles.logo}
                 />
