@@ -23,9 +23,16 @@ export async function apiFetch(endpoint, opciones = {}) {
     const res = await fetch(`${API_URL}${endpoint}`, config);
     const datos = await res.json().catch(() => ({}));
 
-    if (!res.ok) {
-        throw new Error(datos.error || 'Error en la petición al servidor');
-    }
+   if (!res.ok) {
+
+    console.error('ERROR EN LA PETICIÓN:', {
+        url: `${API_URL}${endpoint}`,
+        status: res.status,
+        respuesta: datos
+    });
+
+    throw new Error(datos.error || 'Error en la petición al servidor');
+}
 
     return datos;
 }
