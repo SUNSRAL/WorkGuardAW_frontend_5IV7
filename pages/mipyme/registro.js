@@ -56,10 +56,12 @@ export default function RegistroMipyme() {
     confirmar_contrasena: ''
   });
 
+  // Archivos en memoria (incluyendo doc_acta para Persona Moral)
   const [archivos, setArchivos] = useState({
     doc_csf: null,
     doc_comprobante: null,
     doc_curp: null,
+    doc_acta: null,
     doc_opinion_32d: null
   });
 
@@ -255,13 +257,23 @@ export default function RegistroMipyme() {
         fd.append('numero_operaciones', form.numero_operaciones.trim());
         fd.append('id_alcaldia_operaciones', form.id_alcaldia_operaciones);
         fd.append('geolocalizado', String(geolocalizado));
+        fd.append('mismo_domicilio', String(form.mismo_domicilio));
+        fd.append('cp_fiscal', form.cp_fiscal.trim());
+        fd.append('calle_fiscal', form.calle_fiscal.trim());
+        if (coordenadas) {
+          fd.append('lat', String(coordenadas.lat));
+          fd.append('lon', String(coordenadas.lon));
+        }
+        if (archivos.doc_csf) fd.append('doc_csf', archivos.doc_csf);
         if (archivos.doc_comprobante) fd.append('doc_comprobante', archivos.doc_comprobante);
       }
 
       if (pasoActual === 3) {
         fd.append('nombre_completo', form.nombre_completo.trim());
         fd.append('curp', form.curp.trim());
+        if (archivos.doc_csf) fd.append('doc_csf', archivos.doc_csf);
         if (archivos.doc_curp) fd.append('doc_curp', archivos.doc_curp);
+        if (archivos.doc_acta) fd.append('doc_acta', archivos.doc_acta);
       }
 
       if (pasoActual === 4) {
@@ -1064,7 +1076,7 @@ export default function RegistroMipyme() {
                 </form>
               )}
 
-              {/* PASO 3 */}
+              {/* PASO 3 (CON CAMPO CONDICIONAL ACTA CONSTITUTIVA PARA PERSONA MORAL) */}
               {pasoActual === 3 && (
                 <form onSubmit={validarYAvanzar} className={styles.formulario}>
                   <div className={styles.grupo}>
@@ -1114,6 +1126,28 @@ export default function RegistroMipyme() {
                       </small>
                     )}
                   </div>
+
+                  {form.tipo_persona === 'MORAL' && (
+                    <div className={styles.grupoArchivo}>
+                      <label htmlFor="doc_acta">
+                        Activa Constitutiva o Poder Notarial (PDF donde conste el Representante Legal) *
+                      </label>
+                      <input
+                        id="doc_acta"
+                        type="file"
+                        accept=".pdf,application/pdf"
+                        onChange={(e) => manejarArchivo(e, 'doc_acta')}
+                        disabled={bloqueado}
+                        required={!archivos.doc_acta}
+                      />
+                      {archivos.doc_acta && (
+                        <small style={{ color: '#059669', fontWeight: 600 }}>
+                          ✓ Archivo cargado en memoria: {archivos.doc_acta.name}
+                        </small>
+                      )}
+                      <small>Se verificará la Razón Social y el nombramiento del Representante Legal.</small>
+                    </div>
+                  )}
 
                   {alerta && (
                     <div
@@ -1251,7 +1285,7 @@ export default function RegistroMipyme() {
                 </form>
               )}
 
-              {/* PASO 5 */}
+              {/* PASO 5 (PANTALLA DE CREDENCIALES Y ÉXITO LIMPIA DE PASTEL) */}
               {pasoActual === 5 && (
                 <form onSubmit={finalizarRegistro} className={styles.formulario}>
                   <div className={styles.resumenVerificacion}>
