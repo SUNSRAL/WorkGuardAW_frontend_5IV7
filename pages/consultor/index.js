@@ -99,7 +99,7 @@ export default function IndexConsultor() {
                 <Search size={15} className={styles.navSearchIcon} />
                 <input
                   type="text"
-                  placeholder="Buscar por nombre comercial o RFC..."
+                  placeholder="Busca la empresa que te interese..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                   className={styles.navSearchInput}
