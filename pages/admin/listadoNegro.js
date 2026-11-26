@@ -79,7 +79,7 @@ export default function ListadoNegro() {
               </div>
               <button
                 className={styles.btnRegresar}
-                onClick={() => router.push('/ADMIN/indexAdmin')}
+                onClick={() => router.push('/admin/indexAdmin')}
               >
                 ← Regresar a reportes
               </button>
