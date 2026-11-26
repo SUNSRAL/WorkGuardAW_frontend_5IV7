@@ -1,15 +1,3 @@
-/* ==========================================================================
-   WorkGuard — Ficha de Empresa (Estilo Perfil Corporativo / Bento Grid)
-   Mantiene exactamente las clases de tu estructura actual sin alterar el JS
-   ========================================================================== */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'DM Sans', 'Nunito', 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-}
 
 .pageWrapper {
     background-color: #F4F6F9;
