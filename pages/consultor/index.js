@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { apiFetch } from "../../utils/api.js";
 import {
   Search,
   Building2,
   Users,
   ShieldAlert,
-  ArrowRight,
+  ArrowUpRight,
   Filter,
+  User,
 } from "lucide-react";
 import RutaProtegida from "../../components/RutaProtegida";
 import Footer from "../../components/footerlinks";
@@ -42,12 +42,6 @@ export default function IndexConsultor() {
 
     cargarEmpresas();
   }, [API_URL]);
-
-  /* ── Cerrar sesión ── */
-  const cerrarSesion = async () => {
-    await apiFetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
-  };
 
   /* ── Extraer listas únicas para los selectores de filtro ── */
   const opcionesGiro = useMemo(() => {
@@ -92,39 +86,79 @@ export default function IndexConsultor() {
   return (
     <RutaProtegida rolPermitido="consultor">
       <div className={styles.pageWrapper}>
-        {/* ════════ HEADER FLAT ════════ */}
+        {/* ════════ BARRA DE NAVEGACIÓN ════════ */}
         <header className={styles.header}>
-          <div className={styles.headerBrand}>
-            <Image
-              src="/img/logo.png"
-              alt="Logo WorkGuard"
-              width={40}
-              height={40}
-            />
-            <div className={styles.headerLeft}>
+          <div className={styles.headerInner}>
+            <div className={styles.brandTitleGroup}>
               <span className={styles.roleLabel}>PORTAL CONSULTOR</span>
-              <h2 className={styles.panelTitle}>Explorador de Empresas</h2>
+              <h2 className={styles.panelTitle}>Explorador de empresas</h2>
+            </div>
+
+            <div className={styles.navSearchFilters}>
+              <div className={styles.navSearchBox}>
+                <Search size={15} className={styles.navSearchIcon} />
+                <input
+                  type="text"
+                  placeholder="Busca la empresa que te interese..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  className={styles.navSearchInput}
+                />
+              </div>
+
+              <div className={styles.navSelectWrapper}>
+                <Filter size={13} className={styles.navSelectIcon} />
+                <select
+                  value={filtroGiro}
+                  onChange={(e) => setFiltroGiro(e.target.value)}
+                  className={styles.navSelect}
+                >
+                  {opcionesGiro.map((g) => (
+                    <option key={g} value={g}>
+                      {g === "TODOS" ? "Todos los giros" : g}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <select
+                value={filtroTamano}
+                onChange={(e) => setFiltroTamano(e.target.value)}
+                className={styles.navSelect}
+              >
+                {opcionesTamano.map((t) => (
+                  <option key={t} value={t}>
+                    {t === "TODOS" ? "Todos los tamaños" : t}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.navRightActions}>
+              <button
+                className={styles.btnListaNegra}
+                onClick={() => router.push("/admin/listadoNegro")}
+              >
+                <ShieldAlert size={15} />
+                <span>Ver Lista Negra</span>
+              </button>
+
+              <button
+                className={styles.btnProfileIcon}
+                onClick={() => router.push("/consultor/cuenta")}
+                title="Perfil"
+                aria-label="Perfil"
+              >
+                <User size={17} />
+              </button>
             </div>
           </div>
-
-          <nav className={styles.navActions}>
-            <button
-              className={styles.btnNav}
-              onClick={() => router.push("/consultor/cuenta")}
-            >
-              Mi Cuenta
-            </button>
-            <button className={styles.btnCerrarSesion} onClick={cerrarSesion}>
-              Cerrar Sesión
-            </button>
-          </nav>
         </header>
 
         {/* ════════ MAIN ════════ */}
         <main className={styles.main}>
           <div className={styles.container}>
-            {/* Encabezado de sección + acceso a Lista Negra */}
-            <div className={styles.headerSection}>
+            <div className={styles.pageHeader}>
               <div>
                 <h1 className={styles.titulo}>Directorio de MiPyMEs</h1>
                 <p className={styles.subtituloTexto}>
@@ -132,66 +166,15 @@ export default function IndexConsultor() {
                   emitir un reporte.
                 </p>
               </div>
-              <button
-                className={styles.btnListaNegra}
-                onClick={() => router.push("/admin/listadoNegro")}
-              >
-                <ShieldAlert size={16} /> Ver Lista Negra
-              </button>
+
+              {!cargando && !error && (
+                <span className={styles.resultCount}>
+                  Mostrando <strong>{empresasFiltradas.length}</strong> de{" "}
+                  {empresas.length} empresas
+                </span>
+              )}
             </div>
 
-            {/* ── BARRA DE BÚSQUEDA Y FILTROS ── */}
-            <section className={styles.filterBar}>
-              <div className={styles.searchBox}>
-                <Search size={18} className={styles.searchIcon} />
-                <input
-                  type="text"
-                  placeholder="Buscar por nombre comercial o RFC..."
-                  value={busqueda}
-                  onChange={(e) => setBusqueda(e.target.value)}
-                  className={styles.searchInput}
-                />
-              </div>
-
-              <div className={styles.selectGroup}>
-                <div className={styles.selectWrapper}>
-                  <Filter size={14} className={styles.selectIcon} />
-                  <select
-                    value={filtroGiro}
-                    onChange={(e) => setFiltroGiro(e.target.value)}
-                    className={styles.select}
-                  >
-                    {opcionesGiro.map((g) => (
-                      <option key={g} value={g}>
-                        {g === "TODOS" ? "Todos los giros" : g}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <select
-                  value={filtroTamano}
-                  onChange={(e) => setFiltroTamano(e.target.value)}
-                  className={styles.select}
-                >
-                  {opcionesTamano.map((t) => (
-                    <option key={t} value={t}>
-                      {t === "TODOS" ? "Todos los tamaños" : t}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </section>
-
-            {/* Contador de resultados */}
-            {!cargando && !error && (
-              <p className={styles.resultCount}>
-                Mostrando <strong>{empresasFiltradas.length}</strong> de{" "}
-                {empresas.length} empresas
-              </p>
-            )}
-
-            {/* Estados de carga/error */}
             {cargando && (
               <p className={styles.mensajeEstado}>
                 Cargando directorio de empresas...
@@ -212,7 +195,6 @@ export default function IndexConsultor() {
                   "Giro general";
                 const tamano =
                   emp.catalogo_tamano?.opcion_tamano_empresa || "MiPyME";
-                const rfc = emp.existencia_fiscal?.rfc || "Sin RFC";
 
                 return (
                   <article
@@ -220,29 +202,32 @@ export default function IndexConsultor() {
                     className={styles.companyCard}
                     onClick={() => router.push(`/mipyme/${emp.id_mipyme}`)}
                   >
-                    <div className={styles.cardHeader}>
-                      <span className={styles.giroBadge}>{giro}</span>
-                      <span className={styles.idTag}>#{emp.id_mipyme}</span>
-                    </div>
+                    {/* Espacio superior reservado para la imagen */}
+                    <div className={styles.cardImageSpace}></div>
 
-                    <h3 className={styles.companyName}>
-                      {emp.nombre_comercial}
-                    </h3>
-                    <p className={styles.rfcText}>RFC: {rfc}</p>
+                    <div className={styles.cardContent}>
+                      <span className={styles.giroTag}>{giro}</span>
 
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaItem}>
-                        <Building2 size={14} /> {tamano}
-                      </span>
-                      <span className={styles.metaItem}>
-                        <Users size={14} /> {emp.numero_trabajadores ?? 0} emp.
-                      </span>
-                    </div>
+                      <h3 className={styles.companyName}>
+                        {emp.nombre_comercial}
+                      </h3>
 
-                    <div className={styles.cardFooter}>
-                      <span className={styles.verDetalleLink}>
-                        Ver ficha completa <ArrowRight size={15} />
-                      </span>
+                      <div className={styles.cardSpecs}>
+                        <span className={styles.specItem}>
+                          <Building2 size={13} /> {tamano}
+                        </span>
+                        <span className={styles.specDivider}>•</span>
+                        <span className={styles.specItem}>
+                          <Users size={13} /> {emp.numero_trabajadores ?? 0}{" "}
+                          emp.
+                        </span>
+                      </div>
+
+                      <div className={styles.cardFooter}>
+                        <span className={styles.verDetalleLink}>
+                          Ver ficha completa <ArrowUpRight size={14} />
+                        </span>
+                      </div>
                     </div>
                   </article>
                 );
