@@ -69,8 +69,8 @@ export default function CentroReportes() {
   /* ── Render ── */
   return (
     // 3. Rol exacto que devuelve el backend ("administrador")
-    <RutaProtegida rolPermitido="administrador">
-      <div className={styles.pageWrapper}>
+<RutaProtegida rolPermitido="admin">
+<div className={styles.pageWrapper}>
         {/* ════════ HEADER ════════ */}
         <header className={styles.header}>
           <div className={styles.headerBrand}>

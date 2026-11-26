@@ -51,9 +51,9 @@ export default function Login() {
         mensaje: `¡Bienvenido ${datos.usuario.nombre}! Rol detectado: ${datos.usuario.rol}. Redirigiendo...`,
       });
 
-      setTimeout(() => {
+          setTimeout(() => {
         const rol = datos.usuario.rol;
-        if (rol === "administrador") router.push("/admin");
+        if (rol === "admin") router.push("/admin");
         else if (rol === "consultor") router.push("/consultor");
         else if (rol === "mipyme") router.push("/mipyme");
       }, 1200);
