@@ -1,41 +1,74 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import styles from '../../styles/Reportar.module.css';
 import { apiFetch } from '../../utils/api';
-import Image from "next/image";
 
 export default function Reporte() {
 
-    // Guardamos los motivos seleccionados
-    const [motivos, setMotivos] = useState([]);
+    const router = useRouter();
 
-    // Guardamos el motivo personalizado cuando seleccionan "Otro"
+    // Obtenemos el ID de la MiPyME desde la URL.
+    const idMipyme = router.query.id_mipyme;
+
+    // Guardamos un solo motivo.
+    const [motivo, setMotivo] = useState('');
+
+    // Guardamos el motivo personalizado cuando seleccionan "Otro".
     const [otroMotivo, setOtroMotivo] = useState('');
 
-    // Guardamos la descripción del caso
+    // Guardamos la descripción del caso.
     const [descripcion, setDescripcion] = useState('');
 
-    // Guardamos el archivo PDF seleccionado
+    // Guardamos el archivo PDF seleccionado.
     const [archivo, setArchivo] = useState(null);
 
-    // Guardamos los mensajes de error
+    // Mensajes del formulario.
     const [error, setError] = useState('');
-
-    // Guardamos el mensaje de éxito
     const [exito, setExito] = useState('');
 
-    // Guardamos el estado del envío
+    // Estado del envío.
     const [enviando, setEnviando] = useState(false);
 
 
-    // Función para seleccionar o deseleccionar motivos
-    function manejarMotivos(event) {
+    // MOTIVOS DISPONIBLES.
+    const opcionesMotivo = [
+        {
+            valor: 'COBRO_POR_CONTRATACION',
+            texto: 'Cobro por contratación'
+        },
+        {
+            valor: 'OFERTA_FALSA',
+            texto: 'Oferta falsa'
+        },
+        {
+            valor: 'SUPLANTACION_DE_IDENTIDAD',
+            texto: 'Suplantación de identidad'
+        },
+        {
+            valor: 'CONDICIONES_ABUSIVAS',
+            texto: 'Condiciones abusivas'
+        },
+        {
+            valor: 'EMPRESA_INEXISTENTE',
+            texto: 'Empresa inexistente en la práctica'
+        },
+        {
+            valor: 'OTRO',
+            texto: 'Otro'
+        }
+    ];
 
-        const { value, checked } = event.target;
 
-        if (checked) {
-            setMotivos([...motivos, value]);
-        } else {
-            setMotivos(motivos.filter(motivo => motivo !== value));
+    // SELECCIONAR MOTIVO.
+    function manejarMotivo(event) {
+
+        const nuevoMotivo = event.target.value;
+
+        setMotivo(nuevoMotivo);
+
+        // Si ya no selecciona "Otro", limpiamos el texto.
+        if (nuevoMotivo !== 'OTRO') {
+            setOtroMotivo('');
         }
 
         setError('');
@@ -43,7 +76,7 @@ export default function Reporte() {
     }
 
 
-    // Función para seleccionar el archivo
+    // SELECCIONAR ARCHIVO.
     function manejarArchivo(event) {
 
         const archivoSeleccionado = event.target.files[0];
@@ -56,7 +89,7 @@ export default function Reporte() {
             return;
         }
 
-        // Comprobamos que sea un PDF
+        // Comprobamos que sea un PDF.
         if (
             archivoSeleccionado.type !== 'application/pdf' ||
             !archivoSeleccionado.name.toLowerCase().endsWith('.pdf')
@@ -67,13 +100,10 @@ export default function Reporte() {
             return;
         }
 
-        // Establecemos los tamaño permitido
+        // Tamaño máximo: 5 MB.
         const maximo = 5 * 1024 * 1024;
 
-        // Comprobamos el tamaño del archivo
-        if (
-            archivoSeleccionado.size > maximo
-        ) {
+        if (archivoSeleccionado.size > maximo) {
             setError('El PDF no debe superar los 5 MB.');
             setArchivo(null);
             event.target.value = '';
@@ -84,15 +114,25 @@ export default function Reporte() {
     }
 
 
-    // Comprobamos si todos los campos están completos
+    // VALIDAR ID DE LA MIPYME.
+    const idMipymeValido =
+        router.isReady &&
+        typeof idMipyme === 'string' &&
+        /^\d+$/.test(idMipyme) &&
+        Number(idMipyme) > 0;
+
+
+    // COMPROBAR SI EL FORMULARIO ESTÁ COMPLETO.
     const formularioValido =
-        motivos.length > 0 &&
-        (!motivos.includes('Otro') || otroMotivo.trim() !== '') &&
+        idMipymeValido &&
+        motivo !== '' &&
+        (motivo !== 'OTRO' || otroMotivo.trim() !== '') &&
         descripcion.trim() !== '' &&
+        descripcion.trim().length <= 2000 &&
         archivo !== null;
 
 
-    // Función para enviar el reporte
+    // ENVIAR REPORTE.
     async function enviarReporte(event) {
 
         event.preventDefault();
@@ -100,7 +140,7 @@ export default function Reporte() {
         setError('');
         setExito('');
 
-        // Evitamos enviar formularios incompletos
+        // Evitamos enviar formularios incompletos.
         if (!formularioValido) {
             setError('Debes completar todos los campos.');
             return;
@@ -110,29 +150,31 @@ export default function Reporte() {
 
             setEnviando(true);
 
-            // Creamos el paquete que enviaremos al Backend
+            // Creamos el paquete que enviaremos al backend.
             const datos = new FormData();
 
-            datos.append('motivos', JSON.stringify(motivos));
+            datos.append('id_mipyme', String(idMipyme));
+            datos.append('motivo', motivo);
             datos.append('otroMotivo', otroMotivo);
             datos.append('descripcion', descripcion);
             datos.append('archivo', archivo);
 
-            // Enviamos la información al Backend
+
+            // Enviamos la información mediante apiFetch.
             const respuesta = await apiFetch('/api/reportes', {
                 method: 'POST',
                 body: datos
             });
 
-            if (!respuesta.ok) {
-                throw new Error('No se pudo enviar el reporte.');
-            }
 
-            // Mostramos el mensaje de éxito
-            setExito('¡Reporte enviado exitosamente!');
+            // apiFetch devuelve directamente los datos JSON.
+            setExito(
+                respuesta.mensaje || '¡Reporte enviado exitosamente!'
+            );
 
-            // Limpiamos el formulario
-            setMotivos([]);
+
+            // LIMPIAMOS EL FORMULARIO.
+            setMotivo('');
             setOtroMotivo('');
             setDescripcion('');
             setArchivo(null);
@@ -141,7 +183,10 @@ export default function Reporte() {
 
         } catch (error) {
 
-            setError(error.message || 'Ocurrió un error al enviar el reporte.');
+            // Mostramos el error enviado por el backend.
+            setError(
+                error.message || 'Ocurrió un error al enviar el reporte.'
+            );
 
         } finally {
 
@@ -197,7 +242,7 @@ export default function Reporte() {
 
                 <div className={styles.panelFormulario}>
 
-                    <h1>Enviar reporte</h1>
+                    <h1>Reporte</h1>
 
                     <p className={styles.subtitulo}>
                         Completa los siguientes campos para
@@ -207,7 +252,7 @@ export default function Reporte() {
 
                     <form onSubmit={enviarReporte}>
 
-                        {/* MOTIVOS DEL REPORTE */}
+                        {/* MOTIVO DEL REPORTE */}
 
                         <div className={styles.grupo}>
 
@@ -217,25 +262,24 @@ export default function Reporte() {
 
                             <div className={styles.opciones}>
 
-                                {[
-                                    'Cobro por contratación',
-                                    'Oferta falsa',
-                                    'Suplantación de identidad',
-                                    'Condiciones abusivas',
-                                    'Empresa inexistente en la práctica',
-                                    'Otro'
-                                ].map((motivo) => (
+                                {opcionesMotivo.map((opcion) => (
 
-                                    <label key={motivo} className={styles.opcion}>
+                                    <label
+                                        key={opcion.valor}
+                                        className={styles.opcion}
+                                    >
 
                                         <input
-                                            type="checkbox"
-                                            value={motivo}
-                                            checked={motivos.includes(motivo)}
-                                            onChange={manejarMotivos}
+                                            type="radio"
+                                            name="motivo"
+                                            value={opcion.valor}
+                                            checked={motivo === opcion.valor}
+                                            onChange={manejarMotivo}
                                         />
 
-                                        <span>{motivo}</span>
+                                        <span>
+                                            {opcion.texto}
+                                        </span>
 
                                     </label>
 
@@ -248,7 +292,7 @@ export default function Reporte() {
 
                         {/* CAMPO PARA OTRO MOTIVO */}
 
-                        {motivos.includes('Otro') && (
+                        {motivo === 'OTRO' && (
 
                             <div className={styles.grupo}>
 
@@ -281,8 +325,17 @@ export default function Reporte() {
                                 id="descripcion"
                                 placeholder="Describe detalladamente lo sucedido..."
                                 value={descripcion}
-                                onChange={(e) => setDescripcion(e.target.value)}
+                                maxLength={2000}
+                                onChange={(e) => {
+                                    setDescripcion(e.target.value);
+                                    setError('');
+                                    setExito('');
+                                }}
                             />
+
+                            <small>
+                                {descripcion.length}/2000 caracteres.
+                            </small>
 
                         </div>
 
@@ -307,9 +360,11 @@ export default function Reporte() {
                             </small>
 
                             {archivo && (
+
                                 <p className={styles.archivoSeleccionado}>
                                     Archivo seleccionado: {archivo.name}
                                 </p>
+
                             )}
 
                         </div>
@@ -318,15 +373,19 @@ export default function Reporte() {
                         {/* MENSAJES */}
 
                         {error && (
+
                             <p className={styles.error}>
                                 {error}
                             </p>
+
                         )}
 
                         {exito && (
+
                             <p className={styles.exito}>
                                 {exito}
                             </p>
+
                         )}
 
 

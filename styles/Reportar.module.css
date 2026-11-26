@@ -73,6 +73,38 @@
     color: #1B263B;
 }
 
+/* BOTÓN PARA ELEGIR ARCHIVO */
+.grupo input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px dashed #C59B27;
+    border-radius: 9px;
+    background-color: #FFFCF5;
+    box-sizing: border-box;
+    font-size: 12px;
+    cursor: pointer;
+    color: #64748B;
+}
+
+/* BOTÓN INTERNO */
+.grupo input[type="file"]::file-selector-button {
+    background-color: #1B263B;
+    color: white;
+    border: none;
+    padding: 9px 15px;
+    border-radius: 6px;
+    margin-right: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* EFECTO AL PASAR EL CURSOR */
+.grupo input[type="file"]::file-selector-button:hover {
+    background-color: #C59B27;
+    color: #1B263B;
+}
 
 /* LADO DERECHO */
 
@@ -94,6 +126,7 @@
     color: #1B263B;
     margin: 0 0 8px;
     text-align: center;
+    transform: translateY(-60px);
 }
 
 .subtitulo {
@@ -263,8 +296,7 @@
     }
 
     .panelImagen {
-        min-height: 350px;
-        padding: 100px 25px 30px;
+    padding: 60px 25px 50px;
     }
 
     .ilustracion {
