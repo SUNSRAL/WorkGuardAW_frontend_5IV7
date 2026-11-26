@@ -21,7 +21,7 @@ export default function Roles() {
 
       <main className={estilos["contenedorbtnrol"]}>
         {/**Boton de consultor  */}
-        <Link href="CONSULTOR/registroCons" className={estilos["btnOpcion"]}>
+        <Link href="consultor/registro" className={estilos["btnOpcion"]}>
           <Image
             src="/img/Consultores.png"
             alt="Consultor"
@@ -37,7 +37,7 @@ export default function Roles() {
         </Link>
 
         {/**Boton de MIpyme */}
-        <Link href="/indexMipyme.js" className={estilos["btnOpcion"]}>
+        <Link href="mipyme/registro" className={estilos["btnOpcion"]}>
           <Image src="/img/mipyme.png" alt="MiPyME" width={300} height={300} />
           <span>MiPyME</span>
 

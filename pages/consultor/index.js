@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { apiFetch } from "../../utils/api.js";
 import {
   Search,
   Building2,
@@ -30,12 +31,7 @@ export default function IndexConsultor() {
   useEffect(() => {
     async function cargarEmpresas() {
       try {
-        const res = await fetch(`${API_URL}/api/mipymes`, {
-          credentials: "include",
-        });
-        const datos = await res.json();
-        if (!res.ok)
-          throw new Error(datos.error || "Error al cargar las empresas");
+        const datos = await apiFetch("/api/mipymes");
         setEmpresas(Array.isArray(datos) ? datos : []);
       } catch (err) {
         setError(err.message);
@@ -43,12 +39,20 @@ export default function IndexConsultor() {
         setCargando(false);
       }
     }
+
     cargarEmpresas();
   }, [API_URL]);
 
+<<<<<<< HEAD
   /* ── bton perfil── */
   const Perfil = async () => {
   
+=======
+  /* ── Cerrar sesión ── */
+  const cerrarSesion = async () => {
+    await apiFetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+>>>>>>> e41275eea019cacc197f4ae6dc419d8e20e6d7f6
   };
 
   /* ── Extraer listas únicas para los selectores de filtro ── */
