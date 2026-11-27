@@ -37,7 +37,7 @@ export default function TarjetaDetallada() {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-    /* ── Cargar datos reales de la MiPyME desde tu backend ── */
+    /* ── Cargar datos reales de la MiPyME desde backend ── */
     useEffect(() => {
         if (!router.isReady) return;
         const idMipyme = id || 1; // Si entran sin ?id=, carga la 1 por defecto
@@ -113,7 +113,7 @@ export default function TarjetaDetallada() {
                             <ArrowLeft size={16} /> Volver
                         </button>
                         <div className={styles.brand}>
-                            <ShieldCheck size={22} color="#D4A359" />
+                            
                             Work<span>Guard</span>
                         </div>
                     </div>
@@ -135,7 +135,7 @@ export default function TarjetaDetallada() {
 
                     {!cargando && empresa && (
                         <>
-                            {/* ── COLUMNA IZQUIERDA: FICHA DE LA EMPRESA ── */}
+                            {/* FICHA DE LA EMPRESA*/}
                             <section className={styles.cartaEmpresa}>
                                 <div className={styles.cajaFotos}>
                                     <img
@@ -203,11 +203,10 @@ export default function TarjetaDetallada() {
                                 <div className={styles.cartaBody}>
                                     <div className={styles.cajaDescripcion}>
                                         <div className={styles.blockLabel}>
-                                            <FileText size={14} /> Información Fiscal y Operativa
+                                            <FileText size={14} /> Información 
                                         </div>
                                         <p className={styles.descripcionTexto}>
-                                            <strong>Tipo de persona:</strong> {empresa.tipo_persona || 'No especificado'} •{' '}
-                                            <strong>RFC:</strong> {rfc} •{' '}
+                                            <strong>Descripción</strong>{desricpcionempresa} •{' '}
                                             <strong>Tamaño:</strong> {tamano} ({empresa.numero_trabajadores ?? 0} trabajadores).
                                         </p>
                                     </div>
