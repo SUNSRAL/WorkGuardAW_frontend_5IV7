@@ -51,9 +51,9 @@ export default function Login() {
         mensaje: `¡Bienvenido ${datos.usuario.nombre}! Rol detectado: ${datos.usuario.rol}. Redirigiendo...`,
       });
 
-      setTimeout(() => {
+          setTimeout(() => {
         const rol = datos.usuario.rol;
-        if (rol === "administrador") router.push("/admin");
+        if (rol === "admin") router.push("/admin");
         else if (rol === "consultor") router.push("/consultor");
         else if (rol === "mipyme") router.push("/mipyme");
       }, 1200);
@@ -69,11 +69,10 @@ export default function Login() {
   };
 
   return (
-
     <>
-    <div className={estilos["paginaCompleta"]}>
-      {/* carga */}
-      {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
+<div className={estilos["paginaCompleta"]}>
+  {/* carga */}
+  {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
 
       {/* logo */}
       <div className={estilos["logoEsquina"]}>
@@ -257,5 +256,6 @@ export default function Login() {
 
     <Footer />
     </>
+    
   );
 }
