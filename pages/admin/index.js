@@ -98,7 +98,7 @@ const getFotoUrl = (foto_perfil) => {
               </div>
               <button
                 className={styles.btnListaNegra}
-                onClick={() => router.push('/ADMIN/listadoNegro')}
+                onClick={() => router.push('/admin/listadoNegro')}
               >
                 Ver lista negra
               </button>
@@ -155,7 +155,7 @@ const getFotoUrl = (foto_perfil) => {
                     <button
                       className={styles.btnDetalle}
                       onClick={() =>
-                        router.push(`/ADMIN/reporteDetalle?id=${reporte.id_reporte}`)
+                        router.push(`/admin/reporteDetalle?id=${reporte.id_reporte}`)
                       }
                     >
                       Revisar Detalle &gt;
