@@ -84,7 +84,7 @@
     background: rgba(30, 41, 59, 0.7);
 }
 
-/* ── CONTENEDOR PRINCIPAL (APILADO EN BLOQUES ANCHOS COMO EL BENTO) ── */
+/* ── CONTENEDOR PRINCIPAL  ── */
 .workspace {
     flex: 1;
     max-width: 1220px;
@@ -96,7 +96,7 @@
     gap: 20px;
 }
 
-/* ── BLOQUE SUPERIOR: PORTADA PANORÁMICA + IDENTIDAD + DATOS ── */
+/* ── BLOQUE superior */
 .cartaEmpresa {
     background: transparent;
     border: none;
@@ -105,7 +105,7 @@
     gap: 20px;
 }
 
-/* Contenedor visual superior (Banner + Cabecera blanca) */
+/* Contenedor visual superior  */
 .cajaFotos {
     position: relative;
     height: 220px;
@@ -297,7 +297,6 @@
     color: #DC2626;
 }
 
-/* ── BENTO GRID CON TUS CAMPOS DE INFORMACIÓN ── */
 .cartaBody {
     padding: 0;
     display: grid;
@@ -379,7 +378,7 @@
     font-weight: 600;
 }
 
-/* ── SECCIÓN DE COMENTARIOS (TARJETA BLANCA DE ANCHO COMPLETO) ── */
+/* ── SECCIÓN DE COMENTARIOS ── */
 .columnaComentarios {
     background: #FFFFFF;
     border: 1px solid #E2E8F0;
@@ -495,7 +494,7 @@
     background: #1E293B;
 }
 
-/* Feed de comentarios en cuadrícula moderna */
+/* Feed de comentarios}*/
 .scrollComentarios {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
