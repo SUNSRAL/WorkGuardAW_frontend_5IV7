@@ -1,0 +1,279 @@
+/* ── BASE (FLAT & FONDO BLANCO/GRIS SUAVE) ── */
+.contenedor {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── HEADER CORPORATIVO ── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background-color: #0B162C;
+    border-bottom: 3px solid #DCA443;
+}
+
+.logo {
+    width: 45px;
+    height: auto;
+    cursor: pointer;
+    object-fit: contain;
+}
+
+.infoUsuario {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #FFFFFF;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.botonSalir {
+    background-color: #EF4444;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.botonSalir:hover {
+    background-color: #DC2626;
+}
+
+/* ── CONTENIDO PRINCIPAL ── */
+.contenidoPrincipal {
+    flex: 1;
+    max-width: 1060px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 36px 20px 56px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ── BANNERS DE ESTATUS ── */
+.bannerEstatus {
+    padding: 18px 22px;
+    border-radius: 8px;
+    border: 1.5px solid #0B162C;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bannerBorrador {
+    border-color: #F59E0B;
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.bannerRevision {
+    border-color: #2563EB;
+    background: #EFF6FF;
+    color: #1E40AF;
+}
+
+.bannerAprobado {
+    border-color: #10B981;
+    background: #ECFDF5;
+    color: #065F46;
+}
+
+.bannerRechazado {
+    border-color: #EF4444;
+    background: #FEF2F2;
+    color: #991B1B;
+}
+
+.bannerEstatus h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.bannerEstatus p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* ── ALERTAS DE FEEDBACK ── */
+.alertaFeedback {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.alertaExito {
+    background-color: #ECFDF5;
+    border: 1px solid #10B981;
+    color: #065F46;
+}
+
+.alertaError {
+    background-color: #FEE2E2;
+    border: 1px solid #F87171;
+    color: #B91C1C;
+}
+
+/* ── GRID DE DOS COLUMNAS ── */
+.gridDosColumnas {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 850px) {
+    .gridDosColumnas {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── TARJETAS DE SECCIÓN ── */
+.tarjetaSeccion {
+    background-color: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-top: 4px solid #0B162C;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.tarjetaSeccion h3 {
+    margin: 0 0 4px 0;
+    color: #0B162C;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.subTexto {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #64748B;
+    font-weight: 600;
+}
+
+/* ── FORMULARIO Y CAMPOS ── */
+.formularioPerfil {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.grupo label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0B162C;
+}
+
+.grupo input[type="text"],
+.grupo textarea,
+.grupo input[type="file"] {
+    background-color: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    font-family: 'Nunito', sans-serif;
+    color: #0F172A;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.grupo input[type="text"]:focus,
+.grupo textarea:focus {
+    border-color: #0B162C;
+    background-color: #FFFFFF;
+}
+
+.grupo textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* ── BOTONES DE ACCIÓN ── */
+.botonPrincipal {
+    background-color: #DCA443;
+    color: #0B162C;
+    border: none;
+    padding: 11px 20px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.botonPrincipal:hover:not(:disabled) {
+    background-color: #C58E32;
+}
+
+.botonPrincipal:disabled {
+    background-color: #CBD5E1;
+    color: #64748B;
+    cursor: not-allowed;
+}
+
+.botonSecundario {
+    background-color: #0B162C;
+    color: #FFFFFF;
+    border: none;
+    padding: 11px 20px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.botonSecundario:hover:not(:disabled) {
+    background-color: #1E293B;
+}
+
+.botonSecundario:disabled {
+    background-color: #CBD5E1;
+    cursor: not-allowed;
+}
+
+.btnMiniEliminar {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+    border: 1px solid #F87171;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btnMiniEliminar:hover {
+    background-color: #FDC2C2;
+}

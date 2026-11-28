@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import estilos from "../styles/Login.module.css";
+import Cargando from "../components/cargando.js";
 import Footer from '../components/footerlinks.js'; 
-import Cargando from "../components/cargando";
 
 export default function Login() {
   const router = useRouter();
@@ -51,7 +51,7 @@ export default function Login() {
         mensaje: `¡Bienvenido ${datos.usuario.nombre}! Rol detectado: ${datos.usuario.rol}. Redirigiendo...`,
       });
 
-      setTimeout(() => {
+          setTimeout(() => {
         const rol = datos.usuario.rol;
         if (rol === "admin") router.push("/admin");
         else if (rol === "consultor") router.push("/consultor");
@@ -69,15 +69,14 @@ export default function Login() {
   };
 
   return (
-
     <>
-    <div className={estilos["paginaCompleta"]}>
-      {/* carga */}
-      {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
+<div className={estilos["paginaCompleta"]}>
+  {/* carga */}
+  {cargando && <Cargando texto="Autenticando en WorkGuard..." />}
 
       {/* logo */}
       <div className={estilos["logoEsquina"]}>
-        <Link href="/">
+        <Link href="/"> {/**Regreso al index pagina principal*/}
           <Image
             src="/img/logo.png"
             alt="Logo WorkGuard"
@@ -98,7 +97,6 @@ export default function Login() {
         />
       </div>
 
-      <div className={estilos["contenedorCentral"]}>
         <main className={estilos["contenedorCentrado"]}>
           <form
             onSubmit={manejarLogin}
@@ -126,7 +124,7 @@ export default function Login() {
 
               <div className={estilos["campo-input"]}>
                 <Image
-                  src="/img/user.png"
+                  src="/img/userp.png"
                   alt="Usuario"
                   width={16}
                   height={16}
@@ -148,7 +146,7 @@ export default function Login() {
               <label htmlFor="contrasena">Contraseña</label>
               <div className={estilos["campo-input"]}>
                 <Image
-                  src="/img/password.png"
+                  src="/img/passwordp.png"
                   alt="Contraseña"
                   width={16}
                   height={16}
@@ -243,7 +241,7 @@ export default function Login() {
             </p>
           </form>
         </main>
-      </div>
+      
 
       <div className={estilos["ilustracionLateral"]}>
         <Image
@@ -258,5 +256,6 @@ export default function Login() {
 
     <Footer />
     </>
+    
   );
 }

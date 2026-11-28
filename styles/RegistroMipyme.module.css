@@ -1,0 +1,810 @@
+/* CONFIGURACIÓN GENERAL */
+.contenedor {
+    width: 100%;
+    min-height: 100vh;
+    height: 100%;
+    background-color: #F5F1E8;
+    font-family: Arial, sans-serif;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* LOGO EN LA ESQUINA */
+.logoEsquina {
+    position: absolute;
+    top: 25px;
+    left: 35px;
+    z-index: 20;
+    width: 75px;
+    height: auto;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+/* DISTRIBUCIÓN PRINCIPAL (1/3 y 2/3) */
+.contenido {
+    display: grid;
+    grid-template-columns: 35% 65%;
+    width: 100%;
+    min-height: 100vh;
+    flex: 1;
+}
+
+/* LADO IZQUIERDO (Panel con ilustración y fondo) */
+.panelImagen {
+    background-image: url('/img/fondo.png');
+    background-size: cover;
+    background-position: center;
+    color: #1B263B;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 35px 80px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.ilustracion {
+    width: 100%;
+    max-width: 400px;
+    max-height: 50vh;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.panelImagen h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: #1B263B;
+    font-weight: bold;
+}
+
+.panelImagen p {
+    max-width: 360px;
+    line-height: 1.5;
+    color: #1B263B;
+    font-size: 15px;
+}
+
+/* LADO DERECHO (Formulario centrado verticalmente) */
+.panelFormulario {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 35px 50px;
+    box-sizing: border-box;
+    min-width: 0;
+    position: relative;
+}
+
+/* BOTONES SUPERIORES */
+.accionesSuperiores {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.contenedorSemaforoDesplegable {
+    position: relative;
+    margin-right: auto;
+}
+
+.botonSemaforoDiscreto {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    color: #334155;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.botonSemaforoDiscreto:hover {
+    background: #F1F5F9;
+    border-color: #94A3B8;
+    color: #1B263B;
+}
+
+.miniPuntos {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.miniVerde,
+.miniNaranja,
+.miniRojo {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.miniVerde {
+    background-color: #10B981;
+}
+
+.miniNaranja {
+    background-color: #D97706;
+}
+
+.miniRojo {
+    background-color: #EF4444;
+}
+
+.popoverSemaforo {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 320px;
+    background: #ffffff;
+    border: 1.5px solid #1B263B;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+    z-index: 40;
+    text-align: left;
+}
+
+.cabeceraPopover {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.cabeceraPopover strong {
+    font-size: 13px;
+    color: #1B263B;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.cerrarPopover {
+    background: transparent;
+    border: none;
+    color: #64748B;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.cerrarPopover:hover {
+    background: #F1F5F9;
+    color: #1B263B;
+}
+
+.itemSemaforo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #334155;
+    margin-bottom: 9px;
+    line-height: 1.4;
+}
+
+.itemSemaforo:last-child {
+    margin-bottom: 0;
+}
+
+.puntoVerde,
+.puntoNaranja,
+.puntoRojo {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    border-radius: 50%;
+    margin-top: 3px;
+}
+
+.puntoVerde {
+    background-color: #10B981;
+}
+
+.puntoNaranja {
+    background-color: #D97706;
+}
+
+.puntoRojo {
+    background-color: #EF4444;
+}
+
+.botonVolverInicio {
+    background: transparent;
+    border: 1.5px solid #1B263B;
+    color: #1B263B;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.botonVolverInicio:hover {
+    background-color: #1B263B;
+    color: #ffffff;
+}
+
+/* PASOS SUPERIORES */
+.contenedorPasosArriba {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 15px;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.pasoArribaItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.45;
+    transition: all 0.3s ease;
+}
+
+.pasoArribaItem.activo {
+    opacity: 1;
+}
+
+.pasoArribaItem.completado {
+    opacity: 0.9;
+}
+
+.circuloPasoArriba {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #E2E8F0;
+    color: #64748B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.pasoArribaItem.activo .circuloPasoArriba {
+    background: #D97706;
+    color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
+}
+
+.pasoArribaItem.completado .circuloPasoArriba {
+    background: #10B981;
+    color: #ffffff;
+}
+
+.textoPasoArriba {
+    display: flex;
+    flex-direction: column;
+}
+
+.textoPasoArriba strong {
+    font-size: 12px;
+    color: #1B263B;
+}
+
+.textoPasoArriba span {
+    font-size: 10px;
+    color: #64748B;
+}
+
+/* CABECERA DEL PASO */
+.cabeceraPaso {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 10px;
+}
+
+.indicadorPaso {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #1B263B;
+    background: #E2E8F0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+.cabeceraPaso h1 {
+    font-size: 24px;
+    margin: 0 0 4px 0;
+    color: #1B263B;
+}
+
+.subtitulo {
+    margin: 0;
+    color: #64748B;
+    font-size: 14px;
+}
+
+/* FORMULARIO Y CAMPOS (Cambio 2a aplicado) */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.seccionTitulo {
+    font-size: 15px;
+    color: #1B263B;
+    margin: 4px 0 0 0;
+    padding-top: 8px;
+    border-top: 1px dashed #CBD5E1;
+    font-weight: bold;
+}
+
+.filaDos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.filaTres {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 14px;
+}
+
+.grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.grupo label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #1B263B;
+}
+
+.grupo input,
+.grupo select {
+    padding: 11px;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #0F172A;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.grupo input:focus,
+.grupo select:focus {
+    border-color: #D97706;
+}
+
+.grupo small {
+    font-size: 12px;
+    color: #64748B;
+}
+
+/* CONTENEDOR DE ARCHIVO */
+.grupoArchivo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1.5px dashed #CBD5E1;
+    border-radius: 6px;
+    padding: 12px;
+    background: #F8FAFC;
+}
+
+.grupoArchivo label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #1B263B;
+}
+
+.grupoArchivo input[type='file'] {
+    font-size: 12px;
+    color: #475569;
+}
+
+.grupoArchivo input[type='file']::file-selector-button {
+    background-color: #1B263B;
+    color: #ffffff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: background 0.2s ease;
+}
+
+.grupoArchivo input[type='file']::file-selector-button:hover {
+    background-color: #D97706;
+    color: #ffffff;
+}
+
+.grupoArchivo small {
+    font-size: 12px;
+    color: #64748B;
+}
+
+.grupoCheckbox label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1B263B;
+    cursor: pointer;
+    background: #F8FAFC;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #E2E8F0;
+}
+
+/* DISTRIBUCIÓN HORIZONTAL PASO 2 */
+.layoutPasoDos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.columnaFormularioPasoDos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.columnaMapaPasoDos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* CAJA MAPA MODERNO */
+.cajaMapaModerno {
+    border: 1.5px solid #1B263B;
+    border-radius: 6px;
+    background: #FFFFFF;
+    overflow: hidden;
+}
+
+.cabeceraMapaModerno {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #1B263B;
+    color: #ffffff;
+}
+
+.cabeceraMapaModerno strong {
+    font-size: 13px;
+    display: block;
+}
+
+.cabeceraMapaModerno p {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.gridMapaContenido {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+}
+
+.columnaIframeMapa {
+    position: relative;
+    width: 100%;
+    min-height: 175px;
+    background: #E2E8F0;
+}
+
+.columnaInfoMapa {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: #F8FAFC;
+    border-top: 1.5px solid #1B263B;
+}
+
+.infoItemMapa span {
+    font-size: 11px;
+    color: #64748B;
+    display: block;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.infoItemMapa strong {
+    font-size: 12px;
+    color: #1B263B;
+}
+
+.pieMapaModerno {
+    padding: 8px 14px;
+    background: #1B263B;
+    border-top: 1px solid #283854;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pieMapaModerno small {
+    color: #CBD5E1;
+    font-size: 11px;
+    max-width: 65%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.linkMapaGoogle {
+    font-size: 11px;
+    font-weight: bold;
+    color: #D97706;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.linkMapaGoogle:hover {
+    text-decoration: underline;
+}
+
+/* ALERTAS CORPORATIVAS */
+.alerta {
+    border-radius: 4px;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.franjaAlerta {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 13px;
+    background: #1B263B;
+}
+
+.cuerpoAlerta {
+    padding: 12px 14px;
+    margin: 0;
+    line-height: 1.4;
+    background: #ffffff;
+    color: #1B263B;
+    font-size: 13px;
+}
+
+.alertaVerde {
+    border: 1.5px solid #10B981;
+}
+.alertaVerde .franjaAlerta {
+    color: #10B981;
+    border-bottom: 1px solid #10B981;
+}
+
+.alertaNaranja {
+    border: 1.5px solid #D97706;
+}
+.alertaNaranja .franjaAlerta {
+    color: #D97706;
+    border-bottom: 1px solid #D97706;
+}
+
+.alertaRoja {
+    border: 1.5px solid #EF4444;
+}
+.alertaRoja .franjaAlerta {
+    color: #EF4444;
+    border-bottom: 1px solid #EF4444;
+}
+
+/* BOTONES DE ACCIÓN */
+.acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #F1F5F9;
+}
+
+.accionesDoble {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #F1F5F9;
+}
+
+.botonPrincipal {
+    background: #D97706;
+    color: #ffffff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.botonPrincipal:hover:not(:disabled) {
+    background: #B45309;
+}
+
+.botonPrincipal:disabled {
+    background: #CBD5E1;
+    color: #64748B;
+    cursor: not-allowed;
+}
+
+.botonSecundario {
+    background: #1B263B;
+    color: #ffffff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.botonSecundario:hover:not(:disabled) {
+    background: #0D1B2A;
+}
+
+.botonAtras {
+    background: #F1F5F9;
+    color: #334155;
+    border: 1px solid #CBD5E1;
+    padding: 11px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botonAtras:hover:not(:disabled) {
+    background: #E2E8F0;
+}
+
+/* PANTALLA ÉXITO / RESUMEN */
+.pantallaExito {
+    text-align: center;
+    padding: 10px 20px;
+}
+
+.selloActivoBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1B263B;
+    color: #ffffff;
+    border: 2px solid #D97706;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.pantallaExito h1 {
+    font-size: 26px;
+    color: #1B263B;
+    margin: 0 0 10px 0;
+}
+
+.pantallaExito p {
+    color: #475569;
+    max-width: 500px;
+    margin: 0 auto 20px auto;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.resumenFinal {
+    background: #FAFAFA;
+    border: 2px solid #1B263B;
+    border-radius: 8px;
+    padding: 20px 24px;
+    max-width: 480px;
+    margin: 0 auto 24px auto;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.resumenFinal div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.resumenVerificacion {
+    background: #F8FAFC;
+    border: 1.5px solid #1B263B;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #1B263B;
+    margin-bottom: 16px;
+}
+
+.resumenVerificacion p {
+    margin: 4px 0 0 0;
+}
+
+/* RESPONSIVO */
+@media (max-width: 950px) {
+    .contenedor {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .contenido {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .panelImagen {
+        min-height: 280px;
+        padding: 80px 20px 20px;
+    }
+
+    .ilustracion {
+        max-width: 200px;
+    }
+
+    .panelFormulario {
+        padding: 30px 20px;
+        overflow: visible;
+    }
+
+    .logoEsquina {
+        width: 70px;
+        top: 20px;
+        left: 20px;
+    }
+
+    .contenedorPasosArriba {
+        display: none;
+    }
+
+    .layoutPasoDos {
+        grid-template-columns: 1fr;
+    }
+}

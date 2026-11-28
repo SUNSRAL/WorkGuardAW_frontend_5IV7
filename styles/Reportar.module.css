@@ -1,0 +1,317 @@
+/* CONFIGURACIÓN GENERAL */
+
+.contenedor {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #F5F1E8;
+    font-family: Arial, sans-serif;
+    position: relative;
+    box-sizing: border-box;
+}
+
+
+/* LOGO EN LA ESQUINA */
+
+.logoEsquina {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    z-index: 20;
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+}
+
+
+/* DISTRIBUCIÓN PRINCIPAL */
+
+.contenido {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* LADO IZQUIERDO */
+
+.panelImagen {
+    background-image: url('/img/fondo.png');
+    background-size: cover;
+    background-position: center;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 35px 100px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.ilustracion {
+    width: 100%;
+    max-width: 480px;
+    max-height: 70vh;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 0px;
+}
+
+.panelImagen h2 {
+    font-size: 25px;
+    margin-bottom: 5px;
+    color: #1B263B;
+}
+
+.panelImagen p {
+    max-width: 380px;
+    line-height: 1.5;
+    color: #1B263B;
+}
+
+/* BOTÓN PARA ELEGIR ARCHIVO */
+.grupo input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px dashed #C59B27;
+    border-radius: 9px;
+    background-color: #FFFCF5;
+    box-sizing: border-box;
+    font-size: 12px;
+    cursor: pointer;
+    color: #64748B;
+}
+
+/* BOTÓN INTERNO */
+.grupo input[type="file"]::file-selector-button {
+    background-color: #1B263B;
+    color: white;
+    border: none;
+    padding: 9px 15px;
+    border-radius: 6px;
+    margin-right: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* EFECTO AL PASAR EL CURSOR */
+.grupo input[type="file"]::file-selector-button:hover {
+    background-color: #C59B27;
+    color: #1B263B;
+}
+
+/* LADO DERECHO */
+
+.panelFormulario {
+    background-color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 75px 45px 25px;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.panelFormulario h1 {
+    font-size: 27px;
+    color: #1B263B;
+    margin: 0 0 8px;
+    text-align: center;
+    transform: translateY(-60px);
+}
+
+.subtitulo {
+    color: #64748B;
+    margin: 0 0 18px;
+    font-size: 13px;
+}
+
+
+/* FORMULARIO */
+
+.panelFormulario form {
+    width: 100%;
+}
+
+.grupo {
+    margin-bottom: 15px;
+}
+
+.grupo label {
+    display: block;
+    font-weight: bold;
+    color: #1B263B;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.opciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px 12px;
+}
+
+.opcion {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: normal !important;
+    font-size: 12px;
+    cursor: pointer;
+    margin: 0 !important;
+}
+
+.opcion input {
+    width: 15px;
+    height: 15px;
+    accent-color: #C59B27;
+    flex-shrink: 0;
+}
+
+
+/* INPUTS Y TEXTAREA */
+
+.grupo input[type="text"],
+.grupo textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #CBD5E1;
+    border-radius: 7px;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.grupo textarea {
+    height: 85px;
+    resize: none;
+    font-family: Arial, sans-serif;
+}
+
+.grupo input:focus,
+.grupo textarea:focus {
+    border-color: #C59B27;
+}
+
+
+/* ARCHIVO */
+
+.grupo input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px dashed #C59B27;
+    border-radius: 7px;
+    box-sizing: border-box;
+    font-size: 12px;
+}
+
+.grupo small {
+    display: block;
+    margin-top: 5px;
+    color: #64748B;
+    font-size: 11px;
+}
+
+.archivoSeleccionado {
+    color: #355E3B;
+    font-size: 11px;
+    margin-top: 5px;
+    overflow-wrap: anywhere;
+}
+
+
+/* MENSAJES */
+
+.error,
+.exito {
+    padding: 9px;
+    border-radius: 7px;
+    font-size: 12px;
+    margin: 8px 0;
+}
+
+.error {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+}
+
+.exito {
+    background-color: #DCFCE7;
+    color: #166534;
+}
+
+
+/* BOTÓN */
+
+.botonEnviar {
+    width: 65%;
+    display: block;
+    margin: 15px auto 0;
+    padding: 10px;
+
+    background-color: #C59B27;
+    color: #1B263B;
+    border: none;
+    border-radius: 7px;
+
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.botonEnviar:hover:not(:disabled) {
+    background-color: #A98219;
+}
+
+.botonEnviar:disabled {
+    background-color: #CBD5E1;
+    color: #64748B;
+    cursor: not-allowed;
+}
+
+
+/* PANTALLAS PEQUEÑAS */
+
+@media (max-width: 850px) {
+
+    .contenedor {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .contenido {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .panelImagen {
+    padding: 60px 25px 50px;
+    }
+
+    .ilustracion {
+        max-width: 220px;
+    }
+
+    .panelFormulario {
+        padding: 35px 25px;
+        overflow: visible;
+    }
+
+    .logoEsquina {
+        width: 115px;
+        top: 15px;
+        left: 20px;
+    }
+
+}
