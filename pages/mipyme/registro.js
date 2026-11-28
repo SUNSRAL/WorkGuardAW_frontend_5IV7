@@ -136,6 +136,8 @@ export default function RegistroMipyme() {
 
   const [resultadosPasos, setResultadosPasos] = useState({});
   const [validadoDenue, setValidadoDenue] = useState(false);
+  const [urlQrCsf, setUrlQrCsf] = useState('');
+  const [urlQr32d, setUrlQr32d] = useState('');
   const [tamanoCalculado, setTamanoCalculado] = useState('');
   const [idTamanoCalculado, setIdTamanoCalculado] = useState(null);
 
@@ -334,10 +336,18 @@ export default function RegistroMipyme() {
       const data = await apiFetch('/api/mipymes/evaluar-paso', { method: 'POST', body: fd });
 
       setResultadosPasos((prev) => ({ ...prev, [pasoActual]: data }));
-      if (pasoActual === 2) setValidadoDenue(Boolean(data.validado_denue));
+      if (pasoActual === 1 && data.url_qr_csf) {
+        setUrlQrCsf(data.url_qr_csf);
+      }
+      if (pasoActual === 2) {
+        setValidadoDenue(Boolean(data.validado_denue));
+      }
       if (pasoActual === 4) {
         setTamanoCalculado(data.tamano_calculado || '');
         setIdTamanoCalculado(data.id_tamano || null);
+        if (data.url_qr_32d) {
+          setUrlQr32d(data.url_qr_32d);
+        }
       }
 
       irAPaso(pasoActual + 1);
@@ -389,6 +399,8 @@ export default function RegistroMipyme() {
         numero_trabajadores: Number(form.numero_trabajadores),
         id_tamano: idTamanoCalculado,
         validado_denue: validadoDenue,
+        url_qr_csf: urlQrCsf || null,
+        url_qr_32d: urlQr32d || null,
         domicilio_fiscal: {
           codigo_postal: form.cp_fiscal.trim(),
           calle: form.calle_fiscal.trim(),
@@ -456,20 +468,22 @@ export default function RegistroMipyme() {
         <div className={styles.panelFormulario}>
           {registroExitoso ? (
             <div className={styles.pantallaExito}>
+              <div className={styles.selloActivoBadge}>📝 CUENTA CREADA — PASO FINAL PENDIENTE</div>
               <h1>¡Bienvenido a WorkGuard, {form.nombre_comercial}!</h1>
               <p>
-                Tu empresa superó las 4 validaciones oficiales y ya es visible en el directorio
-                para los consultores verificados de la plataforma.
+                Tus 4 validaciones fiscales y de identidad salieron en Verde. Ahora inicia sesión en tu panel
+                para subir tu logotipo, agregar hasta 3 fotos de tu establecimiento y redactar la descripción
+                que verán los consultores antes de enviarlo a aprobación del Administrador.
               </p>
 
               <div className={styles.resumenFinal}>
                 <div><span>RFC Validado:</span><strong>{form.rfc}</strong></div>
                 <div><span>Clasificación DOF:</span><strong>{tamanoCalculado || 'MiPyME'} ({form.numero_trabajadores} trabajadores)</strong></div>
-                <div><span>Respaldo DENUE (INEGI):</span><strong>{validadoDenue ? '✓ Confirmado en DENUE' : 'Validado por Comprobante y Mapa'}</strong></div>
+                <div><span>Estatus Actual:</span><strong>Borrador de Perfil (Pendiente de personalizar tarjeta)</strong></div>
               </div>
 
               <button type="button" className={styles.botonPrincipal} onClick={() => router.push('/login')}>
-                Ir a Iniciar Sesión
+                Iniciar Sesión para Personalizar mi Perfil
               </button>
             </div>
           ) : (
