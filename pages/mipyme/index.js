@@ -273,7 +273,7 @@ export default function PanelMipyme() {
             <div
               className={`${styles.bannerEstatus} ${styles.bannerRechazado}`}
             >
-              <h2>❌ Solicitud Rechazada con Observaciones</h2>
+              <h2>Solicitud Rechazada con Observaciones</h2>
               <p>
                 Motivo indicado por el Administrador:{" "}
                 <strong>
@@ -529,7 +529,7 @@ export default function PanelMipyme() {
                     >
                       {enviando
                         ? "Enviando..."
-                        : "🚀 Enviar perfil a revisión oficial"}
+                        : "Enviar perfil a revisión oficial"}
                     </button>
                   )}
                 </div>

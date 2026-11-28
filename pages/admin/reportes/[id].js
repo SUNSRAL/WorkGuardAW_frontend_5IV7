@@ -78,7 +78,7 @@ export default function DetalleReporte() {
   };
 
   return (
-    <RutaProtegida rolPermitido="administrador">
+    <RutaProtegida rolPermitido="admin">
       <div className={styles.pageWrapper}>
         {/* ── HEADER FLAT ── */}
         <header className={styles.header}>
