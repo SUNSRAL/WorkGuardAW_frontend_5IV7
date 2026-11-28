@@ -9,6 +9,7 @@ import Image from "next/image";
 import estilos from "../styles/Login.module.css";
 import Cargando from "../components/cargando.js";
 import Footer from '../components/footerlinks.js'; 
+import Cargando from "../components/cargando";
 
 export default function Login() {
   const router = useRouter();
